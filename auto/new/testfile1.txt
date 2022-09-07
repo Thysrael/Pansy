@@ -1,0 +1,41 @@
+void putint(int a)
+{
+	printf("%d", a);
+}
+
+int main()
+{
+	printf("20373249\n");
+	
+	int i0 = 0;
+	int i1 = 1;
+	int i2 = 2;
+	int i3 = 3;
+	int i4 = 4;
+	if (i0 < i1 || i2 > i3)
+	{
+		putint(1);
+	}
+
+	if (i0 < i1 && i2 > i3)
+	{
+		putint(2);
+	}
+	
+	if (i0 < i1 && i2 > i3 || i4 >= i1)
+	{
+		putint(3);
+	}
+
+    if (0 && i2 < i3)
+    {
+        putint(4);
+    }
+
+    if (1 || i2 > 10000)
+    {
+        putint(5);
+    }
+
+	return 0;
+}
