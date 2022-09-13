@@ -7,3 +7,6 @@
 out
 gen
 /resource/
+/testfile.txt
+/output.txt
+/standard.txt
