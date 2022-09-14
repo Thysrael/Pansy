@@ -10,4 +10,37 @@ public class FormString extends Token
         super(line, content);
         type = TokenType.STRCON;
     }
+
+    public static int consumeFormString(String src, int startIndex)
+    {
+        int endIndex = startIndex;
+        if (src.charAt(startIndex) == '\"')
+        {
+            endIndex++;
+            while (endIndex < src.length())
+            {
+                char c = src.charAt(endIndex);
+                if (c == '\"')
+                {
+                    endIndex++;
+                    return endIndex;
+                }
+                else if (c == 32 || c == 33 || (c >= 40 && c <= 91) || (c >= 93 && c <= 126))
+                {
+                    endIndex++;
+                }
+                else if (endIndex + 1 < src.length() &&
+                        ((c == '%' && src.charAt(endIndex + 1) == 'd') || (c == '\\' && src.charAt(endIndex + 1) == 'n')))
+                {
+                    endIndex++;
+                }
+                else
+                {
+                    return startIndex;
+                }
+            }
+        }
+
+        return startIndex;
+    }
 }

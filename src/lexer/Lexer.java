@@ -41,7 +41,7 @@ public class Lexer
         {
             Token token = getToken();
 
-            // 如果没有解析出来，那么就下移一行
+            // 如果没有解析出来，那么就移动一下
             if (token == null)
             {
                 strCursor++;
@@ -75,16 +75,20 @@ public class Lexer
     private Token getToken()
     {
         // 匹配注释
-        Pattern pattern = Pattern.compile(Comment.PATTERN);
-        Matcher matcher = pattern.matcher(sourceCode);
-        if (matcher.find(strCursor) && matcher.start() == strCursor)
+        int endCursor = Comment.consumeMultiComment(sourceCode, strCursor);
+        if (strCursor < endCursor)
         {
-            return new Comment(lineCursor, matcher.group());
+            return new Comment(lineCursor, sourceCode.substring(strCursor, endCursor));
+        }
+        endCursor = Comment.consumeSingleComment(sourceCode, strCursor);
+        if (strCursor < endCursor)
+        {
+            return new Comment(lineCursor, sourceCode.substring(strCursor, endCursor));
         }
 
         // 匹配保留字
-        pattern = Pattern.compile(Reserved.PATTERN);
-        matcher = pattern.matcher(sourceCode);
+        Pattern pattern = Pattern.compile(Reserved.PATTERN);
+        Matcher matcher = pattern.matcher(sourceCode);
         if (matcher.find(strCursor) && matcher.start() == strCursor)
         {
             return new Reserved(lineCursor, matcher.group());
@@ -100,11 +104,10 @@ public class Lexer
         }
 
         // 匹配字符串
-        pattern = Pattern.compile(FormString.PATTERN);
-        matcher = pattern.matcher(sourceCode);
-        if (matcher.find(strCursor) && matcher.start() == strCursor)
+        endCursor = FormString.consumeFormString(sourceCode, strCursor);
+        if (strCursor < endCursor)
         {
-            return new FormString(lineCursor, matcher.group());
+            return new FormString(lineCursor, sourceCode.substring(strCursor, endCursor));
         }
 
         // 匹配整形数
