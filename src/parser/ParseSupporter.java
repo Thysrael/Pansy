@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import static lexer.token.SyntaxType.*;
 
-public class ParseSupporter implements Cloneable
+public class ParseSupporter
 {
     private final ArrayList<Token> tokens;
     private final ArrayList<String> parseLog;
@@ -24,6 +24,14 @@ public class ParseSupporter implements Cloneable
         this.cur = 0;
         this.parseLog = new ArrayList<>();
         this.parseErrors = new ArrayList<>();
+    }
+
+    public ParseSupporter(ParseSupporter supporter)
+    {
+        this.tokens = new ArrayList<>(supporter.tokens);
+        this.cur = supporter.cur;
+        this.parseLog = new ArrayList<>(supporter.parseLog);
+        this.parseErrors = new ArrayList<>(supporter.parseErrors);
     }
 
     public void addParseLog(String procedure)
@@ -218,18 +226,5 @@ public class ParseSupporter implements Cloneable
         parseLog.add(token.toString());
         advance(1);
         return new TokenNode(token);
-    }
-
-    @Override
-    public ParseSupporter clone()
-    {
-        try
-        {
-            return (ParseSupporter) super.clone();
-        }
-        catch (CloneNotSupportedException e)
-        {
-            throw new AssertionError();
-        }
     }
 }

@@ -3,7 +3,7 @@
 build:
 	touch testfile.txt input.txt
 	cd ./auto/ && $(MAKE) 
-
+	
 clean:
 	cd ./auto/ && $(MAKE) clean
 	rm *.txt *.zip

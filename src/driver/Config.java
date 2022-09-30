@@ -9,5 +9,5 @@ public class Config
 
     public static final boolean parseOutputToCmd = true;
 
-    public static final boolean parseOutputToFile = false;
+    public static final boolean parseOutputToFile = true;
 }

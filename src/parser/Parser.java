@@ -28,7 +28,7 @@ public class Parser
         }
         catch (PansyException e)
         {
-            System.out.println(display());
+            System.err.println(display());
             e.printStackTrace();
             System.err.println(e.getType());
             System.exit(1);
@@ -507,7 +507,7 @@ public class Parser
         else
         {
             ParseSupporter oldSupporter = this.supporter;
-            this.supporter = oldSupporter.clone();
+            this.supporter = new ParseSupporter(oldSupporter);
             try
             {
                 parseLVal();
@@ -684,7 +684,7 @@ public class Parser
         ParseSupporter oldSupporter = this.supporter;
         try
         {
-            this.supporter = oldSupporter.clone();
+            this.supporter = new ParseSupporter(oldSupporter);
             parseExp();
             this.supporter = oldSupporter;
             returnStmtNode.addChild(parseExp());
@@ -927,7 +927,7 @@ public class Parser
         {
             mulExpNode.addChild(supporter.checkToken(supporter.lookAhead(0).getType()));
             mulExpNode.addChild(parseUnaryExp());
-            addParseLog("UnaryExp");
+            addParseLog("MulExp");
         }
 
         return mulExpNode;
@@ -996,7 +996,7 @@ public class Parser
         try
         {
             // try
-            this.supporter = oldSupporter.clone();
+            this.supporter = new ParseSupporter(oldSupporter);
             parseExp();
             // no exception, continue
             this.supporter = oldSupporter;
@@ -1028,6 +1028,7 @@ public class Parser
             funcRParamsNode.addChild(parseExp());
         }
 
+        addParseLog("FuncRParams");
         return funcRParamsNode;
     }
 
@@ -1068,6 +1069,7 @@ public class Parser
 
         numberNode.addChild(supporter.checkToken(SyntaxType.INTCON));
 
+        addParseLog("Number");
         return numberNode;
     }
 
@@ -1081,6 +1083,7 @@ public class Parser
         mainFuncDefNode.addChild(assertToken(SyntaxType.RPARENT));
         mainFuncDefNode.addChild(parseBlock());
 
+        addParseLog("MainFuncDef");
         return mainFuncDefNode;
     }
 }
