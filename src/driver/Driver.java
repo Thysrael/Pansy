@@ -1,7 +1,12 @@
 package driver;
 
 import lexer.Lexer;
+import lexer.token.Token;
+import parser.Parser;
+import parser.cst.CSTNode;
 import util.MyIO;
+
+import java.util.ArrayList;
 
 public class Driver
 {
@@ -17,13 +22,23 @@ public class Driver
             if (argIndex == 0)
             {
                 Config.sourceFilePath = args[argIndex];
-                argIndex++;
             }
-            else
-            {
-                argIndex++;
-            }
+            argIndex++;
         }
+    }
+
+    public void run(String[] args)
+    {
+        parseArgs(args);
+        String sourceCode = MyIO.readFile(Config.sourceFilePath);
+
+        Lexer lexer = new Lexer(sourceCode);
+        ArrayList<Token> tokens = lexer.run();
+        lexDisplay(lexer);
+
+        Parser parser = new Parser(tokens);
+        CSTNode cstRoot = parser.run();
+        parseDisplay(parser);
     }
 
     private void lexDisplay(Lexer lexer)
@@ -38,13 +53,15 @@ public class Driver
         }
     }
 
-    public void run(String[] args)
+    private void parseDisplay(Parser parser)
     {
-        parseArgs(args);
-        String sourceCode = MyIO.readFile(Config.sourceFilePath);
-
-        Lexer lexer = new Lexer(sourceCode);
-        lexer.run();
-        lexDisplay(lexer);
+        if (Config.parseOutputToCmd)
+        {
+            System.out.println(parser.display());
+        }
+        if (Config.parseOutputToFile)
+        {
+            MyIO.output(Config.targetFilePath, parser.display());
+        }
     }
 }

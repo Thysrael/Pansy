@@ -35,7 +35,7 @@ public class Lexer
         this.exceptions = new ArrayList<>();
     }
 
-    public void run()
+    public ArrayList<Token> run()
     {
         while (!isFileEnd())
         {
@@ -57,6 +57,8 @@ public class Lexer
                 }
             }
         }
+
+        return tokens;
     }
 
     private boolean isFileEnd()
@@ -66,10 +68,10 @@ public class Lexer
 
     private boolean isBlankToken(Token token)
     {
-        TokenType type = token.getType();
-        return type.equals(TokenType.SINGLE_COMMENT) ||
-                type.equals(TokenType.MULTI_COMMENT) ||
-                type.equals(TokenType.SPACE);
+        SyntaxType type = token.getType();
+        return type.equals(SyntaxType.SINGLE_COMMENT) ||
+                type.equals(SyntaxType.MULTI_COMMENT) ||
+                type.equals(SyntaxType.SPACE);
     }
 
     private Token getToken()

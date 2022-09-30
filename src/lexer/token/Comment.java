@@ -8,7 +8,7 @@ public class Comment extends Token
     public Comment(int line, String content)
     {
         super(line, content);
-        this.type = content.charAt(1) == '/' ? TokenType.SINGLE_COMMENT : TokenType.MULTI_COMMENT;
+        this.type = content.charAt(1) == '/' ? SyntaxType.SINGLE_COMMENT : SyntaxType.MULTI_COMMENT;
     }
 
     public static int consumeSingleComment(String src, int startIndex)

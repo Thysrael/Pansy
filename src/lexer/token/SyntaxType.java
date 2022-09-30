@@ -1,6 +1,6 @@
 package lexer.token;
 
-public enum TokenType
+public enum SyntaxType
 {
     // comment
     SINGLE_COMMENT, MULTI_COMMENT,
@@ -17,5 +17,6 @@ public enum TokenType
     // FormatString
     STRCON,
     // Identifier
-    IDENFR
+    IDENFR,
+    EOF
 }

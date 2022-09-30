@@ -13,7 +13,7 @@ public abstract class Token
     /**
      * token 的类型
      */
-    protected TokenType type;
+    protected SyntaxType type;
 
     protected Token(int line, String content)
     {
@@ -21,7 +21,7 @@ public abstract class Token
         this.content = content;
     }
 
-    public TokenType getType()
+    public SyntaxType getType()
     {
         return type;
     }
@@ -34,6 +34,11 @@ public abstract class Token
     public String getContent()
     {
         return content;
+    }
+
+    public boolean isSameType(SyntaxType type)
+    {
+        return this.type.equals(type);
     }
 
     @Override

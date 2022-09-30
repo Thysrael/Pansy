@@ -7,6 +7,6 @@ public class IntConst extends Token
     public IntConst(int line, String content)
     {
         super(line, content);
-        type = TokenType.INTCON;
+        type = SyntaxType.INTCON;
     }
 }

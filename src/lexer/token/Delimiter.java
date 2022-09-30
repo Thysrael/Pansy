@@ -12,34 +12,34 @@ public class Delimiter extends Token
     public static final String PATTERN;
     private static final String SPACE_PATTERN = "\\s+";
     private static final Pattern spacePattern = Pattern.compile(SPACE_PATTERN);
-    private static final HashMap<String, TokenType> contentToType = new HashMap<>();
+    private static final HashMap<String, SyntaxType> contentToType = new HashMap<>();
     private static final HashMap<String, String> contentToRegex = new HashMap<>();
 
     static
     {
-        contentToType.put("!", TokenType.NOT);
-        contentToType.put("&&", TokenType.AND);
-        contentToType.put("||", TokenType.OR);
-        contentToType.put("+", TokenType.PLUS);
-        contentToType.put("-", TokenType.MINU);
-        contentToType.put("*", TokenType.MULT);
-        contentToType.put("/", TokenType.DIV);
-        contentToType.put("%", TokenType.MOD);
-        contentToType.put("<", TokenType.LSS);
-        contentToType.put("<=", TokenType.LEQ);
-        contentToType.put(">", TokenType.GRE);
-        contentToType.put(">=", TokenType.GEQ);
-        contentToType.put("==", TokenType.EQL);
-        contentToType.put("!=", TokenType.NEQ);
-        contentToType.put("=", TokenType.ASSIGN);
-        contentToType.put(";", TokenType.SEMICN);
-        contentToType.put(",", TokenType.COMMA);
-        contentToType.put("(", TokenType.LPARENT);
-        contentToType.put(")", TokenType.RPARENT);
-        contentToType.put("[", TokenType.LBRACK);
-        contentToType.put("]", TokenType.RBRACK);
-        contentToType.put("{", TokenType.LBRACE);
-        contentToType.put("}", TokenType.RBRACE);
+        contentToType.put("!", SyntaxType.NOT);
+        contentToType.put("&&", SyntaxType.AND);
+        contentToType.put("||", SyntaxType.OR);
+        contentToType.put("+", SyntaxType.PLUS);
+        contentToType.put("-", SyntaxType.MINU);
+        contentToType.put("*", SyntaxType.MULT);
+        contentToType.put("/", SyntaxType.DIV);
+        contentToType.put("%", SyntaxType.MOD);
+        contentToType.put("<", SyntaxType.LSS);
+        contentToType.put("<=", SyntaxType.LEQ);
+        contentToType.put(">", SyntaxType.GRE);
+        contentToType.put(">=", SyntaxType.GEQ);
+        contentToType.put("==", SyntaxType.EQL);
+        contentToType.put("!=", SyntaxType.NEQ);
+        contentToType.put("=", SyntaxType.ASSIGN);
+        contentToType.put(";", SyntaxType.SEMICN);
+        contentToType.put(",", SyntaxType.COMMA);
+        contentToType.put("(", SyntaxType.LPARENT);
+        contentToType.put(")", SyntaxType.RPARENT);
+        contentToType.put("[", SyntaxType.LBRACK);
+        contentToType.put("]", SyntaxType.RBRACK);
+        contentToType.put("{", SyntaxType.LBRACE);
+        contentToType.put("}", SyntaxType.RBRACE);
 
         contentToRegex.put("||", "\\|\\|");
         contentToRegex.put("+", "\\+");
@@ -66,7 +66,7 @@ public class Delimiter extends Token
         Matcher spaceMatcher = spacePattern.matcher(content);
         if (spaceMatcher.find())
         {
-            type = TokenType.SPACE;
+            type = SyntaxType.SPACE;
         }
         else
         {

@@ -6,212 +6,227 @@ grammar SysY;
 ? 表示前面的字符 0 个或 1 个（与 EBNF 的 [] 相同）
 **/
 
-// 编译单元由三部分组成，分别是值声明、函数声明、main 函数
-// 这三部分的顺序大概率是不能换的
-compUnit
-   : (funcDef | decl)+
-   ;
+CompUnit
+    : (FuncDef | Decl)+
+    ;
 
-decl
-   : constDecl
-   | varDecl
-   ;
+Decl
+    : ConstDecl
+    | VarDecl
+    ;
 
 // 支持多个变量同时初始化
-constDecl
-   : CONST_KW bType constDef (COMMA constDef)* SEMICOLON
-   ;
-
-// 只有一种类型，就是 int
-bType
-   : INT_KW
-   ;
+ConstDecl
+    : CONST_KW BType ConstDef (COMMA ConstDef)* SEMICOLON
+    ;
 
 // 常量定义，必须要求初始化，可以有数组
-constDef
-   : IDENT (L_BRACKT constExp R_BRACKT)* ASSIGN constInitVal
-   ;
+ConstDef
+    : IDENFR (L_BRACKT ConstExp R_BRACKT)* ASSIGN ConstInitVal
+    ;
 
-constInitVal
-   : constExp
-   | (L_BRACE (constInitVal (COMMA constInitVal)*)? R_BRACE)
-   ;
+ConstInitVal
+    : ConstExp
+    | L_BRACE (ConstInitVal (COMMA ConstInitVal)*)? R_BRACE
+    ;
 
-varDecl
-   : bType varDef (COMMA varDef)* SEMICOLON
-   ;
+// ConstExp 的定义和 Exp 的定义一样，都是加减法连缀的表达式
+ConstExp
+    : AddExp
+    ;
 
-varDef
-   : IDENT (L_BRACKT constExp R_BRACKT)* (ASSIGN initVal)?
-   ;
+VarDecl
+    : BType VarDef (COMMA VarDef)* SEMICOLON
+    ;
 
-initVal
-   : exp
-   | (L_BRACE (initVal (COMMA initVal)*)? R_BRACE)
-   ;
+VarDef
+    : IDENFR (L_BRACKT ConstExp R_BRACKT)* (ASSIGN InitVal)?
+    ;
 
-funcDef
-   : funcType IDENT L_PAREN funcFParams? R_PAREN block
-   ;
+InitVal
+    : Exp
+    | L_BRACE (InitVal (COMMA InitVal)*)? R_BRACE
+    ;
 
-funcType
-   : VOID_KW
-   | INT_KW
-   ;
+FuncDef
+    : FuncType IDENFR L_PAREN FuncFParams? R_PAREN Block
+    ;
 
-funcFParams
-   : funcFParam (COMMA funcFParam)*
-   ;
+FuncType
+    : VOID_KW
+    | INT_KW
+    ;
 
-funcFParam
-   : bType IDENT (L_BRACKT R_BRACKT (L_BRACKT exp R_BRACKT)*)?
-   ;
+FuncFParams
+    : FuncFParam (COMMA FuncFParam)*
+    ;
 
-block
-   : L_BRACE blockItem* R_BRACE
-   ;
+FuncFParam
+    : BType IDENFR (L_BRACKT R_BRACKT (L_BRACKT ConstExp R_BRACKT)*)?
+    ;
 
-blockItem
-   : constDecl
-   | varDecl
-   | stmt
-   ;
+Block
+    : L_BRACE BlockItem* R_BRACE
+    ;
 
-stmt
-   : assignStmt
-   | expStmt
-   | block
-   | conditionStmt
-   | whileStmt
-   | breakStmt
-   | continueStmt
-   | returnStmt
-   ;
+BlockItem
+    : Decl
+    | Stmt
+    ;
 
-assignStmt
-   : lVal ASSIGN exp SEMICOLON
-   ;
+Stmt
+    : AssignStmt
+    | ExpStmt
+    | Block
+    | ConditionStmt
+    | WhileStmt
+    | BreakStmt
+    | ContinueStmt
+    | ReturnStmt
+    | InStmt
+    | OutStmt
+    ;
 
-expStmt
-   : exp? SEMICOLON
-   ;
+AssignStmt
+    : LVal ASSIGN Exp SEMICOLON
+    ;
 
-conditionStmt
-   : IF_KW L_PAREN cond R_PAREN stmt (ELSE_KW stmt)?
-   ;
+ExpStmt
+    : Exp? SEMICOLON
+    ;
 
-whileStmt
-   : WHILE_KW L_PAREN cond R_PAREN stmt
-   ;
+InStmt
+	: LVal ASSIGN GETINTTK L_PAREN R_PAREN SEMICOLON
+    ;
 
-breakStmt
-   : BREAK_KW SEMICOLON
-   ;
+ConditionStmt
+    : IF_KW L_PAREN Cond R_PAREN Stmt (ELSE_KW Stmt)?
+    ;
 
-continueStmt
-   : CONTINUE_KW SEMICOLON
-   ;
+WhileStmt
+    : WHILE_KW L_PAREN Cond R_PAREN Stmt
+    ;
 
-returnStmt
-   : RETURN_KW (exp)? SEMICOLON
-   ;
+BreakStmt
+    : BREAK_KW SEMICOLON
+    ;
 
-exp
-   : addExp
-   ;
+ContinueStmt
+    : CONTINUE_KW SEMICOLON
+    ;
 
-cond
-   : lOrExp
-   ;
+ReturnStmt
+    : RETURN_KW (Exp)? SEMICOLON
+    ;
 
-lVal
-   : IDENT (L_BRACKT exp R_BRACKT)*
-   ;
+OutStmt
+    : PRINTFTK L_PAREN FormatString (COMMA Exp)* R_PAREN SEMICOLON
+    ;
 
-primaryExp
-   : (L_PAREN exp R_PAREN)
-   | lVal
-   | number
-   ;
+Exp
+    : AddExp
+    ;
 
-number
-   : intConst
-   ;
+Cond
+    : LOrExp
+    ;
 
-intConst
-   : DECIMAL_CONST
-   ;
+LVal
+    : IDENFR (L_BRACKT Exp R_BRACKT)*
+    ;
 
-unaryExp
-   : primaryExp
-   | callee
-   | (unaryOp unaryExp)
-   ;
+PrimaryExp
+    : L_PAREN Exp R_PAREN
+    | LVal
+    | Number
+    ;
 
-callee
-   : IDENT L_PAREN funcRParams? R_PAREN
-   ;
+Number
+    : IntConst
+    ;
 
-unaryOp
-   : PLUS
-   | MINUS
-   | NOT
-   ;
+IntConst
+    : DECIMAL_CONST
+    ;
 
-funcRParams
-   : exp (COMMA exp)*
-   ;
+UnaryExp
+    : PrimaryExp
+    | Callee
+    | UnaryOp UnaryExp
+    ;
 
-mulExp
-   : unaryExp (mulOp unaryExp)*
-   ; // eliminate left-recursive
+Callee
+    : IDENFR L_PAREN FuncRParams? R_PAREN
+    ;
 
-mulOp
-   : MUL
-   | DIV
-   | MOD
-   ;
+UnaryOp
+    : PLUS
+    | MINUS
+    | NOT
+    ;
 
-addExp
-   : mulExp (addOp mulExp)*
-   ; // eliminate left-recursive
+FuncRParams
+    : Exp (COMMA Exp)*
+    ;
 
-addOp
-   : PLUS
-   | MINUS
-   ;
+MulExp
+    : UnaryExp (MulOp UnaryExp)*
+    ; // eliminate left-recursive
 
-relExp
-   : addExp (relOp addExp)*
-   ; // eliminate left-recursive
+MulOp
+    : MUL
+    | DIV
+    | MOD
+    ;
 
-relOp
-   : LT
-   | GT
-   | LE
-   | GE
-   ;
+AddExp
+    : MulExp (AddOp MulExp)*
+    ; // eliminate left-recursive
 
-eqExp
-   : relExp (eqOp relExp)*
-   ;
+AddOp
+    : PLUS
+    | MINUS
+    ;
 
-eqOp
-   : EQ
-   | NEQ
-   ;
+RelExp
+    : AddExp (RelOp AddExp)*
+    ; // eliminate left-recursive
 
-lAndExp
-   : eqExp (AND eqExp)*
-   ;
+RelOp
+    : LT
+    | GT
+    | LE
+    | GE
+    ;
 
-lOrExp
-   : lAndExp (OR lAndExp)*
-   ;
+EqExp
+    : RelExp (EqOp RelExp)*
+    ;
 
-constExp
-   : addExp
-   ;
+EqOp
+    : EQ
+    | NEQ
+    ;
+
+LAndExp
+    : EqExp (AND EqExp)*
+    ;
+
+LOrExp
+    : LAndExp (OR LAndExp)*
+    ;
+
+BType
+    : INT_KW
+    ;
+
+PRINTFTK
+    : 'printf'
+    ;
+
+GETINTTK
+	: 'getint'
+	;
 
 CONST_KW
    : 'const'
@@ -249,7 +264,7 @@ RETURN_KW
    : 'return'
    ;
 
-IDENT
+IDENFR
    : [_a-zA-Z]
    | [_a-zA-Z] [_a-zA-Z0-9]+
    ;
@@ -281,8 +296,6 @@ NormalChar
     | NOT   // 33 感叹号
     | [(-~] // 40-126
     ;
-
-
 
 PLUS
    : '+'

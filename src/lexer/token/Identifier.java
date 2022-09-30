@@ -7,6 +7,6 @@ public class Identifier extends Token
     public Identifier(int line, String content)
     {
         super(line, content);
-        type = TokenType.IDENFR;
+        type = SyntaxType.IDENFR;
     }
 }

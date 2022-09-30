@@ -1,7 +1,7 @@
 import os
 
 test_dir_path = "../testcase/"
-testdirs = ["2022_C"]
+testdirs = ["2022_A", "2022_B", "2022_C", "2021_A", "2021_B", "2021_C"]
 execute_script = "token_execute.sh"
 
 for testdir in testdirs:

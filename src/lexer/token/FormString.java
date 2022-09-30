@@ -8,7 +8,7 @@ public class FormString extends Token
     public FormString(int line, String content)
     {
         super(line, content);
-        type = TokenType.STRCON;
+        type = SyntaxType.STRCON;
     }
 
     public static int consumeFormString(String src, int startIndex)
