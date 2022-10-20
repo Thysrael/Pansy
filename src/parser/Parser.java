@@ -130,7 +130,7 @@ public class Parser
             constDeclNode.addChild(supporter.checkToken(SyntaxType.COMMA));
             constDeclNode.addChild(parseConstDef());
         }
-        assertToken(SyntaxType.SEMICN);
+        constDeclNode.addChild(assertToken(SyntaxType.SEMICN));
 
         addParseLog("ConstDecl");
         return constDeclNode;
@@ -240,7 +240,7 @@ public class Parser
             varDeclNode.addChild(parseVarDef());
         }
 
-        assertToken(SyntaxType.SEMICN);
+        varDeclNode.addChild(assertToken(SyntaxType.SEMICN));
 
         addParseLog("VarDecl");
         return varDeclNode;
