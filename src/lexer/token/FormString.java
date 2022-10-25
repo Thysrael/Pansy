@@ -20,23 +20,10 @@ public class FormString extends Token
             while (endIndex < src.length())
             {
                 char c = src.charAt(endIndex);
+                endIndex++;
                 if (c == '\"')
                 {
-                    endIndex++;
                     return endIndex;
-                }
-                else if (c == 32 || c == 33 || (c >= 40 && c <= 91) || (c >= 93 && c <= 126))
-                {
-                    endIndex++;
-                }
-                else if (endIndex + 1 < src.length() &&
-                        ((c == '%' && src.charAt(endIndex + 1) == 'd') || (c == '\\' && src.charAt(endIndex + 1) == 'n')))
-                {
-                    endIndex++;
-                }
-                else
-                {
-                    return startIndex;
                 }
             }
         }

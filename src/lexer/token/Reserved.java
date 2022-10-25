@@ -22,7 +22,6 @@ public class Reserved extends Token
         contentToType.put("return", SyntaxType.RETURNTK);
         contentToType.put("void", SyntaxType.VOIDTK);
 
-        // 注意这里要按照逆序排列，才能完成匹配
         PATTERN = contentToType.keySet().stream().reduce((s1, s2) -> s1 + "(?![a-zA-Z0-9_])|" + s2).get() + "(?![a-zA-Z0-9_])";
     }
 

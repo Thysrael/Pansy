@@ -1,6 +1,7 @@
 package parser;
 
-import exception.PansyException;
+import check.PansyException;
+import lexer.token.Delimiter;
 import lexer.token.SyntaxType;
 import lexer.token.Token;
 import parser.cst.*;
@@ -32,9 +33,9 @@ public class Parser
             e.printStackTrace();
             System.err.println(e.getType());
             System.exit(1);
-        }
 
-        return null;
+            return null;
+        }
     }
 
     public String display()
@@ -47,7 +48,14 @@ public class Parser
         return stringBuilder.toString();
     }
 
-    public CSTNode assertToken(SyntaxType type)
+    /**
+     * 这个用于包装 checkToken 被包装后，checkToken 异常后不会立即抛出异常终止程序
+     * 而是根据 type 确定是否要抛出程序
+     * @param type token 类型
+     * @return 如果正常，会返回一个节点，即使缺少了一个终结符
+     * @throws PansyException 解析异常
+     */
+    public CSTNode assertToken(SyntaxType type) throws PansyException
     {
         try
         {
@@ -55,8 +63,22 @@ public class Parser
         }
         catch (PansyException e)
         {
-            supporter.getParseErrors().add(e);
-            return null;
+            if (type.equals(SyntaxType.SEMICN))
+            {
+                return new TokenNode(new Delimiter(e.getLine(), ";"), true);
+            }
+            else if (type.equals(SyntaxType.RBRACK))
+            {
+                return new TokenNode(new Delimiter(e.getLine(), "]"), true);
+            }
+            else if (type.equals(SyntaxType.RPARENT))
+            {
+                return new TokenNode(new Delimiter(e.getLine(), ")"), true);
+            }
+            else
+            {
+                throw e;
+            }
         }
     }
 
@@ -536,11 +558,11 @@ public class Parser
     }
 
     /**
-     * AssignStmt
-     *     : LVal ASSIGN Exp SEMICOLON
-     *     ;
-     * @return jj
-     */
+ * AssignStmt
+ *     : LVal ASSIGN Exp SEMICOLON
+ *     ;
+ * @return jj
+ */
     private AssignStmtNode parseAssignStmt() throws PansyException
     {
         AssignStmtNode assignStmtNode = new AssignStmtNode();

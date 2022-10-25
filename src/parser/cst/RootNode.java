@@ -1,9 +1,10 @@
 package parser.cst;
 
+/**
+ * CompUnit
+ *     : (FuncDef | Decl)+
+ *     ;
+ */
 public class RootNode extends CSTNode
 {
-    public RootNode()
-    {
-        this.parent = null;
-    }
 }

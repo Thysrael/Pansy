@@ -1,0 +1,48 @@
+const int a = 2
+
+const int a = 3;
+void a(){}
+const int b1[1 = {1};
+const int b2[1][1 = {{1}};
+
+int c = 2
+
+int c = 3;
+int c(){return 1;}
+
+int d1[1 = {2};
+int d2[1[1 = {{2}};
+
+int e(){return 1;}
+int e(){}
+int e({}
+
+void f(int a){int a = 2;}
+void f(int a, int a){}
+
+void g()
+{
+    if (a < 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return 2;
+    }
+
+    return 3;
+}
+
+int main(
+{
+    a = 5;
+
+    break;
+    while(a < -1){}
+    continue;
+
+    printf("%d\n");
+
+    z = 3;
+}

@@ -1,6 +1,6 @@
 package parser;
 
-import exception.PansyException;
+import check.PansyException;
 import lexer.token.EOFToken;
 import lexer.token.SyntaxType;
 import lexer.token.Token;
@@ -9,6 +9,7 @@ import parser.cst.TokenNode;
 
 import java.util.ArrayList;
 
+import static check.ErrorType.PARSE_ERROR;
 import static lexer.token.SyntaxType.*;
 
 public class ParseSupporter
@@ -215,15 +216,22 @@ public class ParseSupporter
                 lookAhead(0).isSameType(LSS) || lookAhead(0).isSameType(GRE);
     }
 
+    /**
+     * 用于带有检验的移动 token 指针
+     * @param type 预期的 token 类型
+     * @return 一个 TokenNode
+     * @throws PansyException 类型是 PARSE_ERROR，行数是前一个 token 的所在行数
+     */
     public CSTNode checkToken(SyntaxType type) throws PansyException
     {
         Token token = lookAhead(0);
         if (!token.isSameType(type))
         {
-            throw new PansyException(type, token.getLine());
+            throw new PansyException(PARSE_ERROR, lookAhead(-1).getLine());
         }
-
+        // 加入解析
         parseLog.add(token.toString());
+        // 前进 tokens 指针
         advance(1);
         return new TokenNode(token);
     }

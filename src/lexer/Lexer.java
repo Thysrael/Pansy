@@ -1,11 +1,13 @@
 package lexer;
 
-import exception.LexException;
+import check.PansyException;
 import lexer.token.*;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static check.ErrorType.LEX_ERROR;
 
 public class Lexer
 {
@@ -24,37 +26,31 @@ public class Lexer
 
     private final ArrayList<Token> tokens;
 
-    private final ArrayList<LexException> exceptions;
-
     public Lexer(String sourceCode)
     {
         this.sourceCode = sourceCode;
         this.lineCursor = 1;
         this.strCursor = 0;
         this.tokens = new ArrayList<>();
-        this.exceptions = new ArrayList<>();
     }
 
     public ArrayList<Token> run()
     {
         while (!isFileEnd())
         {
-            Token token = getToken();
-
-            // 如果没有解析出来，那么就移动一下
-            if (token == null)
+            try
             {
-                strCursor++;
-                exceptions.add(new LexException(lineCursor));
-            }
-            else
-            {
+                Token token = getToken();
                 strCursor += token.getContent().length();
                 lineCursor += token.getContent().chars().boxed().filter(c -> c == '\n').count();
                 if (!isBlankToken(token))
                 {
                     tokens.add(token);
                 }
+            }
+            catch (PansyException error)
+            {
+                handleUnexpectedErrors(error);
             }
         }
 
@@ -74,7 +70,26 @@ public class Lexer
                 type.equals(SyntaxType.SPACE);
     }
 
-    private Token getToken()
+    /**
+     * 当发生未知的异常的时候，需要打印已经解析出的 tokens，
+     * 然后打印报错原因（虽然只有一个）
+     * 然后打印栈信息
+     * 最后终止程序
+     *
+     * @param error 未知错误
+     */
+    private void handleUnexpectedErrors(PansyException error)
+    {
+        for (Token token : tokens)
+        {
+            System.err.println(token);
+        }
+        System.err.println(error.toErrorInfo());
+        error.printStackTrace();
+        System.exit(1);
+    }
+
+    private Token getToken() throws PansyException
     {
         // 匹配注释
         int endCursor = Comment.consumeMultiComment(sourceCode, strCursor);
@@ -128,8 +143,8 @@ public class Lexer
             return new Delimiter(lineCursor, matcher.group());
         }
 
-        // 失败返回 null
-        return null;
+        // 失败抛出异常
+        throw new PansyException(LEX_ERROR, lineCursor);
     }
 
     public String display()

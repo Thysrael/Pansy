@@ -1,5 +1,6 @@
 package driver;
 
+import check.Checker;
 import lexer.Lexer;
 import lexer.token.Token;
 import parser.Parser;
@@ -39,6 +40,11 @@ public class Driver
         Parser parser = new Parser(tokens);
         CSTNode cstRoot = parser.run();
         parseDisplay(parser);
+
+        Checker checker = new Checker(cstRoot);
+        checker.run();
+        checkDisPlay(checker);
+        // tmpDisPlay(parser,checker);
     }
 
     private void lexDisplay(Lexer lexer)
@@ -63,5 +69,23 @@ public class Driver
         {
             MyIO.output(Config.targetFilePath, parser.display());
         }
+    }
+
+    private void checkDisPlay(Checker checker)
+    {
+        if (Config.checkOutputToCmd)
+        {
+            System.out.println(checker.display());
+        }
+        if (Config.checkOutputToFile)
+        {
+            MyIO.output(Config.errorFilePath, checker.display());
+        }
+    }
+
+    private void tmpDisPlay(Parser parser, Checker checker)
+    {
+        System.out.println(parser.display() + checker.display());
+        MyIO.output(Config.targetFilePath, parser.display() + checker.display());
     }
 }

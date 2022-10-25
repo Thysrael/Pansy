@@ -1,0 +1,8 @@
+void f1(int x, int y, int z){
+
+}
+
+int main() {
+    f1(1);
+    return 0;
+}
