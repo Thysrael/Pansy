@@ -6,7 +6,7 @@ package check;
  * 关于优先级的确定，IntConst 显然是 INT，函数调用要么是 INT，要么是 VOID，LVal 需要查表并且结合其后的索引才能判定
  * 至于其他的 Exp 的 DataType，那么就需要取其子孩子最高的优先级
  */
-public enum DataType
+public enum CheckDataType
 {
     // 无返回值
     VOID,

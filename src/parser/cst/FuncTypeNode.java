@@ -1,11 +1,14 @@
 package parser.cst;
 
-import check.DataType;
+import check.CheckDataType;
+import ir.types.DataType;
+import ir.types.IntType;
+import ir.types.VoidType;
 import lexer.token.SyntaxType;
 
 public class FuncTypeNode extends CSTNode
 {
-    private DataType dataType;
+    private CheckDataType checkDataType;
     @Override
     public void addChild(CSTNode child)
     {
@@ -14,17 +17,35 @@ public class FuncTypeNode extends CSTNode
         {
             if (((TokenNode) child).isSameType(SyntaxType.VOIDTK))
             {
-                dataType = DataType.VOID;
+                checkDataType = CheckDataType.VOID;
             }
             else if (((TokenNode) child).isSameType(SyntaxType.INTTK))
             {
-                dataType = DataType.INT;
+                checkDataType = CheckDataType.INT;
             }
         }
     }
 
+    // TODO 这里的撞车现象好严重，回头改一下
+    public CheckDataType getCheckReturnType()
+    {
+        return checkDataType;
+    }
+
     public DataType getReturnType()
     {
-        return dataType;
+        CSTNode child = children.get(0);
+        if (child instanceof TokenNode)
+        {
+            if (((TokenNode) child).isSameType(SyntaxType.VOIDTK))
+            {
+                return new VoidType();
+            }
+            else if (((TokenNode) child).isSameType(SyntaxType.INTTK))
+            {
+                return new IntType(32);
+            }
+        }
+        return new VoidType();
     }
 }

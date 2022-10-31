@@ -1,0 +1,9 @@
+int defn(){
+    return 4;
+}
+
+int main(){
+    int a = defn();
+    printf("ans is %d\n", a);
+    return a;
+}

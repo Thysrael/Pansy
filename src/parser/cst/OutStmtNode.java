@@ -2,8 +2,15 @@ package parser.cst;
 
 import check.ErrorType;
 import check.PansyException;
+import ir.values.Function;
+import ir.values.GlobalVariable;
+import ir.values.Value;
+import ir.values.constants.ConstInt;
+import ir.values.constants.ConstStr;
+import ir.values.instructions.GetElementPtr;
 import lexer.token.SyntaxType;
 import middle.symbol.SymbolTable;
+import util.MyPrintf;
 
 import java.util.ArrayList;
 
@@ -49,6 +56,33 @@ public class OutStmtNode extends CSTNode
         for (CSTNode child : children)
         {
             child.check(symbolTable);
+        }
+    }
+
+    @Override
+    public void buildIr()
+    {
+        ArrayList<String> strings = MyPrintf.truncString(formString);
+        int argCur = 0;
+        for (String string : strings)
+        {
+            if (string.equals("%d"))
+            {
+                arguments.get(argCur++).buildIr();
+                ArrayList<Value> params = new ArrayList<>();
+                params.add(valueUp);
+                irBuilder.buildCall(curBlock, Function.putint, params);
+            }
+            else
+            {
+                // 全局变量本质是 [len x i8]* 类型
+                GlobalVariable globalStr = irBuilder.buildGlobalStr(new ConstStr(string));
+                // putstr 的参数是一个 i8*，所以用 GEP 降维指针
+                GetElementPtr elementPtr = irBuilder.buildGEP(curBlock, globalStr, ConstInt.ZERO, ConstInt.ZERO);
+                ArrayList<Value> params = new ArrayList<>();
+                params.add(elementPtr);
+                irBuilder.buildCall(curBlock, Function.putstr, params);
+            }
         }
     }
 }

@@ -1,0 +1,9 @@
+// test add
+int main(){
+    int a, b;
+    a = 10;
+    b = -1;
+    // ans is 9
+    printf("ans is %d\n", a + b);
+    return a + b;
+}

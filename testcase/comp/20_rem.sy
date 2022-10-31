@@ -1,0 +1,7 @@
+//test rem
+int main(){
+    int a;
+    a = 10;
+    printf("%d\n", a % 3);
+    return a % 3;
+}

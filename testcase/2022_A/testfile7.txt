@@ -1,6 +1,6 @@
 int a = 100;
 const int n = 10;
-const int arr[10] = {666, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int arr[10] = {666, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int one[1] = {1}; 
 const int two[1][1] = {{2}};
 int sum, ave;
@@ -77,7 +77,7 @@ int main() {
     
     printf("const %d var %d glob %d\n", m, tik, sum);
     
-    const int ca[2] = {arr[0], arr[1]}; 
+    int ca[2] = {arr[0], arr[1]}; 
     printf("%d\n", (-arr[0] - -arr[1]));
 
     printf("this is end\n");

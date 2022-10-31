@@ -64,8 +64,8 @@ int f_final(int n) {
 }
 
 void printAns(int n, int x[]) {     // test address
-    int i = 0;
-    while (i < n) {
+    int i = 1;
+    while (i <= n) {
         printf("%d ", f_final(x[i]));
         i = i + 1;
     }
@@ -85,7 +85,7 @@ int main() {
             i = i + 1;
         }
     }
-    printAns(n, num + 1);
+    printAns(n, num);
     int maxx = num[n];
     maxx = maxx + 5 - + - +((num[n] * 2 / 99 + num[1] * num[n] % MOD) - 1);
     printf("\ntestExp: %d\n", maxx);

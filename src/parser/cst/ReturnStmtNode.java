@@ -2,7 +2,8 @@ package parser.cst;
 
 import check.ErrorType;
 import check.PansyException;
-import check.DataType;
+import check.CheckDataType;
+import ir.values.BasicBlock;
 import middle.symbol.SymbolTable;
 
 /**
@@ -12,6 +13,18 @@ import middle.symbol.SymbolTable;
  */
 public class ReturnStmtNode extends CSTNode
 {
+    private ExpNode exp = null;
+
+    @Override
+    public void addChild(CSTNode child)
+    {
+        super.addChild(child);
+        if (child instanceof ExpNode)
+        {
+            exp = (ExpNode) child;
+        }
+    }
+
     /**
      * 无返回值的函数存在错误的返回值，也就是 return 后有 exp
      * @param symbolTable 符号表
@@ -22,7 +35,7 @@ public class ReturnStmtNode extends CSTNode
         addCheckLog();
 
         TokenNode tokenNode = ((TokenNode) children.get(0));
-        if (curFuncInfo.getReturnType().equals(DataType.VOID))
+        if (curFuncInfo.getReturnType().equals(CheckDataType.VOID))
         {
             if (children.size() > 2)
             {
@@ -33,6 +46,22 @@ public class ReturnStmtNode extends CSTNode
         for (CSTNode child : children)
         {
             child.check(symbolTable);
+        }
+    }
+
+    @Override
+    public void buildIr()
+    {
+        if (exp != null)
+        {
+            exp.buildIr();
+            irBuilder.buildRet(curBlock, valueUp);
+            curBlock = new BasicBlock();
+        }
+        else
+        {
+            irBuilder.buildRet(curBlock);
+            curBlock = new BasicBlock();
         }
     }
 }

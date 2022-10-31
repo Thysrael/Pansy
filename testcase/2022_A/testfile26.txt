@@ -12,7 +12,7 @@ void vector_mult(int ans[], int v[]) {
 
 
 void matrix_mult(int ans[][2], int x[][2]) {
-    int z[2] = {FIB_M[0][1], FIB_M[0][2]};
+    int z[2] = {FIB_M[0][1], FIB_M[0][0]};
     ans[0][0] = x[0][0] * FIB_M[0][0] + x[0][1] * FIB_M[1][0];;
     ans[0][1] = x[0][0] * FIB_M[0][1] + x[0][1] * FIB_M[1][1];;;;;
     ans[1][0] = x[1][0] * FIB_M[0][0] + x[1][1] * FIB_M[1][0];;

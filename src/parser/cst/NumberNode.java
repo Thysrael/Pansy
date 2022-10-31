@@ -1,7 +1,7 @@
 package parser.cst;
 
-import check.DataType;
-import lexer.token.IntConst;
+import check.CheckDataType;
+import ir.values.constants.ConstInt;
 import middle.symbol.SymbolTable;
 
 public class NumberNode extends CSTNode
@@ -39,8 +39,21 @@ public class NumberNode extends CSTNode
     }
 
     @Override
-    public DataType getDataType(SymbolTable symbolTable)
+    public CheckDataType getDataType(SymbolTable symbolTable)
     {
-        return DataType.INT;
+        return CheckDataType.INT;
+    }
+
+    @Override
+    public void buildIr()
+    {
+        if (canCalValueDown)
+        {
+            valueIntUp = num;
+        }
+        else
+        {
+            valueUp = new ConstInt(num);
+        }
     }
 }

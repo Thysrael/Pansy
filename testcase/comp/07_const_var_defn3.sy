@@ -1,0 +1,6 @@
+//test const local var define
+int main(){
+    const int a = 10, b = 5;
+    printf("a = %d, b = %d\n", a, b);
+    return b;
+}

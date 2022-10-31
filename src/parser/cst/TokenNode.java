@@ -106,4 +106,9 @@ public class TokenNode extends CSTNode
     {
         return token.isSameType(type);
     }
+
+    public Token getToken()
+    {
+        return token;
+    }
 }

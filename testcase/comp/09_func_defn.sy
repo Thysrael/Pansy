@@ -1,0 +1,13 @@
+int a;
+int func(int p){
+	p = p - 1;
+	return p;
+}
+int main(){
+	int b;
+	a = 10;
+	b = func(a);
+	// ans is 9
+	printf("ans is %d\n", b);
+	return b;
+}

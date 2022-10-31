@@ -81,7 +81,7 @@ int main()
     j = 0;
     if(op==1){
         y = sub(y,a[op]); 
-        y = y%y/y*y+op;
+        //y = y%y/y*y+op;
     }
     if(a[4]>1){
         doit(x,y,a[j]);

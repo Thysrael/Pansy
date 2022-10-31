@@ -1,4 +1,4 @@
-.PHONY: build run clean
+.PHONY: build run clean ir
 
 build:
 	./autojar.sh
@@ -8,3 +8,6 @@ clean:
 
 run:
 	python ./walk.py
+
+ir:
+	./irc.sh

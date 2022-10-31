@@ -1,10 +1,13 @@
 package driver;
 
 import check.Checker;
+import ir.IrBuilder;
+import ir.values.Module;
 import lexer.Lexer;
 import lexer.token.Token;
 import parser.Parser;
 import parser.cst.CSTNode;
+import pass.PassManager;
 import util.MyIO;
 
 import java.util.ArrayList;
@@ -44,7 +47,11 @@ public class Driver
         Checker checker = new Checker(cstRoot);
         checker.run();
         checkDisPlay(checker);
-        // tmpDisPlay(parser,checker);
+
+        IrBuilder.getInstance().buildModule(cstRoot);
+        PassManager passManager = new PassManager();
+        passManager.run();
+        IrBuildDisPlay();
     }
 
     private void lexDisplay(Lexer lexer)
@@ -87,5 +94,17 @@ public class Driver
     {
         System.out.println(parser.display() + checker.display());
         MyIO.output(Config.targetFilePath, parser.display() + checker.display());
+    }
+
+    private void IrBuildDisPlay()
+    {
+        if (Config.irBuildOutputToCmd)
+        {
+            System.out.println(Module.getInstance());
+        }
+        if (Config.irBuildOutputToFile)
+        {
+            MyIO.output(Config.irFilePath, Module.getInstance().toString());
+        }
     }
 }

@@ -1,0 +1,8 @@
+//test subc
+int main(){
+    int a;
+    a = 10;
+    // ans is 8
+    printf("ans is %d\n", a - 2);
+    return a - 2;
+}

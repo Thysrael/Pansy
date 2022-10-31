@@ -1,0 +1,7 @@
+//test addc
+const int a = 10;
+int main(){
+    // ans is 15
+    printf("ans is %d\n", a + 5);
+    return a + 5;
+}

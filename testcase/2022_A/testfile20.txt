@@ -128,7 +128,7 @@ int main(){
 		usee = usee + 1;
 	}
 	int i=0; int j=0;
-	while(i<5){
+	while(i<3){
 		a1[i]=a1[i]+1;
 		i=i+1; 
 	}
@@ -140,7 +140,7 @@ int main(){
 		}
 		i=i+1;
 	} 
-	sumshuzu(a1,4);
+	sumshuzu(a1,2);
 	sumshuzu1(b1);
 	printf("20373460\n");
 	printf("%d\n",m1);

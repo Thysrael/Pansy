@@ -13,3 +13,6 @@ zip:
 
 run:
 	cd ./auto/ && $(MAKE) run
+
+ir:
+	cd ./auto && $(MAKE) ir

@@ -2,6 +2,7 @@ package parser.cst;
 
 import check.ErrorType;
 import check.PansyException;
+import ir.values.BasicBlock;
 import middle.symbol.SymbolTable;
 
 /**
@@ -31,5 +32,13 @@ public class ContinueStmtNode extends CSTNode
         {
             child.check(symbolTable);
         }
+    }
+
+    @Override
+    public void buildIr()
+    {
+        irBuilder.buildBr(curBlock, loopCondBlockDown.peek());
+        // 这里只用于占位，从此之后，continue 后的语句都会被登记到一个不知道是啥的 block 上去
+        curBlock = new BasicBlock();
     }
 }

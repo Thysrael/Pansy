@@ -1,6 +1,6 @@
 package middle.symbol;
 
-import check.DataType;
+import check.CheckDataType;
 import parser.cst.FuncDefNode;
 import parser.cst.MainFuncDefNode;
 import parser.cst.TokenNode;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class FuncInfo extends SymbolInfo
 {
     private final String name;
-    private DataType dataType;
+    private CheckDataType checkDataType;
 
     private final ArrayList<VarInfo> parameters;
     public FuncInfo(FuncDefNode ctx)
@@ -26,14 +26,14 @@ public class FuncInfo extends SymbolInfo
         this.parameters = new ArrayList<>();
     }
 
-    public void setReturnType(DataType dataType)
+    public void setReturnType(CheckDataType checkDataType)
     {
-        this.dataType = dataType;
+        this.checkDataType = checkDataType;
     }
 
-    public DataType getReturnType()
+    public CheckDataType getReturnType()
     {
-        return dataType;
+        return checkDataType;
     }
 
     public void addParameter(VarInfo parameter)
@@ -49,6 +49,6 @@ public class FuncInfo extends SymbolInfo
     @Override
     public String toString()
     {
-        return name + " " + dataType + " " + parameters;
+        return name + " " + checkDataType + " " + parameters;
     }
 }

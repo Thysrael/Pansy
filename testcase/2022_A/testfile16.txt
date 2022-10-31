@@ -87,9 +87,9 @@ void func3(int a[][3]) {
             return; ; ;  ; ;;;
         } 
         else {
+            i = i +1;
             continue;
         }
-        i = i +1;
     }
 }
 

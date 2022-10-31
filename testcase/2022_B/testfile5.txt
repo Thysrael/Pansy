@@ -49,7 +49,7 @@ int main() {
     printf("tab2[1]\n");
     printArr(tab2[1],10);
 
-    addArr(tab1,tab2,10);
+    addArr(tab1,tab2,9);
     printf("added tab1\n");
     printArr(tab1,10);
 

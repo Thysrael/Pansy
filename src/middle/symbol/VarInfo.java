@@ -1,6 +1,6 @@
 package middle.symbol;
 
-import check.DataType;
+import check.CheckDataType;
 import parser.cst.*;
 
 import java.util.ArrayList;
@@ -51,19 +51,19 @@ public class VarInfo extends SymbolInfo
         }
     }
 
-    public DataType getDataType()
+    public CheckDataType getDataType()
     {
         if (dim1 == NumberNode.ZERO && dim2 == NumberNode.ZERO)
         {
-            return DataType.INT;
+            return CheckDataType.INT;
         }
         else if (dim2 == NumberNode.ZERO)
         {
-            return DataType.DIM1;
+            return CheckDataType.DIM1;
         }
         else
         {
-            return DataType.DIM2;
+            return CheckDataType.DIM2;
         }
     }
 }

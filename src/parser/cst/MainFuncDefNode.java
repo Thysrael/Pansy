@@ -1,14 +1,39 @@
 package parser.cst;
 
-import check.DataType;
+import check.CheckDataType;
 import check.ErrorType;
 import check.PansyException;
+import ir.types.DataType;
+import ir.types.FunctionType;
+import ir.types.IntType;
+import ir.values.BasicBlock;
+import ir.values.constants.ConstInt;
+import ir.values.instructions.Br;
+import ir.values.instructions.Instruction;
+import ir.values.instructions.Ret;
 import middle.symbol.SymbolTable;
 
 import java.util.ArrayList;
 
+/**
+ * MainFuncDef
+ *      : INT_TK MAIN_TK L_PAREN R_PAREN Block
+ *      ;
+ */
 public class MainFuncDefNode extends CSTNode
 {
+    private BlockNode block = null;
+
+    @Override
+    public void addChild(CSTNode child)
+    {
+        super.addChild(child);
+        if (child instanceof BlockNode)
+        {
+            block = (BlockNode) child;
+        }
+    }
+
     @Override
     public void check(SymbolTable symbolTable)
     {
@@ -28,8 +53,8 @@ public class MainFuncDefNode extends CSTNode
         {
             curFuncInfo = symbolTable.getFuncInfo(name);
             // 填写返回类型
-            DataType dataType = DataType.INT;
-            curFuncInfo.setReturnType(dataType);
+            CheckDataType checkDataType = CheckDataType.INT;
+            curFuncInfo.setReturnType(checkDataType);
 
             // 有返回值的函数缺少 return 语句
             BlockNode blockNode = (BlockNode) children.get(children.size() - 1);
@@ -67,5 +92,41 @@ public class MainFuncDefNode extends CSTNode
             child.check(symbolTable);
         }
         symbolTable.removeFuncLayer();
+    }
+
+    @Override
+    public void buildIr()
+    {
+        // get function name
+        String funcName = "main";
+        // get function return type
+        DataType returnType = new IntType(32);
+        // get function params information
+        // 此处这是 buildFunc，但是为了 SSA 特性，之后还需要再次遍历 funcFParams 来为形参分配空间
+        ArrayList<DataType> argsType = new ArrayList<>();
+
+        // build function object
+        curFunc = irBuilder.buildFunction(funcName, new FunctionType(argsType, returnType));
+        // add to symbol table
+        irSymbolTable.addValue(funcName, curFunc);
+        // 在 entryBlock 加入函数的形参
+        BasicBlock entryBlock = irBuilder.buildBlock(curFunc);
+        // 进入一个函数，就会加一层
+        irSymbolTable.pushFuncLayer();
+        // visit block and create basic blocks
+        // 将函数的形参放到 block 中，将对 Function 的 arg 的初始化 delay 到 visit(ctx.block)
+        curBlock = entryBlock;
+        // 建立函数体
+        block.buildIr();
+
+        // 在解析完了函数后，开始处理善后工作
+        // 如果没有默认的 return 语句
+        Instruction tailInstr = curBlock.getTailInstr();
+        // 结尾没有指令或者指令不是跳转指令，null 指令被包含了
+        if (!(tailInstr instanceof Ret || tailInstr instanceof Br))
+        {
+            irBuilder.buildRet(curBlock, ConstInt.ZERO);
+        }
+        irSymbolTable.popFuncLayer();
     }
 }

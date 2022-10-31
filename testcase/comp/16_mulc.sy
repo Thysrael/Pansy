@@ -1,0 +1,6 @@
+//test mulc
+const int a = 5;
+int main(){
+    printf("ans is %d\n", a * 5);
+    return a * 5;
+}

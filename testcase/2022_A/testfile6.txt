@@ -73,7 +73,7 @@ int main(){
 	int func2[2] = {1,2};
 	int func3[2] = {1,2};
 	int vararray2[2][2] = {{0,1},{2,3}}; 
-	vararray2[2][2] = 4;
+	vararray2[1][1] = 4;
 	int vararray21[2][2]= {{0,1},{2,3}},vararray213[2][2]= {{0,1},{2,3}};
 	int vararray31231[2] = {1,2},vararray212[2] = {1,2};
 	var4 = var1 * var2;
@@ -142,7 +142,7 @@ int main(){
 	printf("%d\n",var1);
 	printf("%d\n",var2);
 	printf("%d\n",var3);
-	printf("%d\n",vararray2[2][2]);
-	printf("%d\n",vararray2[2][1]);
+	printf("%d\n",vararray2[1][1]);
+	printf("%d\n",vararray2[1][0]);
 	return 0;
 }

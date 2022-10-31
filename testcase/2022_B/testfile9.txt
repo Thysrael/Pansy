@@ -38,7 +38,7 @@ int getint() {
 // just a function
 int fun_1() {
 	va_row2[1] = va_row3[2] - 3;
-	va_row1[3] = row_2[1] * 3;
+	va_row1[2] = row_2[1] * 3;
 	va_row2_0[2][1] = row2_3[1][1];
 	return va_row2_0[2][1];
 }

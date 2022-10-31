@@ -1,7 +1,7 @@
 
 int u = 3 % 3, v = 6, s = 9;
 int dim_2[3][3];
-const int array[2][2] = {{1, 2}, {2, 4}};
+int array[2][2] = {{1, 2}, {2, 4}};
 
 int add_three(int a, int arr[], int b)
 {
@@ -54,7 +54,7 @@ int main()
     }
     else if (1 || !ONE)
     {
-        if (var_array < 99)
+        if (var_array[0]+99 < 99)
         {
             var_array[1] = 99 / add();
         }
@@ -82,7 +82,7 @@ int main()
     */
     while (1)
     {
-        if (var_array[i] == 2 && var_array > 0)
+        if (var_array[i] == 2 && var_array[0] > 0)
         {
             printf("%d\n", var_array[i]);
         }
@@ -94,7 +94,7 @@ int main()
         }
         printf("xxxx\n");
         i = i + 1;
-        if (-var_array[i] >= 0 || var_array <= 0 && 1)
+        if (-var_array[i] >= 0 || var_array[0] <= 0 && 1)
         {
             var_array[i] = var_array[i] * 3;
             break;

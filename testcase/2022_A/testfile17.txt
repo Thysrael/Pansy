@@ -102,7 +102,7 @@ int main() {
      * 394ncr7e9ioj
      */
     int _0 = 10;
-    int main = 0, Main = 1;
+    int _main = 0, Main = 1;
     ___2_0_3_7_3_3_8_1___X___J___h_____ = getint();
     _for___ = getint();
     _Int = getint();
@@ -112,7 +112,7 @@ int main() {
         Main = Main + 1;
         ;
         ;
-        main = main + 1332;
+        _main = _main + 1332;
     }
     if (_for___ > 200)
         Main = Main + 1;
@@ -181,10 +181,10 @@ int main() {
     __(_23879, 3432);
     printf("temp: %d\n", temp);
     printf("%d %d %d %d %d %d %d %d %d %d\n%d %d %d %d %d %d %d %d %d %d\n%d %d %d %d %d %d %d %d %d %d\n%d %d %d %d %d %d %d %d %d %d\n",
-           __my_Ha_s__h(array, 12), sum, 1, _3, _2, _10, aaa[0], aaa[1],A[0][0], A[0][1],
+           __my_Ha_s__h(array, 12), sum, 1, _3, _2, _10, aaa[0], aaa[1], A[0][0], A[0][1],
            A[0][2], A[1][0], A[1][1], A[1][2], A[2][0], A[2][1], A[2][2], A[3][0], A[3][1], A[3][2],
            _3cg, hdc33ec_dyu, cdh3yi_23, duhih2_23c, dijhw[0][0], dijhw[0][1], dijhw[1][0], dijhw[1][1], dijhw[2][0], dijhw[2][1],
-           cdwuh[0], cdwuh[1], wuei, jdfo_, _M__a_G_I___c(__my_Ha_s__h(cdwuh, 2)), __my_Ha_s__h(_3u22[0], 2), main, _0, a10086__, __array[0][2]);
+           cdwuh[0], cdwuh[1], wuei, jdfo_, _M__a_G_I___c(__my_Ha_s__h(cdwuh, 2)), __my_Ha_s__h(_3u22[0], 2), _main, _0, a10086__, __array[0][2]);
     ____(Main);
     return 0;
 }

@@ -1,6 +1,7 @@
 package parser.cst;
 
-import middle.symbol.SymbolTable;
+
+import java.util.ArrayList;
 
 /**
  * FuncRParams
@@ -9,9 +10,19 @@ import middle.symbol.SymbolTable;
  */
 public class FuncRParamsNode extends CSTNode
 {
+    private final ArrayList<ExpNode> exps = new ArrayList<>();
     @Override
-    public void check(SymbolTable symbolTable)
+    public void addChild(CSTNode child)
     {
-        super.check(symbolTable);
+        super.addChild(child);
+        if (child instanceof ExpNode)
+        {
+            exps.add((ExpNode) child);
+        }
+    }
+
+    public ArrayList<ExpNode> getParams()
+    {
+        return exps;
     }
 }

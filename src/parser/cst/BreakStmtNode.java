@@ -2,6 +2,7 @@ package parser.cst;
 
 import check.ErrorType;
 import check.PansyException;
+import ir.values.BasicBlock;
 import middle.symbol.SymbolTable;
 
 /**
@@ -31,5 +32,12 @@ public class BreakStmtNode extends CSTNode
         {
             child.check(symbolTable);
         }
+    }
+
+    @Override
+    public void buildIr()
+    {
+        irBuilder.buildBr(curBlock, loopNextBlockDown.peek());
+        curBlock = new BasicBlock();
     }
 }

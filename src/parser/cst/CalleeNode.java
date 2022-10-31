@@ -1,8 +1,12 @@
 package parser.cst;
 
-import check.DataType;
+import check.CheckDataType;
 import check.ErrorType;
 import check.PansyException;
+import ir.types.DataType;
+import ir.types.IntType;
+import ir.values.Function;
+import ir.values.Value;
 import middle.symbol.FuncInfo;
 import middle.symbol.SymbolTable;
 import middle.symbol.VarInfo;
@@ -16,12 +20,22 @@ import java.util.ArrayList;
  */
 public class CalleeNode extends CSTNode
 {
+    private TokenNode ident = null;
+    private FuncRParamsNode funcRParams = null;
     private final ArrayList<ExpNode> arguments = new ArrayList<>();
 
     @Override
     public void addChild(CSTNode child)
     {
         super.addChild(child);
+        if (children.size() == 1)
+        {
+            ident = (TokenNode) child;
+        }
+        else if (child instanceof FuncRParamsNode)
+        {
+            funcRParams = (FuncRParamsNode) child;
+        }
     }
 
     /**
@@ -65,8 +79,6 @@ public class CalleeNode extends CSTNode
                 {
                     VarInfo parameter = parameters.get(i);
                     CSTNode argument = arguments.get(i);
-                    // System.out.println(parameter.getDataType());
-                    // System.out.println(argument.getDataType(symbolTable));
                     if (!parameter.getDataType().equals(argument.getDataType(symbolTable)))
                     {
                         errors.add(new PansyException(ErrorType.ARG_TYPE_MISMATCH, identNode.getLine()));
@@ -99,7 +111,7 @@ public class CalleeNode extends CSTNode
      * @return 函数的数据类型就是返回类型，不过似乎没有啥用
      */
     @Override
-    public DataType getDataType(SymbolTable symbolTable)
+    public CheckDataType getDataType(SymbolTable symbolTable)
     {
         String callFuncName = getCallFuncName();
 
@@ -110,7 +122,33 @@ public class CalleeNode extends CSTNode
         }
         catch (PansyException e)
         {
-            return DataType.VOID;
+            return CheckDataType.VOID;
         }
+    }
+
+    @Override
+    public void buildIr()
+    {
+        // 找到函数
+        Function func = (Function) irSymbolTable.find(ident.getContent());
+        // 实参表
+        ArrayList<Value> paramList = new ArrayList<>();
+
+        if (funcRParams != null)
+        {
+            ArrayList<ExpNode> params = funcRParams.getParams();
+            ArrayList<DataType> formalArgs = func.getValueType().getFormalArgs();
+
+            for (int i = 0; i <params.size(); i++)
+            {
+                ExpNode param = params.get(i);
+                DataType argType = formalArgs.get(i);
+                paramDontNeedLoadDown = !(argType instanceof IntType);
+                param.buildIr();
+                paramDontNeedLoadDown = false;
+                paramList.add(valueUp);
+            }
+        }
+        valueUp = irBuilder.buildCall(curBlock, func, paramList);
     }
 }

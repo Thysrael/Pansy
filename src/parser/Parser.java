@@ -875,7 +875,7 @@ public class Parser
     /**
      * RelExp
      *     : AddExp (RelOp AddExp)*
-     *     ; // eliminate left-recursive
+     *     ;
      * RelOp
      *     : LT
      *     | GT
@@ -931,7 +931,7 @@ public class Parser
     /**
      * MulExp
      *     : UnaryExp (MulOp UnaryExp)*
-     *     ; // eliminate left-recursive
+     *     ;
      * MulOp
      *     : MUL
      *     | DIV

@@ -1,0 +1,9 @@
+//test sub
+const int a = 10;
+int main(){
+    int b;
+    b = 2;
+    // ans is -8
+    printf("ans is %d\n", b - a);
+    return b - a;
+}
