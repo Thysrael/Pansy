@@ -2,7 +2,9 @@ package ir.values;
 
 import ir.types.PointerType;
 import ir.types.ValueType;
+import ir.values.constants.ConstStr;
 import ir.values.constants.Constant;
+import ir.values.constants.ZeroInitializer;
 
 /**
  * 全局简单变量与全局数组
@@ -16,20 +18,6 @@ import ir.values.constants.Constant;
 public class GlobalVariable extends User
 {
     private final boolean isConst;
-    private final boolean isInit;
-
-    /**
-     * 对于没有初始值的全局变量（一定不会是常量，因为常量一定有初始值），采用 0 初始值
-     * @param name 标识符
-     * @param valueType 类型
-     */
-    public GlobalVariable(String name, ValueType valueType)
-    {
-        // 全局变量本质上是一个指针，所以才有了
-        super("@" + name, new PointerType(valueType), Module.getInstance(), Constant.getZeroConstant(valueType));
-        isInit = false;
-        isConst = false;
-    }
 
     /**
      * 初始化
@@ -40,8 +28,15 @@ public class GlobalVariable extends User
     public GlobalVariable(String name, Constant initVal, boolean isConst)
     {
         super("@" + name, new PointerType(initVal.getValueType()), Module.getInstance(), initVal);
-        isInit = true;
         this.isConst = isConst;
+    }
+
+    /**
+     * @return 初始化 Constant
+     */
+    public Constant getInitVal()
+    {
+        return (Constant) getUsedValue(0);
     }
 
     @Override

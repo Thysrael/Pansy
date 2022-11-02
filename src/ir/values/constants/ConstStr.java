@@ -25,6 +25,15 @@ public class ConstStr extends Constant
     }
 
     /**
+     * 在这个部分，要把 llvm ir 习惯的 \0a 换成 MARS 习惯的 \n
+     * @return 字符串内容
+     */
+    public String getContent()
+    {
+        return content.replace("\\0a", "\\n");
+    }
+
+    /**
      * 这里 llvm 中字符串的标准写法
      * @return 输出
      */

@@ -106,4 +106,12 @@ public abstract class User extends Value
     {
         return operands.size();
     }
+
+    public void dropAllOperands()
+    {
+        for (Value operand : operands)
+        {
+            operand.dropUser(this);
+        }
+    }
 }

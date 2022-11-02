@@ -44,13 +44,23 @@ public class Function extends Value
         }
     }
 
+    public boolean isBuiltin()
+    {
+        return isBuiltin;
+    }
+
+    public MyList<BasicBlock> getBasicBlocks()
+    {
+        return blocks;
+    }
+
     /**
      * 非常有意思的处理，一部分的信息被转移到了 type 中去，而 Value 实体只保留一小部分信息
      * @return 参数个数
      */
     public int getNumArgs()
     {
-        return ((FunctionType) getValueType()).getFormalArgs().size();
+        return getValueType().getFormalArgs().size();
     }
 
     /**

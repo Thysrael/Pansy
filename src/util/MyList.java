@@ -187,7 +187,7 @@ public class MyList<T> implements Iterable<MyList.MyNode<T>>
             }
         }
 
-        //insert my self after prev node
+        // insert my self after prev node
         public void insertAfter(MyNode<T> pre)
         {
             this.parent = pre.parent;

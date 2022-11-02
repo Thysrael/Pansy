@@ -19,6 +19,11 @@ public class Zext extends Instruction
         super("%" + nameNum, new IntType(32), parent, value);
     }
 
+    public Value getSrc()
+    {
+        return getUsedValue(0);
+    }
+
     @Override
     public String toString()
     {

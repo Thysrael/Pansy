@@ -6,6 +6,8 @@ import ir.types.ValueType;
 import ir.values.BasicBlock;
 import ir.values.Value;
 
+import java.util.ArrayList;
+
 /**
  * 我们规定getelemtnptr只寻址一次，因此只有2个操作数——基址与下标，分别存放在values数组的 0，1号位
  * eg:
@@ -58,6 +60,29 @@ public class GetElementPtr extends MemInstruction
         super("%" + nameNum, new PointerType(((ArrayType) ((PointerType) base.getValueType()).getPointeeType()).getElementType()),
                 parent, base, firstIndex, secondIndex);
         this.baseType = ((PointerType) base.getValueType()).getPointeeType();
+    }
+
+    public Value getBase()
+    {
+        return getUsedValue(0);
+    }
+
+    public ValueType getBaseType()
+    {
+        return baseType;
+    }
+
+    /**
+     * @return 下标列表，包含1个或2个下标
+     */
+    public ArrayList<Value> getOffset()
+    {
+        ArrayList<Value> result = new ArrayList<>();
+        for (int i = 1; i < getNumOps(); i++)
+        {
+            result.add(getUsedValue(i));
+        }
+        return result;
     }
 
     @Override

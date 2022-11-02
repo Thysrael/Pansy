@@ -49,4 +49,10 @@ public abstract class Instruction extends User
     {
         return node;
     }
+
+    public void eraseFromParent()
+    {
+        getParent().eraseInstruction(this);
+        node = null;
+    }
 }

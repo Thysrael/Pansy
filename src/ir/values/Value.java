@@ -81,6 +81,10 @@ public abstract class Value
         this.name = "%" + nameNum;
     }
 
+    public ArrayList<User> getUsers()
+    {
+        return users;
+    }
     /**
      * 解除与 user 的使用关系，即不再被 user 使用
      * @param user 使用者
@@ -92,6 +96,22 @@ public abstract class Value
             throw new AssertionError(getId() + " drop nonexistent user: " + user + " " + user.getId());
         }
         users.remove(user);
+    }
+
+    public void replaceAllUsesWith(Value replacement)
+    {
+        for (User user : users)
+        {
+            for (int i = 0; i < user.getNumOps(); i++)
+            {
+                if (user.getUsedValue(i) == this)
+                {
+                    user.setUsedValue(i, replacement);
+                    replacement.addUser(user);
+                }
+            }
+        }
+        users.clear();
     }
 
     @Override

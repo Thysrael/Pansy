@@ -8,7 +8,7 @@ public class ZeroInitializer extends Constant
 
     public ZeroInitializer(ArrayType arrayType)
     {
-        super( arrayType);
+        super(arrayType);
         length = arrayType.getElementNum();
     }
 

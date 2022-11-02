@@ -4,6 +4,8 @@ import ir.types.VoidType;
 import ir.values.BasicBlock;
 import ir.values.Value;
 
+import java.util.ArrayList;
+
 
 public class Br extends TerInstruction
 {
@@ -51,6 +53,25 @@ public class Br extends TerInstruction
     public boolean hasCondition()
     {
         return hasCondition;
+    }
+
+    /**
+     * @return 指令的全部操作数，使用前需要用hasCondition()判定是否为有条件跳转
+     */
+    public ArrayList<Value> getOps()
+    {
+        ArrayList<Value> result = new ArrayList<>();
+        if (hasCondition)
+        {
+            result.add(getUsedValue(0));
+            result.add(getUsedValue(1));
+            result.add(getUsedValue(2));
+        }
+        else
+        {
+            result.add(getUsedValue(0));
+        }
+        return result;
     }
 
     /**

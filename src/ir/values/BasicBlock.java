@@ -48,6 +48,11 @@ public class BasicBlock extends Value
         return (Function) super.getParent();
     }
 
+    public HashSet<BasicBlock> getPredecessors()
+    {
+        return predecessors;
+    }
+
     public void insertTail(Instruction instruction)
     {
         if (findNode(instruction) != null)
@@ -159,6 +164,12 @@ public class BasicBlock extends Value
             }
         }
         return startNameNum;
+    }
+
+    // TODO
+    public int getLoopDepth()
+    {
+        return 1;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package driver;
 
+import back.Backend;
 import check.Checker;
 import ir.IrBuilder;
 import ir.values.Module;
@@ -44,14 +45,22 @@ public class Driver
         CSTNode cstRoot = parser.run();
         parseDisplay(parser);
 
-        Checker checker = new Checker(cstRoot);
-        checker.run();
-        checkDisPlay(checker);
+        if (Config.openCheck)
+        {
+            Checker checker = new Checker(cstRoot);
+            checker.run();
+            checkDisPlay(checker);
+        }
+        else
+        {
+            IrBuilder.getInstance().buildModule(cstRoot);
+            PassManager passManager = new PassManager();
+            passManager.run();
+            irBuildDisplay();
 
-        IrBuilder.getInstance().buildModule(cstRoot);
-        PassManager passManager = new PassManager();
-        passManager.run();
-        IrBuildDisPlay();
+            Backend backend = new Backend();
+            mipsDisplay(backend);
+        }
     }
 
     private void lexDisplay(Lexer lexer)
@@ -96,7 +105,7 @@ public class Driver
         MyIO.output(Config.targetFilePath, parser.display() + checker.display());
     }
 
-    private void IrBuildDisPlay()
+    private void irBuildDisplay()
     {
         if (Config.irBuildOutputToCmd)
         {
@@ -105,6 +114,18 @@ public class Driver
         if (Config.irBuildOutputToFile)
         {
             MyIO.output(Config.irFilePath, Module.getInstance().toString());
+        }
+    }
+
+    private void mipsDisplay(Backend backend)
+    {
+        if (Config.mipsOutputToCmd)
+        {
+            System.out.println(backend.display());
+        }
+        if (Config.mipsOutputToFile)
+        {
+            MyIO.output(Config.mipsFilePath, backend.display());
         }
     }
 }
