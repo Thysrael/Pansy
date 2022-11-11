@@ -19,7 +19,6 @@ public class RootNode extends CSTNode
     @Override
     public void buildIr()
     {
-
         ArrayList<DataType> printfArgs = new ArrayList<>();
         printfArgs.add(new PointerType(new IntType(8)));
         Function.putstr = irBuilder.buildFunction("putstr", new FunctionType(printfArgs, new VoidType()), true);

@@ -1,7 +1,5 @@
 package parser.cst;
 
-import middle.symbol.SymbolTable;
-
 /**
  * Decl
  *     : ConstDecl

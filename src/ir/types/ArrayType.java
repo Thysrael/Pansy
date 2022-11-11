@@ -93,7 +93,7 @@ public class ArrayType extends ValueType
     }
 
     /**
-     * @return 数组的维度信息，例如int a[1][2][3][4]返回的dims数组为{1，2，3，4}
+     * @return 数组的维度信息，例如int a[1][2][3][4] 返回的 dims 数组为 {1，2，3，4}
      */
     public ArrayList<Integer> getDims()
     {

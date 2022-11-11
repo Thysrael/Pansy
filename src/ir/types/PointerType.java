@@ -3,9 +3,8 @@ package ir.types;
 /**
  * 指针类型，可以指向：
  * IntegerType
- * FPType
  * ArrayType
- * PointerType，很不幸，我们需要的llvm ir中最多有二重指针
+ * PointerType，很不幸，我们需要的 llvm ir 中最多有二重指针
  */
 public class PointerType extends DataType
 {
