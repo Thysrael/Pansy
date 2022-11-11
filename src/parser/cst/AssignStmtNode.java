@@ -6,7 +6,6 @@ import ir.values.Value;
 import check.SymbolInfo;
 import check.SymbolTable;
 
-import java.util.ArrayList;
 
 /**
  * AssignStmt
@@ -17,7 +16,6 @@ public class AssignStmtNode extends CSTNode
 {
     private LValNode lVal;
     private ExpNode exp;
-    private final ArrayList<TokenNode> tokens = new ArrayList<>();
     @Override
     public void addChild(CSTNode child)
     {
@@ -29,10 +27,6 @@ public class AssignStmtNode extends CSTNode
         else if (child instanceof ExpNode)
         {
             exp = (ExpNode) child;
-        }
-        else
-        {
-            tokens.add((TokenNode) child);
         }
     }
 
@@ -56,14 +50,18 @@ public class AssignStmtNode extends CSTNode
                 errors.add(new PansyException(ErrorType.CHANGE_CONST, identNode.getLine()));
             }
         }
+        // 没有定义 lVal
         catch (PansyException e)
         {
             errors.add(new PansyException(e.getType(), identNode.getLine()));
         }
-        // 检测是否缺分号和右中括号
-        for (TokenNode token : tokens)
+
+        // 之前是对于 token 的检测，我想了想，这是十分危险的，这会导致某些节点无法被访问到
+        // 其实 buildIr 也有这个问题，但是因为 buildIr 是死的，而 check 还要适应考试新增的错误
+        // 所以还是这样为好
+        for (CSTNode child : children)
         {
-            token.check(symbolTable);
+            child.check(symbolTable);
         }
     }
 

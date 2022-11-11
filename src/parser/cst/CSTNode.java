@@ -34,10 +34,6 @@ public abstract class CSTNode
      * 是否在循环中
      */
     protected static int inLoop = 0;
-    /**
-     * 是否在写 LVal
-     */
-    protected static boolean isWriteLVal = false;
 
     /*================================ 中间代码转换 ================================*/
     /**
@@ -166,6 +162,6 @@ public abstract class CSTNode
         {
             sb.append(child).append(" ");
         }
-        return sb.toString();
+        return sb.substring(0, sb.length() - 1);
     }
 }

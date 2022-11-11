@@ -47,6 +47,7 @@ public class LOrExpNode extends CSTNode
     @Override
     public void buildIr()
     {
+        // TODO 突然意识到，break 后接 if 可能导致新的块又被造了出来，这些指令都是没有用的，不过似乎影响不大，起码基本块的性质保证了
         for (int i = 0; i < lAndExps.size() - 1; i++)
         {
             LAndExpNode lAndExp = lAndExps.get(i);

@@ -24,12 +24,12 @@ public class ConstDefNode extends CSTNode
 {
     private TokenNode ident;
     private final ArrayList<ConstExpNode> constExps = new ArrayList<>();
-    private final ArrayList<TokenNode> delimiters = new ArrayList<>();
     private ConstInitValNode constInitVal;
     /**
      * 用于记录数组的维数，比如说 a[1][2] 的 dims 就是 {1, 2}
      */
     private final ArrayList<Integer> dims = new ArrayList<>();
+
     @Override
     public void addChild(CSTNode child)
     {
@@ -41,10 +41,6 @@ public class ConstDefNode extends CSTNode
         if (child instanceof ConstExpNode)
         {
             constExps.add((ConstExpNode) child);
-        }
-        if (child instanceof TokenNode && ((TokenNode) child).getToken() instanceof Delimiter)
-        {
-            delimiters.add((TokenNode) child);
         }
         if (child instanceof ConstInitValNode)
         {
@@ -64,12 +60,10 @@ public class ConstDefNode extends CSTNode
     {
         addCheckLog();
 
-        TokenNode identNode = ((TokenNode) children.get(0));
-
         // 标识符命名重复
-        if (symbolTable.isSymbolRedefined(identNode.getContent()))
+        if (symbolTable.isSymbolRedefined(ident.getContent()))
         {
-            errors.add(new PansyException(ErrorType.REDEFINED_SYMBOL, identNode.getLine()));
+            errors.add(new PansyException(ErrorType.REDEFINED_SYMBOL, ident.getLine()));
         }
         // 缺失右中括号
         for (CSTNode child : children)
@@ -79,6 +73,7 @@ public class ConstDefNode extends CSTNode
         // 加入常量的定义，更新符号表
         symbolTable.addConst(this);
     }
+
     private void genConstArray()
     {
         // 解析维数 exp，然后存到 dim 中

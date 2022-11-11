@@ -32,6 +32,12 @@ public class PrimaryExpNode extends CSTNode
         }
     }
 
+    /**
+     * 如果是可以计算的，那么忽视这一层即可
+     * 如果是不可计算的，那么大概率有两种情况
+     * (Exp)，那么就直接继续递归即可
+     * lVal，那么需要在这里完成加载（将指针指向的内容搞出来）
+     */
     @Override
     public void buildIr()
     {
@@ -56,7 +62,7 @@ public class PrimaryExpNode extends CSTNode
                 else
                 {
                     lVal.buildIr();
-                    // 如果左值是一个 int 常量，那么就处理完了？
+                    // 如果左值是一个 int 常量，那么就不用加载了
                     // 现在这种情况，说明是个指针，指针一般说明是局部变量，那么此时需要加载了
                     if (!(valueUp.getValueType() instanceof IntType))
                     {

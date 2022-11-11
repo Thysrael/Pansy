@@ -12,7 +12,6 @@ import ir.values.constants.Constant;
 import ir.values.constants.ZeroInitializer;
 import ir.values.instructions.Alloca;
 import ir.values.instructions.GetElementPtr;
-import lexer.token.Delimiter;
 import check.SymbolTable;
 
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ public class VarDefNode extends CSTNode
 {
     private TokenNode ident;
     private final ArrayList<ConstExpNode> constExps = new ArrayList<>();
-    private final ArrayList<TokenNode> delimiters = new ArrayList<>();
     private InitValNode initVal = null;
     /**
      * 用于记录数组的维数，比如说 a[1][2] 的 dims 就是 {1, 2}
@@ -45,10 +43,6 @@ public class VarDefNode extends CSTNode
         {
             constExps.add((ConstExpNode) child);
         }
-        if (child instanceof TokenNode && ((TokenNode) child).getToken() instanceof Delimiter)
-        {
-            delimiters.add((TokenNode) child);
-        }
         if (child instanceof InitValNode)
         {
             initVal = (InitValNode) child;
@@ -65,12 +59,10 @@ public class VarDefNode extends CSTNode
     @Override
     public void check(SymbolTable symbolTable)
     {
-        TokenNode identNode = ((TokenNode) children.get(0));
-
         // 标识符命名重复
-        if (symbolTable.isSymbolRedefined(identNode.getContent()))
+        if (symbolTable.isSymbolRedefined(ident.getContent()))
         {
-            errors.add(new PansyException(ErrorType.REDEFINED_SYMBOL, identNode.getLine()));
+            errors.add(new PansyException(ErrorType.REDEFINED_SYMBOL, ident.getLine()));
         }
         // 更新符号表
         symbolTable.addVar(this);

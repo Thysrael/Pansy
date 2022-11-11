@@ -135,4 +135,10 @@ public class VarInfo extends SymbolInfo
     {
         return !isConst;
     }
+
+    @Override
+    public String toString()
+    {
+        return getCheckDataType() + " " + name;
+    }
 }

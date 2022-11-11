@@ -29,4 +29,16 @@ public class RootNode extends CSTNode
 
         children.forEach(CSTNode::buildIr);
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (CSTNode child : children)
+        {
+            sb.append(child).append("\n");
+        }
+
+        return sb.toString();
+    }
 }

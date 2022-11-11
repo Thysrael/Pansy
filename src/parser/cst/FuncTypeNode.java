@@ -26,7 +26,6 @@ public class FuncTypeNode extends CSTNode
         }
     }
 
-    // TODO 这里的撞车现象好严重，回头改一下
     public CheckDataType getCheckReturnType()
     {
         return checkDataType;

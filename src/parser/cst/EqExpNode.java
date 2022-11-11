@@ -34,6 +34,9 @@ public class EqExpNode extends CSTNode
         }
     }
 
+    /**
+     * 用 Icmp 将指令连缀起来
+     */
     @Override
     public void buildIr()
     {

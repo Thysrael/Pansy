@@ -27,6 +27,10 @@ public class ConditionStmtNode extends CSTNode
         }
     }
 
+    /**
+     * 从这里开始的一系列东西，会出现 setBlock 的操作，只是因为为了满足短路求值
+     * 所以在条件表达式中，会被拆成多个 BasicBlock，设置他们的目的是为了保证一开始和最后的块的正确性
+     */
     @Override
     public void buildIr()
     {

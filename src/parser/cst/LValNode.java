@@ -38,7 +38,8 @@ public class LValNode extends CSTNode
     }
 
     /**
-     * 需要检测左值是否是一个常量
+     * 只有未定义和缺少中括号两种错误，左值常量被修改的问题在 InStmt 和 AssignStmt 中被处理
+     * 未定义的错误会反复出现，这也是需要 TreeSet 的原因
      * @param symbolTable 符号表
      */
     @Override
@@ -141,7 +142,19 @@ public class LValNode extends CSTNode
     }
 
     /**
-     * 左值是直接返回指针的，而不是返回指针指向的内容，应当由更高层次的语法树决定是否加载
+     * 左值是直接返回指针的，而不是返回指针指向的内容，
+     * 应当由更高层次的语法树（PrimaryExpNode）决定是否加载
+     * 左值指向的内容有 3 种类型：
+     * 整型：十分显然
+     * 指针：
+     * 至于为什么会有这么个东西，可以这样举例，比如说 f(int a[])
+     * 当我们对 a 进行 buildIr 的时候，a 的类型是 i32*
+     * 然后我们为了 SSA（主要是为了整型形参，指针形参属于受害者） ，所以在函数一开始做了一个 alloca-store 操作
+     * 那么在之后，我们看 a，就变成了一个 (i32*)*，也就是 lVal 指向一个指针的情况
+     * 对于这种情况，我们首先用 load 将其指针去掉一层，目前 a 的类型就和 C 语言一致了，所以对他的一维访存，就是 GEP一个 index
+     * 对于二维访存，就是 GEP 两个 index
+     * 数组：
+     * 后面有写
      */
     @Override
     public void buildIr()
@@ -198,14 +211,16 @@ public class LValNode extends CSTNode
             // 是一个局部数组或者全局数组
             else if (isArray)
             {
-//                Value ptr = irBuilder.buildGEP(curBlock, lVal, ConstInt.ZERO, ConstInt.ZERO);
                 Value ptr = lVal;
                 for (ExpNode exp : exps)
                 {
                     exp.buildIr();
                     ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, valueUp);
                 }
-                // TODO 合理性在哪里？
+                // 当一个数组符号经过了中括号的运算后，依然指向一个数组，那么说明这个 lVal 一定是指针实参
+                // 否则如果整型实参，这里一定指向的是 INT，但是由于 llvm ir 的数组的指针是高一级的，比如说
+                // int a[2] 在 C 中，a 是指向 int 的指针，而在 llvm ir 中是指向 2 x int 的指针，所以要降级
+                // 至于为啥要降级，是因为在 llvm ir 和 C 中，f(int a[]) 这种写法的 a 都是 “指向 int 的指针”
                 if (((PointerType) ptr.getValueType()).getPointeeType() instanceof ArrayType)
                 {
                     ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, ConstInt.ZERO);

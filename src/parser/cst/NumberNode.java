@@ -29,9 +29,7 @@ public class NumberNode extends CSTNode
     }
 
     public NumberNode()
-    {
-
-    }
+    {}
 
     public NumberNode(int num)
     {

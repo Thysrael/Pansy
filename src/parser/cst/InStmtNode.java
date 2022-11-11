@@ -1,5 +1,8 @@
 package parser.cst;
 
+import check.ErrorType;
+import check.PansyException;
+import check.SymbolInfo;
 import ir.values.Function;
 import ir.values.Value;
 import ir.values.instructions.Call;
@@ -26,17 +29,36 @@ public class InStmtNode extends CSTNode
         }
     }
 
+    /**
+     * 基本上和 assign 的检测一模一样
+     * 都是检测 lVal 是否是常量
+     * @param symbolTable 符号表
+     */
     @Override
     public void check(SymbolTable symbolTable)
     {
         addCheckLog();
 
-        isWriteLVal = true;
+        TokenNode identNode = (TokenNode) lVal.getChildren().get(0);
+        try
+        {
+            SymbolInfo symbolInfo = symbolTable.getSymbolInfo(identNode.getContent());
+            // 如果修改了常量，那么就要报错
+            if (symbolInfo.isConst())
+            {
+                errors.add(new PansyException(ErrorType.CHANGE_CONST, identNode.getLine()));
+            }
+        }
+        // 没有定义 lVal
+        catch (PansyException e)
+        {
+            errors.add(new PansyException(e.getType(), identNode.getLine()));
+        }
+
         for (CSTNode child : children)
         {
             child.check(symbolTable);
         }
-        isWriteLVal = false;
     }
 
     @Override

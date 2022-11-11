@@ -103,7 +103,7 @@ public class MulExpNode extends CSTNode
                         {
                             product = irBuilder.buildSrem(curBlock, product, multer);
                         }
-                        // TODO 这里为啥
+                        // TODO 这里为啥，确实是已一件很难看懂的事情，考虑改掉，或者测试一下
                         else if (num < 0)
                         {
                             Sdiv a = irBuilder.buildSdiv(curBlock, product, multer);

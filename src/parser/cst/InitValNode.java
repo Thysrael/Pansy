@@ -40,7 +40,6 @@ public class InitValNode extends CSTNode
      * 对于单变量初始值，通过 valueUp 返回，
      * 对于数组初始值，通过 valueArrayUp 返回
      * 之所以无法像 ConstInit 都用 valueUp 返回，是因为对于变量初始值，没有一个 ConstArray 这样的结构打包
-     * TODO 做一个测试
      */
     @Override
     public void buildIr()

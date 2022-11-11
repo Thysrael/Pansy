@@ -159,7 +159,11 @@ public class SymbolTable
         StringBuilder s = new StringBuilder();
         for (HashMap<String, SymbolInfo> layer : symbolTable)
         {
-            s.append(layer).append("\n");
+            for (SymbolInfo symbolInfo : layer.values())
+            {
+                s.append(symbolInfo).append("\n");
+            }
+            s.append("====================================");
         }
         return s.toString();
     }

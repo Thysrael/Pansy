@@ -33,8 +33,9 @@ public class ReturnStmtNode extends CSTNode
     public void check(SymbolTable symbolTable)
     {
         addCheckLog();
-
+        // 这个是 return_token 因为报错需要行号
         TokenNode tokenNode = ((TokenNode) children.get(0));
+        // 当前函数的类型是 void
         if (curFuncInfo.getReturnType().equals(CheckDataType.VOID))
         {
             if (children.size() > 2)
@@ -49,6 +50,9 @@ public class ReturnStmtNode extends CSTNode
         }
     }
 
+    /**
+     * 这里也有一个和 Break 类似的操作，不知道合不合理
+     */
     @Override
     public void buildIr()
     {
@@ -56,12 +60,11 @@ public class ReturnStmtNode extends CSTNode
         {
             exp.buildIr();
             irBuilder.buildRet(curBlock, valueUp);
-            curBlock = new BasicBlock();
         }
         else
         {
             irBuilder.buildRet(curBlock);
-            curBlock = new BasicBlock();
         }
+        curBlock = new BasicBlock();
     }
 }

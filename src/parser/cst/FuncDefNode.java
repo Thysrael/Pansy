@@ -60,13 +60,12 @@ public class FuncDefNode extends CSTNode
     public void check(SymbolTable symbolTable)
     {
         addCheckLog();
-        TokenNode identNode = ((TokenNode) children.get(1));
 
-        String name = identNode.getContent();
+        String name = ident.getContent();
         // 如果名字重定义
         if (symbolTable.isSymbolRedefined(name))
         {
-            errors.add(new PansyException(ErrorType.REDEFINED_SYMBOL, identNode.getLine()));
+            errors.add(new PansyException(ErrorType.REDEFINED_SYMBOL, ident.getLine()));
         }
         // 加入符号表
         symbolTable.addFunc(this);
@@ -76,16 +75,14 @@ public class FuncDefNode extends CSTNode
         {
             curFuncInfo = symbolTable.getFuncInfo(name);
 
-            FuncTypeNode funcTypeNode = (FuncTypeNode) children.get(0);
             // 填写返回类型
-            CheckDataType checkDataType = funcTypeNode.getCheckReturnType();
-            curFuncInfo.setReturnType(checkDataType);
+            CheckDataType returnType = funcType.getCheckReturnType();
+            curFuncInfo.setReturnType(returnType);
 
             // 有返回值的函数缺少 return 语句
-            if (checkDataType.equals(CheckDataType.INT))
+            if (returnType.equals(CheckDataType.INT))
             {
-                BlockNode blockNode = (BlockNode) children.get(children.size() - 1);
-                ArrayList<CSTNode> blockChildren = blockNode.getChildren();
+                ArrayList<CSTNode> blockChildren = block.getChildren();
                 // 这个是大括号节点
                 TokenNode tailNode = (TokenNode) blockChildren.get(blockChildren.size() - 1);
                 // 这节点可能是 return
@@ -93,6 +90,7 @@ public class FuncDefNode extends CSTNode
                 // 更加可能了
                 try
                 {
+                    // Block -> BlockItem -> Stmt -> returnStmt，要经过很多步骤
                     CSTNode stmtNode = blockItemNode.getChildren().get(0);
                     CSTNode returnNode = stmtNode.getChildren().get(0);
                     if (!(returnNode instanceof ReturnStmtNode))
@@ -110,8 +108,9 @@ public class FuncDefNode extends CSTNode
         // 这里是处理获得 FuncInfo 错误的，应该不会有这个错误
         catch (PansyException e)
         {
-            errors.add(new PansyException(e.getType(), identNode.getLine()));
+            errors.add(new PansyException(e.getType(), ident.getLine()));
         }
+
         // 这里需要加一层
         symbolTable.addFuncLayer();
         for (CSTNode child : children)

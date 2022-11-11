@@ -86,18 +86,11 @@ public class CalleeNode extends CSTNode
         {
             errors.add(new PansyException(e.getType(), ident.getLine()));
         }
-
+        // 主要是为了检测右小括号缺失
         for (CSTNode child : children)
         {
             child.check(symbolTable);
         }
-    }
-
-    private String getCallFuncName()
-    {
-        TokenNode identNode = ((TokenNode) children.get(0));
-
-        return identNode.getContent();
     }
 
     /**
@@ -108,8 +101,7 @@ public class CalleeNode extends CSTNode
     @Override
     public CheckDataType getDataType(SymbolTable symbolTable)
     {
-        String callFuncName = getCallFuncName();
-
+        String callFuncName = ident.getContent();
         try
         {
             FuncInfo funcInfo = symbolTable.getFuncInfo(callFuncName);
@@ -121,14 +113,18 @@ public class CalleeNode extends CSTNode
         }
     }
 
+    /**
+     * 将实参都解析出来，然后调用
+     * 在解析实参的时候，需要搭配形参信息，来确定实参是否加载
+     */
     @Override
     public void buildIr()
     {
         // 找到函数
         Function func = (Function) irSymbolTable.find(ident.getContent());
         // 实参表
-        ArrayList<Value> paramList = new ArrayList<>();
-
+        ArrayList<Value> argList = new ArrayList<>();
+        // 如果有实参
         if (funcRParams != null)
         {
             ArrayList<ExpNode> params = funcRParams.getParams();
@@ -138,12 +134,13 @@ public class CalleeNode extends CSTNode
             {
                 ExpNode param = params.get(i);
                 DataType argType = formalArgs.get(i);
+                // 如果传参的是一个指针，那么就不需要加载
                 paramDontNeedLoadDown = !(argType instanceof IntType);
                 param.buildIr();
                 paramDontNeedLoadDown = false;
-                paramList.add(valueUp);
+                argList.add(valueUp);
             }
         }
-        valueUp = irBuilder.buildCall(curBlock, func, paramList);
+        valueUp = irBuilder.buildCall(curBlock, func, argList);
     }
 }

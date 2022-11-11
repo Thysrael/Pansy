@@ -19,7 +19,7 @@ public class FuncInfo extends SymbolInfo
 
     /**
      * 构造普通函数
-     * 不过这里不加入
+     * 不过这里不加入参数
      * @param ctx 函数定义
      */
     public FuncInfo(FuncDefNode ctx)
@@ -29,6 +29,10 @@ public class FuncInfo extends SymbolInfo
         this.parameters = new ArrayList<>();
     }
 
+    /**
+     * 构造主函数
+     * @param ctx 主函数定义
+     */
     public FuncInfo(MainFuncDefNode ctx)
     {
         this.name = "main";
@@ -58,6 +62,12 @@ public class FuncInfo extends SymbolInfo
     @Override
     public String toString()
     {
-        return name + " " + returnType + " " + parameters;
+        StringBuilder sb = new StringBuilder();
+        sb.append(returnType).append(" ").append(name).append("(");
+        for (VarInfo parameter : parameters)
+        {
+            sb.append(parameter).append(", ");
+        }
+        return sb.substring(0, sb.length() - 2) + ")";
     }
 }
