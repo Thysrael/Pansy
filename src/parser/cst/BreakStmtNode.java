@@ -3,7 +3,7 @@ package parser.cst;
 import check.ErrorType;
 import check.PansyException;
 import ir.values.BasicBlock;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 /**
  * BreakStmt
@@ -34,6 +34,10 @@ public class BreakStmtNode extends CSTNode
         }
     }
 
+    /**
+     * 首先先做一个跳转，来跳到 loop 的下一块
+     * 然后，新作了一个块，用于使 break 后面的指令依附其上，然后失效
+     */
     @Override
     public void buildIr()
     {

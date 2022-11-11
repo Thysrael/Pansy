@@ -11,7 +11,7 @@ import ir.values.constants.ConstInt;
 import ir.values.instructions.Br;
 import ir.values.instructions.Instruction;
 import ir.values.instructions.Ret;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 

@@ -9,8 +9,8 @@ import ir.types.DataType;
 import ir.values.BasicBlock;
 import ir.values.Function;
 import ir.values.Value;
-import middle.symbol.FuncInfo;
-import middle.symbol.SymbolTable;
+import check.FuncInfo;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -79,7 +79,6 @@ public abstract class CSTNode
     protected static boolean globalInitDown = false;
     /**
      * 继承属性：说明当前表达式可求值，进而可以说明此时的返回值是 valueIntUp
-     * TODO: 这里其实是存在可优化空间的，只靠这个变量，只能指示出 1 + 2 + 3 这种表达式，但是对于 1 + 2 + a 就会照常翻译
      */
     protected static boolean canCalValueDown = false;
     /**
@@ -117,6 +116,10 @@ public abstract class CSTNode
         checkLog.add("[" + this.getClass() + "]");
     }
 
+    /**
+     * 最基础的检测方法，就是检测让每个子节点进行检测
+     * @param symbolTable 符号表
+     */
     public void check(SymbolTable symbolTable)
     {
         addCheckLog();
@@ -153,5 +156,16 @@ public abstract class CSTNode
     public void buildIr()
     {
         children.forEach(CSTNode::buildIr);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (CSTNode child : children)
+        {
+            sb.append(child).append(" ");
+        }
+        return sb.toString();
     }
 }

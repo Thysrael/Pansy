@@ -1,8 +1,6 @@
 package parser.cst;
 
-import check.CheckDataType;
-import check.ErrorType;
-import check.PansyException;
+import check.*;
 import ir.types.ArrayType;
 import ir.types.IntType;
 import ir.types.PointerType;
@@ -10,7 +8,6 @@ import ir.values.Value;
 import ir.values.constants.ConstInt;
 import ir.values.instructions.Load;
 import lexer.token.SyntaxType;
-import middle.symbol.*;
 
 import java.util.ArrayList;
 
@@ -71,24 +68,22 @@ public class LValNode extends CSTNode
         }
     }
 
+    /**
+     * 左值的类型信息需要进行指针运算才可以得到
+     * @param symbolTable 符号表
+     * @return 左值的类型
+     */
     @Override
     public CheckDataType getDataType(SymbolTable symbolTable)
     {
-        TokenNode identNode = (TokenNode) children.get(0);
-
         try
         {
-            SymbolInfo symbolInfo = symbolTable.getSymbolInfo(identNode.getContent());
-            // 如果左值是一个常量
-            if (symbolInfo instanceof ConstInfo)
+            SymbolInfo symbolInfo = symbolTable.getSymbolInfo(ident.getContent());
+            // 其实这个是必然的，只有 Var （广义）才可以当左值
+            if (symbolInfo instanceof VarInfo)
             {
-                CheckDataType rawType = ((ConstInfo) symbolInfo).getDataType();
-                return calcDataType(rawType);
-            }
-            // 如果左值是一个变量
-            else if (symbolInfo instanceof VarInfo)
-            {
-                CheckDataType rawType = ((VarInfo) symbolInfo).getDataType();
+                // 这里只是获得了符号的维度，还需要与后面的中括号进行指针运算
+                CheckDataType rawType = ((VarInfo) symbolInfo).getCheckDataType();
                 return calcDataType(rawType);
             }
 
@@ -101,6 +96,11 @@ public class LValNode extends CSTNode
         }
     }
 
+    /**
+     * 进行指针运算，获得左值真正的类型信息
+     * @param rawType 符号表示的类型信息
+     * @return 实际类型信息
+     */
     private CheckDataType calcDataType(CheckDataType rawType)
     {
         int calDim = exps.size();

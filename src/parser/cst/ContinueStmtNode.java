@@ -3,7 +3,7 @@ package parser.cst;
 import check.ErrorType;
 import check.PansyException;
 import ir.values.BasicBlock;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 /**
  * ContinueStmt

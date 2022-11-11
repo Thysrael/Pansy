@@ -7,9 +7,9 @@ import ir.types.DataType;
 import ir.types.IntType;
 import ir.values.Function;
 import ir.values.Value;
-import middle.symbol.FuncInfo;
-import middle.symbol.SymbolTable;
-import middle.symbol.VarInfo;
+import check.FuncInfo;
+import check.SymbolTable;
+import check.VarInfo;
 
 import java.util.ArrayList;
 
@@ -49,39 +49,34 @@ public class CalleeNode extends CSTNode
     {
         addCheckLog();
 
-        TokenNode identNode = ((TokenNode) children.get(0));
-        String ident = identNode.getContent();
+        String funcName = ident.getContent();
 
         // 获得实参表
-        if (children.get(2) instanceof FuncRParamsNode)
+        if (funcRParams != null)
         {
-            ArrayList<CSTNode> tmp = children.get(2).getChildren();
-            for (CSTNode cstNode : tmp)
-            {
-                if (cstNode instanceof ExpNode)
-                {
-                    arguments.add((ExpNode) cstNode);
-                }
-            }
+            arguments.addAll(funcRParams.getParams());
         }
 
         try
         {
-            FuncInfo funcInfo = symbolTable.getFuncInfo(ident);
+            // 获得函数信息
+            FuncInfo funcInfo = symbolTable.getFuncInfo(funcName);
             ArrayList<VarInfo> parameters = funcInfo.getParameters();
+            // 参数的个数不匹配
             if (parameters.size() != arguments.size())
             {
-                errors.add(new PansyException(ErrorType.ARG_NUM_MISMATCH, identNode.getLine()));
+                errors.add(new PansyException(ErrorType.ARG_NUM_MISMATCH, ident.getLine()));
             }
             else
             {
+                // 比较函数的类型
                 for (int i = 0; i < arguments.size(); i++)
                 {
                     VarInfo parameter = parameters.get(i);
                     CSTNode argument = arguments.get(i);
-                    if (!parameter.getDataType().equals(argument.getDataType(symbolTable)))
+                    if (!parameter.getCheckDataType().equals(argument.getDataType(symbolTable)))
                     {
-                        errors.add(new PansyException(ErrorType.ARG_TYPE_MISMATCH, identNode.getLine()));
+                        errors.add(new PansyException(ErrorType.ARG_TYPE_MISMATCH, ident.getLine()));
                     }
                 }
             }
@@ -89,7 +84,7 @@ public class CalleeNode extends CSTNode
         // 未定义的报错
         catch (PansyException e)
         {
-            errors.add(new PansyException(e.getType(), identNode.getLine()));
+            errors.add(new PansyException(e.getType(), ident.getLine()));
         }
 
         for (CSTNode child : children)

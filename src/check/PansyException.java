@@ -36,6 +36,11 @@ public class PansyException extends Exception
         return "at line " + line + " occur " + type;
     }
 
+    /**
+     * 这里为了错误输出时按照顺序输出，所以需要比较所在行的大小
+     * @param other 另一个 exception
+     * @return 行数比较
+     */
     public int compareTo(PansyException other)
     {
         return line - other.line;

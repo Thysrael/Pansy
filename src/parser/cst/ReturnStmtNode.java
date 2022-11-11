@@ -4,7 +4,7 @@ import check.ErrorType;
 import check.PansyException;
 import check.CheckDataType;
 import ir.values.BasicBlock;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 /**
  * ReturnStmt

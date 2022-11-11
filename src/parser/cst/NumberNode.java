@@ -2,7 +2,7 @@ package parser.cst;
 
 import check.CheckDataType;
 import ir.values.constants.ConstInt;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 public class NumberNode extends CSTNode
 {

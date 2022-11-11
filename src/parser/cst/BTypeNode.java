@@ -1,7 +1,5 @@
 package parser.cst;
 
-import check.PansyException;
-
 /**
  * BType
  *     : INT_KW

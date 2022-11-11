@@ -4,7 +4,7 @@ import check.ErrorType;
 import check.PansyException;
 import lexer.token.SyntaxType;
 import lexer.token.Token;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 
 import static check.ErrorType.ILLEGAL_SYMBOL;
@@ -110,5 +110,11 @@ public class TokenNode extends CSTNode
     public Token getToken()
     {
         return token;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getContent();
     }
 }

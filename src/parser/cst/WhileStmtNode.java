@@ -1,7 +1,7 @@
 package parser.cst;
 
 import ir.values.BasicBlock;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 /**
  * WhileStmt

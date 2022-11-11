@@ -11,7 +11,7 @@ import ir.values.constants.Constant;
 import ir.values.instructions.Alloca;
 import ir.values.instructions.GetElementPtr;
 import lexer.token.Delimiter;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 

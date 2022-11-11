@@ -9,7 +9,7 @@ import ir.values.constants.ConstInt;
 import ir.values.constants.ConstStr;
 import ir.values.instructions.GetElementPtr;
 import lexer.token.SyntaxType;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 import util.MyPrintf;
 
 import java.util.ArrayList;

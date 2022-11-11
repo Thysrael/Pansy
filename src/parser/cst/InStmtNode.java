@@ -3,7 +3,7 @@ package parser.cst;
 import ir.values.Function;
 import ir.values.Value;
 import ir.values.instructions.Call;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 

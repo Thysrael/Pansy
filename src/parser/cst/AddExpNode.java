@@ -32,6 +32,12 @@ public class AddExpNode extends CSTNode
         }
     }
 
+    /**
+     * 分为两种：
+     * 第一种是可以直接计算类型的，那么就需要在这里进行加减法计算
+     * 第二种不可以直接计算，那么就需要在这里添加 add, sub 的指令
+     * 对于 1 + (1 == 0) 的式子，虽然应该不会出现，但是我依然写了，对于 (1 == 0)，需要用 zext 拓展后参与运算
+     */
     @Override
     public void buildIr()
     {

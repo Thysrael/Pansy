@@ -1,6 +1,5 @@
-package middle.symbol;
+package check;
 
-import check.PansyException;
 import parser.cst.*;
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class SymbolTable
         TokenNode identNode = (TokenNode) ctx.getChildren().get(0);
         String ident = identNode.getContent();
         HashMap<String, SymbolInfo> top = getTableTop();
-        top.put(ident, new ConstInfo(ctx));
+        top.put(ident, new VarInfo(ctx));
     }
 
     public void addVar(VarDefNode ctx)
@@ -162,7 +161,6 @@ public class SymbolTable
         {
             s.append(layer).append("\n");
         }
-
         return s.toString();
     }
 }

@@ -1,7 +1,6 @@
 package check;
 
 
-import middle.symbol.SymbolTable;
 import parser.cst.CSTNode;
 
 import java.util.ArrayList;
@@ -22,6 +21,9 @@ public class Checker
      * 用来存储检测日志
      */
     public static final ArrayList<String> checkLog = new ArrayList<>();
+    /**
+     * 这里将错误类型映射成字母，如果新增添数据类型，那么就需要在这里处理
+     */
     private static final HashMap<ErrorType, String> errorMap = new HashMap<>();
 
     static
@@ -84,10 +86,6 @@ public class Checker
         {
             s.append(error.getLine()).append(" ").append(errorMap.get(error.getType())).append("\n");
         }
-//        for (PansyException error : errors)
-//        {
-//            s.append(error.getLine()).append(" ").append(errorMap.get(error.getType())).append("\n");
-//        }
         return s.toString();
     }
 }

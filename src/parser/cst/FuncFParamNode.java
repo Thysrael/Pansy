@@ -7,8 +7,8 @@ import ir.types.IntType;
 import ir.types.PointerType;
 import ir.types.ValueType;
 import lexer.token.SyntaxType;
-import middle.symbol.SymbolTable;
-import middle.symbol.VarInfo;
+import check.SymbolTable;
+import check.VarInfo;
 
 import java.util.ArrayList;
 

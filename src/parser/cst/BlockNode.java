@@ -1,6 +1,6 @@
 package parser.cst;
 
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,7 @@ public class BlockNode extends CSTNode
     }
 
     /**
+     * 需要为符号表增加一层
      * @param symbolTable 符号表
      */
     @Override
@@ -39,11 +40,35 @@ public class BlockNode extends CSTNode
         symbolTable.removeBlockLayer();
     }
 
+    /**
+     * 增加一层符号表，然后在 build 完后 pop
+     */
     @Override
     public void buildIr()
     {
         irSymbolTable.pushBlockLayer();
         blockItems.forEach(CSTNode::buildIr);
         irSymbolTable.popBlockLayer();
+    }
+
+    /**
+     * 每一项都需要换行
+     * blockItem 需要 \t 增加缩进
+     * @return block string
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (CSTNode child : children)
+        {
+            if (!(child instanceof TokenNode))
+            {
+                sb.append("\t");
+            }
+            sb.append(child).append("\n");
+        }
+
+        return sb.toString();
     }
 }

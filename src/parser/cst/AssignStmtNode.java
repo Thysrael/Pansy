@@ -3,9 +3,8 @@ package parser.cst;
 import check.ErrorType;
 import check.PansyException;
 import ir.values.Value;
-import middle.symbol.ConstInfo;
-import middle.symbol.SymbolInfo;
-import middle.symbol.SymbolTable;
+import check.SymbolInfo;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 
@@ -37,16 +36,22 @@ public class AssignStmtNode extends CSTNode
         }
     }
 
+    /**
+     * 改变常量值
+     * 符号未定义
+     * 缺符号
+     * @param symbolTable 符号表
+     */
     @Override
     public void check(SymbolTable symbolTable)
     {
         addCheckLog();
-        LValNode lValNode = (LValNode) children.get(0);
-        TokenNode identNode = (TokenNode) lValNode.getChildren().get(0);
+        TokenNode identNode = (TokenNode) lVal.getChildren().get(0);
         try
         {
             SymbolInfo symbolInfo = symbolTable.getSymbolInfo(identNode.getContent());
-            if (symbolInfo instanceof ConstInfo)
+            // 如果修改了常量，那么就要报错
+            if (symbolInfo.isConst())
             {
                 errors.add(new PansyException(ErrorType.CHANGE_CONST, identNode.getLine()));
             }
@@ -55,12 +60,17 @@ public class AssignStmtNode extends CSTNode
         {
             errors.add(new PansyException(e.getType(), identNode.getLine()));
         }
-        for (CSTNode child : children)
+        // 检测是否缺分号和右中括号
+        for (TokenNode token : tokens)
         {
-            child.check(symbolTable);
+            token.check(symbolTable);
         }
     }
 
+    /**
+     * lVal build 后是一个指针，所以只需要 build lVal，然后 build exp
+     * 最用用以 store 将二者联系在一起即可
+     */
     @Override
     public void buildIr()
     {

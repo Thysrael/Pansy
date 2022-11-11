@@ -4,7 +4,6 @@ import check.ErrorType;
 import check.PansyException;
 import ir.types.ArrayType;
 import ir.types.IntType;
-import ir.values.Function;
 import ir.values.GlobalVariable;
 import ir.values.Value;
 import ir.values.constants.ConstArray;
@@ -14,10 +13,9 @@ import ir.values.constants.ZeroInitializer;
 import ir.values.instructions.Alloca;
 import ir.values.instructions.GetElementPtr;
 import lexer.token.Delimiter;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * VarDef

@@ -12,7 +12,7 @@ import ir.values.instructions.Br;
 import ir.values.instructions.Instruction;
 import ir.values.instructions.Ret;
 import lexer.token.SyntaxType;
-import middle.symbol.SymbolTable;
+import check.SymbolTable;
 
 import java.util.ArrayList;
 
