@@ -3,7 +3,6 @@ package back.component;
 import back.instruction.ObjBranch;
 import back.instruction.ObjCondType;
 import back.instruction.ObjInstr;
-import back.instruction.ObjMove;
 import back.operand.ObjImm;
 import back.operand.ObjPhyReg;
 import back.operand.ObjReg;
@@ -41,7 +40,7 @@ public class ObjFunction
     /**
      * 这是该函数需要使用栈上的参数的时候使用到的 mov 指令，来控制 offset
      */
-    private final HashSet<ObjMove> argMoveOffsets = new HashSet<>();
+    private final HashSet<ObjImm> argOffsets = new HashSet<>();
     private final boolean isBuiltin;
 
     public ObjFunction(String name)
@@ -73,9 +72,9 @@ public class ObjFunction
         usedVirRegs.add(objVirReg);
     }
 
-    public void addArgOffsetMove(ObjMove objMove)
+    public void addArgOffset(ObjImm objOffset)
     {
-        argMoveOffsets.add(objMove);
+        argOffsets.add(objOffset);
     }
 
     public int getTotalStackSize()
@@ -138,10 +137,10 @@ public class ObjFunction
 
         totalStackSize = stackRegSize + allocaSize;
 
-        for (ObjMove argMoveOffset : argMoveOffsets)
+        for (ObjImm argOffset : argOffsets)
         {
-            int newOffset = ((ObjImm) argMoveOffset.getSrc()).getImmediate() + totalStackSize;
-            argMoveOffset.setSrc(new ObjImm(newOffset));
+            int newOffset = argOffset.getImmediate() + totalStackSize;
+            argOffset.setImmediate(newOffset);
         }
     }
 
@@ -312,22 +311,26 @@ public class ObjFunction
     @Override
     public String toString()
     {
-        StringBuilder funcSb = new StringBuilder("");
+        StringBuilder funcSb = new StringBuilder();
         funcSb.append(name).append(":\n");
-        // 调用者保存的寄存器
-        int stackOffset = -4;
-        // TODO 这里按照 TreeSet 的顺序入栈
-        for (Integer savedRegIndex : calleeSavedRegIndexes)
+        // 只有非主函数才需要保存寄存器
+        if (!name.equals("main"))
         {
-            funcSb.append("\t").append("sw\t").append(new ObjPhyReg(savedRegIndex)).append(",\t")
-                    .append(stackOffset).append("($sp)\n");
-            // 下移 4
-            stackOffset -= 4;
+            // 调用者保存的寄存器
+            int stackOffset = -4;
+            for (Integer savedRegIndex : calleeSavedRegIndexes)
+            {
+                funcSb.append("\t").append("sw ").append(new ObjPhyReg(savedRegIndex)).append(",\t")
+                        .append(stackOffset).append("($sp)\n");
+                // 下移 4
+                stackOffset -= 4;
+            }
         }
+
         // 移动栈指针
         if (totalStackSize != 0)
         {
-            funcSb.append("\tsub\t$sp,\t$sp,\t").append(totalStackSize).append("\n");
+            funcSb.append("\tsub $sp,\t$sp,\t").append(totalStackSize).append("\n");
         }
 
         // 遍历所有基本块

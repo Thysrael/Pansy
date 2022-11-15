@@ -1,23 +1,25 @@
 package parser.cst;
 
 import ir.values.Value;
+import ir.values.constants.ConstInt;
 import lexer.token.SyntaxType;
 
 import java.util.ArrayList;
 
 /**
  * AddExp
- *     : MulExp (AddOp MulExp)*
- *     ;
+ * : MulExp (AddOp MulExp)*
+ * ;
  * AddOp
- *     : PLUS
- *     | MINUS
- *     ;
+ * : PLUS
+ * | MINUS
+ * ;
  */
 public class AddExpNode extends CSTNode
 {
     private final ArrayList<MulExpNode> mulExps = new ArrayList<>();
     private final ArrayList<TokenNode> addOps = new ArrayList<>();
+
     @Override
     public void addChild(CSTNode child)
     {
@@ -62,22 +64,23 @@ public class AddExpNode extends CSTNode
             }
 
             valueIntUp = sum;
+            valueUp = new ConstInt(valueIntUp);
         }
         // 是不可直接计算的，要用表达式
         else
         {
             mulExps.get(0).buildIr();
             Value sum = valueUp;
-
+            // 如果类型不对，需要先换类型
+            if (sum.getValueType().isI1())
+            {
+                sum = irBuilder.buildZext(curBlock, sum);
+            }
             for (int i = 1; i < mulExps.size(); i++)
             {
                 mulExps.get(i).buildIr();
                 Value adder = valueUp;
-                // 如果类型不对，需要先换类型
-                if (sum.getValueType().isI1())
-                {
-                    sum = irBuilder.buildZext(curBlock, sum);
-                }
+
                 if (adder.getValueType().isI1())
                 {
                     adder = irBuilder.buildZext(curBlock, adder);

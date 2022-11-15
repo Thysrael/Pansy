@@ -16,3 +16,6 @@ run:
 
 ir:
 	cd ./auto && $(MAKE) ir
+
+mips:
+	cd ./auto && $(MAKE) mips

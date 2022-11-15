@@ -38,7 +38,7 @@ int main() {
 	printf("19373421\n");
 	const int const_var1 = 1, const_var2 = 2;
 	const int const_array1[2] = {1,2};
-	const int const_array2[2] = {};
+	const int const_array2[2] = {0,0};
 	const int const_array3[2][2] = {{1,1},{2,2}};
 	printf("const_var1+const_var2=:%d\n",const_var1+const_var2);
 	printf("const_array1[1]=:%d\n",const_array1[1]);

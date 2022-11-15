@@ -22,7 +22,7 @@ int jian()
 int main()
 {
 	printf("19182620\n");
-	int a,b,c,d, e,f,g=+1,h,j,k,l,o=-1;
+	int a=0,b=0,c,d, e,f,g=+1,h,j=0,k,l,o=-1;
 	int i=2,n,m,flag=0;
 	n=getint();
 	while(i<n)

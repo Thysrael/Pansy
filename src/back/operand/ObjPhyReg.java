@@ -76,6 +76,11 @@ public class ObjPhyReg extends ObjReg
         }
     }
 
+    public final static ObjPhyReg ZERO = new ObjPhyReg("zero");
+    public final static ObjPhyReg AT = new ObjPhyReg("at");
+    public final static ObjPhyReg SP = new ObjPhyReg("sp");
+    public final static ObjPhyReg V0 = new ObjPhyReg("v0");
+    public final static ObjPhyReg RA = new ObjPhyReg("ra");
     private final int index;
     private final String name;
     private boolean isAllocated;

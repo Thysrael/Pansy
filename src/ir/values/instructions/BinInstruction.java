@@ -17,7 +17,7 @@ public abstract class BinInstruction extends Instruction
      */
     BinInstruction(int nameNum, DataType dataType, BasicBlock parent, Value op1, Value op2)
     {
-        super("%" + nameNum, dataType, parent, op1, op2);
+        super("%v" + nameNum, dataType, parent, op1, op2);
     }
 
     public Value getOp1()

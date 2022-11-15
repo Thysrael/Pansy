@@ -2,6 +2,13 @@ package back.operand;
 
 public abstract class ObjOperand
 {
+    /**
+     * 对于非物理寄存器，就是 false 很显然，很合理
+     * 对于物理寄存器，他是 !isAllocated
+     * 这是因为预着色的寄存器都是在 irParse 阶段分配的，此时的 isAllocated == false，所以是预着色的
+     * isAllocated == true 的物理寄存器只会发生在作色阶段
+     * @return 如题
+     */
     public boolean isPrecolored()
     {
         return false;

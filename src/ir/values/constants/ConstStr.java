@@ -4,6 +4,8 @@ import ir.types.ArrayType;
 import ir.types.IntType;
 import util.MyPrintf;
 
+import java.util.Objects;
+
 /**
  * char s[10] = "Hello.";
  * \@s = dso_local global [10 x i8] c"Hello.\00\00\00\00", align 1
@@ -41,5 +43,27 @@ public class ConstStr extends Constant
     public String toString()
     {
         return "c\"" + content + "\\00\"";
+    }
+
+    /**
+     * 这里规定如果两个字符串的内容相等，那么他们即使相等的
+     * 这个方法主要是为了避免过多相同的字符串的出现
+     * @param o 另个一元素
+     * @return 相等为 true
+     */
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ConstStr constStr = (ConstStr) o;
+        return Objects.equals(content, constStr.content);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(super.hashCode(), content);
     }
 }

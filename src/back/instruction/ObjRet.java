@@ -8,11 +8,10 @@ import java.util.TreeSet;
 public class ObjRet extends ObjInstr
 {
     private final ObjFunction belongFunc;
+
     public ObjRet(ObjFunction belongFunc)
     {
         this.belongFunc = belongFunc;
-        // 这里只是单纯的借鉴一下，我并不知道为啥
-        addUseReg(null, new ObjPhyReg("v0"));
     }
 
     @Override
@@ -23,20 +22,28 @@ public class ObjRet extends ObjInstr
         // 处理一下 alloc 的部分
         if (stackSize != 0)
         {
-            retSb.append("add\t$sp, \t$sp,\t").append(stackSize).append("\n");
+            retSb.append("add $sp, \t$sp,\t").append(stackSize).append("\n");
         }
-
-        TreeSet<Integer> calleeSavedRegIndexes = belongFunc.getCalleeSavedRegIndexes();
-        int stackOffset = -4;
-        for (Integer regIndex : calleeSavedRegIndexes)
+        // 如果是主函数就直接结束运行，并且没有保存寄存器的操作
+        if (belongFunc.getName().equals("main"))
         {
-            retSb.append("\t").append("lw\t").append(new ObjPhyReg(regIndex)).append(",\t")
-                    .append(stackOffset).append("($sp)\n");
-            // 下移 4
-            stackOffset -= 4;
+            retSb.append("\tli\t$v0,\t10\n");
+            retSb.append("\tsyscall\n\n");
         }
+        else
+        {
+            TreeSet<Integer> calleeSavedRegIndexes = belongFunc.getCalleeSavedRegIndexes();
+            int stackOffset = -4;
+            for (Integer regIndex : calleeSavedRegIndexes)
+            {
+                retSb.append("\t").append("lw ").append(new ObjPhyReg(regIndex)).append(",\t")
+                        .append(stackOffset).append("($sp)\n");
+                // 下移 4
+                stackOffset -= 4;
+            }
 
-        retSb.append("\tjr\t$ra\n");
+            retSb.append("\tjr $ra\n");
+        }
 
         return retSb.toString();
     }

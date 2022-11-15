@@ -48,6 +48,7 @@ public class NumberNode extends CSTNode
         if (canCalValueDown)
         {
             valueIntUp = num;
+            valueUp = new ConstInt(valueIntUp);
         }
         else
         {

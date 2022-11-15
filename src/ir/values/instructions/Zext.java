@@ -16,7 +16,7 @@ public class Zext extends Instruction
      */
     public Zext(int nameNum, BasicBlock parent, Value value)
     {
-        super("%" + nameNum, new IntType(32), parent, value);
+        super("%v" + nameNum, new IntType(32), parent, value);
     }
 
     public Value getSrc()

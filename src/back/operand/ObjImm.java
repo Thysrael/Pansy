@@ -2,9 +2,14 @@ package back.operand;
 
 public class ObjImm extends ObjOperand
 {
-    private final int immediate;
+    private int immediate;
 
     public ObjImm(int immediate)
+    {
+        this.immediate = immediate;
+    }
+
+    public void setImmediate(int immediate)
     {
         this.immediate = immediate;
     }

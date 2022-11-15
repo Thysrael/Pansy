@@ -3,16 +3,64 @@ package back.instruction;
 import back.operand.ObjImm;
 import back.operand.ObjOperand;
 
-import static back.instruction.ObjBinType.*;
-
+/**
+ * 包括所有的使用到两个操作数的计算指令，这里也算一个尝试了，放弃使用冗余的 enum
+ * 而是使用更加合理的 String，来看看会不会有好效果
+ * 乘除法也会包括在这里面，因为多写一个太浪费事情了
+ */
 public class ObjBinary extends ObjInstr
 {
-    private final ObjBinType type;
+    public static ObjBinary getAddu(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("addu", dst, src1, src2);
+    }
+
+    public static ObjBinary getSubu(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("subu", dst, src1, src2);
+    }
+
+    public static ObjBinary getXor(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("xor", dst, src1, src2);
+    }
+
+    public static ObjBinary getSltu(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("sltu", dst, src1, src2);
+    }
+
+    public static ObjBinary getSlt(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("slt", dst, src1, src2);
+    }
+
+    public static ObjBinary getMul(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("mul", dst, src1, src2);
+    }
+
+    public static ObjBinary getSmmul(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("smmul", dst, src1, src2);
+    }
+
+    public static ObjBinary getDiv(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("div", dst, src1, src2);
+    }
+
+    public static ObjBinary getSmmadd(ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    {
+        return new ObjBinary("smmadd", dst, src1, src2);
+    }
+
+    private final String type;
     private ObjOperand dst;
     private ObjOperand src1;
     private ObjOperand src2;
 
-    public ObjBinary(ObjBinType type, ObjOperand dst, ObjOperand src1, ObjOperand src2)
+    public ObjBinary(String type, ObjOperand dst, ObjOperand src1, ObjOperand src2)
     {
         this.type = type;
         setDst(dst);
@@ -38,7 +86,7 @@ public class ObjBinary extends ObjInstr
         this.src2 = src2;
     }
 
-    public ObjBinType getType()
+    public String getType()
     {
         return type;
     }
@@ -93,40 +141,51 @@ public class ObjBinary extends ObjInstr
         }
     }
 
+    /**
+     * 区分是否是 imm 指令
+     * 另外乘除法应该也是需要区分的
+     * @return 指令字符串
+     */
     @Override
     public String toString()
     {
-        if (type.equals(SMMUL))
+        if (isSrc2Imm())
         {
-            return "mul\t" + src1 + ",\t" + src2 + "\n" +
-                    "\tmfhi\t" + dst + "\n";
-        }
-        else if (type.equals(DIV))
-        {
-            return "div\t" + src1 + ",\t" + src2 + "\n" +
-                    "\tmflo\t" + dst + "\n";
-        }
-        else if (type.equals(MOD))
-        {
-            return "mul\t" + src1 + ",\t" + src2 + "\n" +
-                    "\tmfhi\t" + dst + "\n";
+            // 之所以没有 subiu 是因为这条指令是拓展指令
+            if (type.equals("addu"))
+            {
+                return "addiu " + dst + ",\t" + src1 + ",\t" + src2 + "\n";
+            }
+            else if (type.equals("sltu"))
+            {
+                return "sltiu " + dst + ",\t" + src1 + ",\t" + src2 + "\n";
+            }
+            else
+            {
+                return type + "i " + dst + ",\t" + src1 + ",\t" + src2 + "\n";
+            }
         }
         else
         {
-            String typeStr = "";
-            if (type.equals(ADD))
+            if (type.equals("smmul"))
             {
-                typeStr = "add";
+                return "mult " + src1 + ",\t" + src2 + "\n\t" +
+                        "mfhi " + dst + "\n";
             }
-            else if (type.equals(SUB))
+            else if (type.equals("div"))
             {
-                typeStr = "sub";
+                return "div " + src1 + ",\t" + src2 + "\n\t" +
+                        "mflo " + dst + "\n";
             }
-            else if (type.equals(MUL))
+            else if (type.equals("smmadd"))
             {
-                typeStr = "mul";
+                return "madd " + src1 + ",\t" + src2 + "\n\t" +
+                        "mfhi " + dst + "\n";
             }
-            return typeStr + "\t" + dst + ",\t" + src1 + ",\t" + src2 + "\n";
+            else
+            {
+                return type + " " + dst + ",\t" + src1 + ",\t" + src2 + "\n";
+            }
         }
     }
 }

@@ -65,15 +65,15 @@ public class ObjMove extends ObjInstr
         // 如果是一个立即数，那么就用 li
         if (src instanceof ObjImm)
         {
-            return "li\t" + dst + ",\t" + src + "\n";
+            return "li " + dst + ",\t" + src + "\n";
         }
         else if (src instanceof ObjLabel)
         {
-            return "la\t" + dst + ",\t" + src + "\n";
+            return "la " + dst + ",\t" + src + "\n";
         }
         else
         {
-            return "move\t" + dst + ",\t" + src + "\n";
+            return "move " + dst + ",\t" + src + "\n";
         }
     }
 }

@@ -18,18 +18,12 @@ public class Argument extends Value
      */
     public Argument(int rank, DataType dataType, Function parent)
     {
-        super("%" + rank, dataType, parent);
+        super("%a" + rank, dataType, parent);
         this.rank = rank;
     }
 
     public int getRank()
     {
         return rank;
-    }
-
-    @Override
-    public String getName()
-    {
-        return "%" + rank;
     }
 }

@@ -7,4 +7,4 @@
 == != is ok
 or is ok
 the priority of and/or is ok
-5 7
+6 7

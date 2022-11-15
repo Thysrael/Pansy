@@ -44,7 +44,7 @@ public class GetElementPtr extends MemInstruction
      */
     public GetElementPtr(int nameNum, BasicBlock parent, Value base, Value firstIndex)
     {
-        super("%" + nameNum, (PointerType) base.getValueType(), parent, base, firstIndex);
+        super("%v" + nameNum, (PointerType) base.getValueType(), parent, base, firstIndex);
         this.baseType = ((PointerType) base.getValueType()).getPointeeType();
     }
 
@@ -57,7 +57,7 @@ public class GetElementPtr extends MemInstruction
      */
     public GetElementPtr(int nameNum, BasicBlock parent, Value base, Value firstIndex, Value secondIndex)
     {
-        super("%" + nameNum, new PointerType(((ArrayType) ((PointerType) base.getValueType()).getPointeeType()).getElementType()),
+        super("%v" + nameNum, new PointerType(((ArrayType) ((PointerType) base.getValueType()).getPointeeType()).getElementType()),
                 parent, base, firstIndex, secondIndex);
         this.baseType = ((PointerType) base.getValueType()).getPointeeType();
     }

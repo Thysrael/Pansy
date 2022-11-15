@@ -4,9 +4,11 @@ import check.*;
 import ir.types.ArrayType;
 import ir.types.IntType;
 import ir.types.PointerType;
+import ir.values.GlobalVariable;
 import ir.values.Value;
+import ir.values.constants.ConstArray;
 import ir.values.constants.ConstInt;
-import ir.values.instructions.Load;
+import ir.values.constants.Constant;
 import lexer.token.SyntaxType;
 
 import java.util.ArrayList;
@@ -164,25 +166,40 @@ public class LValNode extends CSTNode
         // 这说明 lVal 是一个常量，直接返回就好了
         if (lVal.getValueType() instanceof IntType)
         {
+            if (canCalValueDown)
+            {
+                valueIntUp = ((ConstInt) lVal).getValue();
+            }
             valueUp = lVal;
         }
         // lVal 的类型是一个 PointerType，说明 lVal 是一个局部变量或者全局变量
         else
         {
-            // 三个 boolean 指示了局部变量的类型
+            // 三个 boolean 指示了全局变量或者局部变量的类型
             boolean isInt = ((PointerType) lVal.getValueType()).getPointeeType() instanceof IntType;
             boolean isPointer = ((PointerType) lVal.getValueType()).getPointeeType() instanceof PointerType;
             boolean isArray = ((PointerType) lVal.getValueType()).getPointeeType() instanceof ArrayType;
+
             if (isInt)
             {
-                // 可以看到，左值是直接返回指针的，而不是返回指针指向的内容，应当由更高层次的语法树决定是否加载
-                valueUp = lVal;
+                // 如果是全局变量导致的指针，那么就需要直接把这个量访存出来，在可以计算的情况下
+                if (canCalValueDown && lVal instanceof GlobalVariable)
+                {
+                    ConstInt initVal = (ConstInt) ((GlobalVariable) lVal).getInitVal();
+                    valueIntUp = initVal.getValue();
+                    valueUp = new ConstInt(valueIntUp);
+                }
+                else
+                {
+                    // 可以看到，左值是直接返回指针的，而不是返回指针指向的内容，应当由更高层次的语法树决定是否加载
+                    valueUp = lVal;
+                }
             }
             // 局部变量如果是一个指针，那么这个局部变量就是形参（而且是形参数组 a[], a[][2]）
             else if (isPointer)
             {
                 // 这里存着实际的指针
-                Load ptr = irBuilder.buildLoad(curBlock, lVal);
+                Value ptr = irBuilder.buildLoad(curBlock, lVal);
                 // 没有索引
                 // 因为 SySy 中没有没有指针运算，所以当一个形参没有索引就出现的时候，他只能被用当成子函数的实参
                 // 那么只需要把这个东西加载出来就好了
@@ -195,10 +212,15 @@ public class LValNode extends CSTNode
                 {
                     exps.get(0).buildIr();
                     // 根据索引获得一个指针，要维持原有指针的类型
-                    valueUp = irBuilder.buildGEP(curBlock, ptr, valueUp);
+                    ptr = irBuilder.buildGEP(curBlock, ptr, valueUp);
+                    // 这里和其他的地方一样，我也说不明白为啥了
+                    if (((PointerType) ptr.getValueType()).getPointeeType() instanceof ArrayType)
+                    {
+                        ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, ConstInt.ZERO);
+                    }
+                    valueUp = ptr;
                 }
                 // 有两维索引 a[1][2] 只能是形参 a[][6] 的引用
-                // TODO 测试一次
                 else
                 {
                     exps.get(0).buildIr();
@@ -211,21 +233,39 @@ public class LValNode extends CSTNode
             // 是一个局部数组或者全局数组
             else if (isArray)
             {
-                Value ptr = lVal;
-                for (ExpNode exp : exps)
+                // 当是可以计算的时候，并且是一个全局变量的时候，我们直接将其算出来，而不用 GEP 去做
+                // 虽然 GEP 提供了更加统一的观点对待 Alloca 数组和 global 数组
+                // 但是 GEP 在全局变量被用在“全局” 和 其他局部数组的 Alloca 时无能为力
+                if (canCalValueDown && lVal instanceof GlobalVariable)
                 {
-                    exp.buildIr();
-                    ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, valueUp);
+                    Constant initVal = ((GlobalVariable) lVal).getInitVal();
+
+                    for (ExpNode exp : exps)
+                    {
+                        exp.buildIr();
+                        initVal = ((ConstArray) initVal).getElementByIndex(valueIntUp);
+                    }
+
+                    valueIntUp = ((ConstInt) initVal).getValue();
                 }
-                // 当一个数组符号经过了中括号的运算后，依然指向一个数组，那么说明这个 lVal 一定是指针实参
-                // 否则如果整型实参，这里一定指向的是 INT，但是由于 llvm ir 的数组的指针是高一级的，比如说
-                // int a[2] 在 C 中，a 是指向 int 的指针，而在 llvm ir 中是指向 2 x int 的指针，所以要降级
-                // 至于为啥要降级，是因为在 llvm ir 和 C 中，f(int a[]) 这种写法的 a 都是 “指向 int 的指针”
-                if (((PointerType) ptr.getValueType()).getPointeeType() instanceof ArrayType)
+                else
                 {
-                    ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, ConstInt.ZERO);
+                    Value ptr = lVal;
+                    for (ExpNode exp : exps)
+                    {
+                        exp.buildIr();
+                        ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, valueUp);
+                    }
+                    // 当一个数组符号经过了中括号的运算后，依然指向一个数组，那么说明这个 lVal 一定是指针实参
+                    // 否则如果整型实参，这里一定指向的是 INT，但是由于 llvm ir 的数组的指针是高一级的，比如说
+                    // int a[2] 在 C 中，a 是指向 int 的指针，而在 llvm ir 中是指向 2 x int 的指针，所以要降级
+                    // 至于为啥要降级，是因为在 llvm ir 和 C 中，f(int a[]) 这种写法的 a 都是 “指向 int 的指针”
+                    if (((PointerType) ptr.getValueType()).getPointeeType() instanceof ArrayType)
+                    {
+                        ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, ConstInt.ZERO);
+                    }
+                    valueUp = ptr;
                 }
-                valueUp = ptr;
             }
         }
     }

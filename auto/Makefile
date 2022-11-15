@@ -11,3 +11,6 @@ run:
 
 ir:
 	./irc.sh
+
+mips:
+	./mips.sh

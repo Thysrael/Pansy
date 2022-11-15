@@ -26,7 +26,7 @@ public class BasicBlock extends Value
      */
     public BasicBlock(int nameNum, Function parent)
     {
-        super("%" + nameNum, new LabelType(), parent);
+        super("%b" + nameNum, new LabelType(), parent);
         parent.addFunctionSymbol(this);
     }
 
@@ -35,7 +35,7 @@ public class BasicBlock extends Value
      */
     public BasicBlock()
     {
-        super("LOOP_TMP", new LabelType(), null);
+        super("LOOP_TMP", new LabelType(), Function.LOOP_TRASH);
     }
 
     /**

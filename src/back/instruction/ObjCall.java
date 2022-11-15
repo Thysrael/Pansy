@@ -15,6 +15,6 @@ public class ObjCall extends ObjInstr
     @Override
     public String toString()
     {
-        return "jal\t" + targetFunction.getName() + "\n";
+        return "jal " + targetFunction.getName() + "\n";
     }
 }

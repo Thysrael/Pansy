@@ -14,6 +14,7 @@ import util.MyPair;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static back.operand.ObjPhyReg.SP;
 import static back.process.BlockLiveInfo.livenessAnalysis;
 
 public class RegAllocator
@@ -712,7 +713,7 @@ public class RegAllocator
     {
         if (firstUseNode != null)
         {
-            ObjLoad objLoad = new ObjLoad(vReg, new ObjPhyReg("sp"), null);
+            ObjLoad objLoad = new ObjLoad(vReg, SP, null);
             MyList.MyNode<ObjInstr> objLoadNode = new MyList.MyNode<>(objLoad);
             objLoadNode.insertBefore(firstUseNode);
             fixOffset(func, objLoadNode);
@@ -722,7 +723,7 @@ public class RegAllocator
 
         if (lastDefNode != null)
         {
-            ObjStore objStore = new ObjStore(vReg, new ObjPhyReg("sp"), null);
+            ObjStore objStore = new ObjStore(vReg, SP, null);
             MyList.MyNode<ObjInstr> objStoreNode = new MyList.MyNode<>(objStore);
             objStoreNode.insertAfter(lastDefNode);
             fixOffset(func, objStoreNode);
@@ -836,7 +837,7 @@ public class RegAllocator
 
     public void process()
     {
-        for (ObjFunction function : objModule.getFunctions())
+        for (ObjFunction function : objModule.getNoBuiltinFunctions())
         {
             boolean finished = false;
 
@@ -866,7 +867,6 @@ public class RegAllocator
                     }
                 } while (!(simplifyWorklist.isEmpty() && worklistMoves.isEmpty() &&
                         freezeWorklist.isEmpty() && spillWorklist.isEmpty()));
-
                 assignColors(function);
 
                 // 这里看一下实际溢出的节点
@@ -887,7 +887,7 @@ public class RegAllocator
         // 应该是为了避免物理寄存器在判定 equals 时的错误
         clearPhyRegState();
 
-        for (ObjFunction function : objModule.getFunctions())
+        for (ObjFunction function : objModule.getNoBuiltinFunctions())
         {
             function.fixStack();
         }

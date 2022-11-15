@@ -11,10 +11,5 @@ public class PassManager
 
     public void run()
     {
-        for (MyList.MyNode<Function> functionNode : module.getFunctions())
-        {
-            Function function = functionNode.getVal();
-            function.renumber();
-        }
     }
 }

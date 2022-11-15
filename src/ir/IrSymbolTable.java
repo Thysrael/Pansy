@@ -106,7 +106,7 @@ public class IrSymbolTable
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         for (int i = table.size() - 1; i >= 0; i--)
         {
             HashMap<String, Value> layer = table.get(i);

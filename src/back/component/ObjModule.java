@@ -8,6 +8,8 @@ public class ObjModule
     private final ArrayList<ObjFunction> functions = new ArrayList<>();
     // 管理所有的全局变量
     private final ArrayList<ObjGlobalVariable> globalVariables = new ArrayList<>();
+    // 主函数
+    private ObjFunction mainFunction;
 
     public void addGlobalVariable(ObjGlobalVariable objGlobalVariable)
     {
@@ -16,12 +18,29 @@ public class ObjModule
 
     public void addFunction(ObjFunction function)
     {
+        if (function.getName().equals("main"))
+        {
+            mainFunction = function;
+        }
         functions.add(function);
     }
 
     public ArrayList<ObjFunction> getFunctions()
     {
         return functions;
+    }
+
+    public ArrayList<ObjFunction> getNoBuiltinFunctions()
+    {
+        ArrayList<ObjFunction> noBuiltins = new ArrayList<>();
+        for (ObjFunction function : functions)
+        {
+            if (!function.isBuiltin())
+            {
+                noBuiltins.add(function);
+            }
+        }
+        return noBuiltins;
     }
 
     /**
@@ -38,6 +57,22 @@ public class ObjModule
     {
         StringBuilder moduleSb = new StringBuilder("");
         moduleSb.append("# Pansy Say \"Hi~\" to you!\n");
+        // macro
+        // putstr
+        moduleSb.append(".macro putstr\n");
+        moduleSb.append("\tli\t$v0,\t4\n");
+        moduleSb.append("\tsyscall\n");
+        moduleSb.append(".end_macro\n\n");
+        // putint
+        moduleSb.append(".macro putint\n");
+        moduleSb.append("\tli\t$v0,\t1\n");
+        moduleSb.append("\tsyscall\n");
+        moduleSb.append(".end_macro\n\n");
+        // getint
+        moduleSb.append(".macro getint\n");
+        moduleSb.append("\tli\t$v0,\t5\n");
+        moduleSb.append("\tsyscall\n");
+        moduleSb.append(".end_macro\n\n");
         // data segment
         moduleSb.append(".data\n");
         for (ObjGlobalVariable globalVariable : globalVariables)
@@ -46,33 +81,16 @@ public class ObjModule
         }
         // text segment
         // 首先先跳到 main 函数执行
-        // TODO 太浪费了，不要 jal 直接宏替换
         moduleSb.append(".text\n");
-        moduleSb.append("_start:\n");
-        moduleSb.append("\tjal main\n");
-        moduleSb.append("\tli\t$v0,\t10\n");
-        moduleSb.append("\tsyscall\n\n");
-        // putstr
-        moduleSb.append("putstr:\n");
-        moduleSb.append("\tli\t$v0,\t4\n");
-        moduleSb.append("\tsyscall\n");
-        moduleSb.append("\tjr\t$ra\n\n");
-        // putint
-        moduleSb.append("putint:\n");
-        moduleSb.append("\tli\t$v0,\t1\n");
-        moduleSb.append("\tsyscall\n");
-        moduleSb.append("\tjr\t$ra\n\n");
-        // getint
-        moduleSb.append("getint:\n");
-        moduleSb.append("\tli\t$v0,\t5\n");
-        moduleSb.append("\tsyscall\n");
-        moduleSb.append("\tjr\t$ra\n\n");
-        // 非内建函数打印
+        // 打印函数
+        // 首先打印主函数
+        moduleSb.append(mainFunction);
+        // 打印其他函数
         for (ObjFunction function : functions)
         {
-            if (!function.isBuiltin())
+            if (!function.isBuiltin() && function != mainFunction)
             {
-                moduleSb.append(function);
+                moduleSb.append(function).append("\n");
             }
         }
 

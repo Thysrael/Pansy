@@ -5,11 +5,13 @@ import ir.types.ValueType;
 import ir.types.VoidType;
 import ir.values.*;
 import ir.values.Module;
+import ir.values.constants.ConstStr;
 import ir.values.constants.Constant;
 import ir.values.instructions.*;
 import parser.cst.CSTNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class IrBuilder
 {
@@ -33,6 +35,8 @@ public class IrBuilder
 
     private static int strNumCounter = 0;
 
+    private static HashMap<String, GlobalVariable> globalStrPool = new HashMap<>();
+
     public void buildModule(CSTNode root)
     {
         root.buildIr();
@@ -52,11 +56,19 @@ public class IrBuilder
         return globalVariable;
     }
 
-    public GlobalVariable buildGlobalStr(Constant initValue)
+    public GlobalVariable buildGlobalStr(ConstStr initValue)
     {
-        GlobalVariable globalVariable = new GlobalVariable("STR" + strNumCounter++, initValue, true);
-        module.addGlobalVariable(globalVariable);
-        return globalVariable;
+        if (globalStrPool.containsKey(initValue.getContent()))
+        {
+            return globalStrPool.get(initValue.getContent());
+        }
+        else
+        {
+            GlobalVariable globalVariable = new GlobalVariable("STR" + strNumCounter++, initValue, true);
+            module.addGlobalVariable(globalVariable);
+            globalStrPool.put(initValue.getContent(), globalVariable);
+            return globalVariable;
+        }
     }
 
     public Function buildFunction(String ident, FunctionType functionType, boolean isBuiltin)

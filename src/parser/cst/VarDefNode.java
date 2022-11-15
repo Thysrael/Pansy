@@ -175,7 +175,6 @@ public class VarDefNode extends CSTNode
                 genGlobalInitArray(valueArrayUp);
             }
             // 全局无初始值的数组，那么就初始化为 0
-            // TODO 做测试
             else
             {
                 ZeroInitializer zeroInitializer = new ZeroInitializer(arrayType);

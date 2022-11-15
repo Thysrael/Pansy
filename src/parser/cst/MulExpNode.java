@@ -60,20 +60,22 @@ public class MulExpNode extends CSTNode
                 }
             }
             valueIntUp = product;
+            valueUp = new ConstInt(valueIntUp);
         }
         else
         {
             unaryExps.get(0).buildIr();
             Value product = valueUp;
+            // cast i1 value 2 i32
+            if (product.getValueType().isI1())
+            {
+                product = irBuilder.buildZext(curBlock, product);
+            }
             for (int i = 1; i < unaryExps.size(); i++)
             {
                 unaryExps.get(i).buildIr();
                 Value multer = valueUp;
-                // cast i1 value 2 i32
-                if (product.getValueType().isI1())
-                {
-                    product = irBuilder.buildZext(curBlock, product);
-                }
+
                 if (multer.getValueType().isI1())
                 {
                     multer = irBuilder.buildZext(curBlock, multer);
@@ -124,9 +126,8 @@ public class MulExpNode extends CSTNode
                         product = irBuilder.buildSub(curBlock, product, b);
                     }
                 }
-
-                valueUp = product;
             }
+            valueUp = product;
         }
     }
 }

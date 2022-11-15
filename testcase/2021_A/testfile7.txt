@@ -67,7 +67,7 @@ void Error(){
 }
 
 void init(int row, int col){
-    int i,j;
+    int i=0,j;
     while(i < row){
         j = 0;
         while(j < col){

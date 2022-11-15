@@ -12,6 +12,7 @@ public class Function extends Value
     public static Function putstr = null;
     public static Function putint = null;
     public static Function getint = null;
+    public static Function LOOP_TRASH = new Function();
     /**
      * 是否是内建函数
      */
@@ -42,6 +43,16 @@ public class Function extends Value
             arguments.add(argument);
             addFunctionSymbol(argument);
         }
+    }
+
+    /**
+     * 这个同样是为了解决 loop 的问题
+     */
+    private Function()
+    {
+        super("@LOOP_TMP", null, null);
+        isBuiltin = false;
+        returnType = null;
     }
 
     public boolean isBuiltin()
@@ -98,28 +109,6 @@ public class Function extends Value
     public FunctionType getValueType()
     {
         return (FunctionType) super.getValueType();
-    }
-
-    /**
-     * 调整函数参数，bb，instruction 的 nameNum 从 0 开始顺序排列
-     * 可以说是一个补丁了，有效解决了 alloca 栈式的命名
-     */
-    public void renumber()
-    {
-        valueSymTab.clear();
-        int nameNum = 0;
-        for (Argument argument : arguments)
-        {
-            argument.setNameNum(nameNum++);
-            addFunctionSymbol(argument);
-        }
-        for (MyList.MyNode<BasicBlock> blockNode : blocks)
-        {
-            BasicBlock block = blockNode.getVal();
-            block.setNameNum(nameNum++);
-            addFunctionSymbol(block);
-            nameNum = block.renumber(nameNum);
-        }
     }
 
     /**

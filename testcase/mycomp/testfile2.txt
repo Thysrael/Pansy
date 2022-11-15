@@ -1,0 +1,10 @@
+int a = 3;
+int b = 5;
+
+int main()
+{
+    int a = 5;
+    // ans is 10
+    printf("ans is %d\n", a + b);
+    return a + b;
+}

@@ -1,57 +1,55 @@
 # Pansy Say "Hi~" to you!
+.macro putstr
+	li	$v0,	4
+	syscall
+.end_macro
+
+.macro putint
+	li	$v0,	1
+	syscall
+.end_macro
+
+.macro getint
+	li	$v0,	5
+	syscall
+.end_macro
+
 .data
+a_to_the_a:
+.word	0
+
+cnt:
+.word	0
+
+n:
+.word	0
+
 STR0:
+.asciiz	"funcTest: move disk from "
+
+STR1:
+.asciiz	" to "
+
+STR2:
 .asciiz	"\n"
 
 .text
-_start:
-	jal main
-	li	$v0,	10
-	syscall
-
-putstr:
-	li	$v0,	4
-	syscall
-	jr	$ra
-
-putint:
-	li	$v0,	1
-	syscall
-	jr	$ra
-
-getint:
-	li	$v0,	5
-	syscall
-	jr	$ra
-
 main:
-	sw	$v1,	-4($sp)
-	sw	$ra,	-8($sp)
-	sub	$sp,	$sp,	20
-Basic_0_0:
-	add	$a1,	$sp,	0
-	add	$v1,	$sp,	4
-	add	$a0,	$sp,	8
-	li	$v0,	3
-	sw	$v0,	0($a0)
-	li	$v0,	4
-	sw	$v0,	0($v1)
-	li	$v0,	5
-	sw	$v0,	0($a1)
-	lw	$a0,	0($a0)
-	lw	$v0,	0($v1)
-	lw	$v1,	0($a1)
-	mul	$v0,	$v0,	$v1
-	add	$a0,	$a0,	$v0
-	move	$a0,	$a0
-	jal	putint
-	la	$v0,	STR0
-	add	$v0,	$v0,	0
-	add	$v0,	$v0,	0
-	move	$a0,	$v0
-	jal	putstr
-	li	$v0,	0
-	add	$sp, 	$sp,	20
-	lw	$v1,	-4($sp)
-	lw	$ra,	-8($sp)
-	jr	$ra
+	sub $sp,	$sp,	4
+Basic_b42_8:
+	# 778 div 389
+	li $v1,	778
+	li $v0,	-1468459255
+	# mthi $v1
+	mult $v1,	$v0
+	mfhi $v0
+	add $11, $v1, $v0
+	sra $v0,	$v0,	8
+	srl $at,	$v1,	31
+	addu $v1,	$v0,	$at
+	li $v0,	389
+	mul $v0,	$v1,	$v0
+	li $v1,	778
+	subu $a0,	$v1,	$v0
+	move $a0,	$a0
+	putint

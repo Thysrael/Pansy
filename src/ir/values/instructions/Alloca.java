@@ -15,7 +15,7 @@ public class Alloca extends MemInstruction
     public Alloca(int nameNum, ValueType allocatedType, BasicBlock parent)
     {
         // 指针
-        super("%" + nameNum, new PointerType(allocatedType), parent);
+        super("%v" + nameNum, new PointerType(allocatedType), parent);
     }
 
     public ValueType getAllocatedType()

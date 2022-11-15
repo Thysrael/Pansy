@@ -32,7 +32,7 @@ int main(){
 	int brr[2][3] = {{1,2,3},{4,5,6}};
 	//int crr[] = {1,2,3}; //Wrong!
 	//int drr[][3] = {{1,2,3},{4,5,6}}; //Wrong!
-	int err[1][2] = {CON_arr[0],CON_arr[1]};
+	int err[1][2] = {{CON_arr[0],CON_arr[1]}};
 	printf("\nCheck some basic arry define: Success!\n");
 	
 	int a = 0;

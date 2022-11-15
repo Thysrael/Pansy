@@ -35,6 +35,11 @@ public class ConstArray extends Constant
         this.elements.addAll(elements);
     }
 
+    public Constant getElementByIndex(int index)
+    {
+        return elements.get(index);
+    }
+
     /**
      * @return 数组展开后的一维数组，每个元素都是一个 ConstInt
      */

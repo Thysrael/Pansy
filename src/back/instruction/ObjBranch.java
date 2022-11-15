@@ -7,7 +7,7 @@ import static back.instruction.ObjCondType.*;
 
 public class ObjBranch extends ObjInstr
 {
-    private ObjCondType cond = ANY;
+    private ObjCondType cond;
     private ObjOperand src1 = null;
     private ObjOperand src2 = null;
     private boolean hasNoSrc = false;
@@ -37,7 +37,7 @@ public class ObjBranch extends ObjInstr
     public ObjBranch(ObjCondType cond, ObjOperand src, ObjBlock target)
     {
         this.cond = cond;
-        this.src1 = src;
+        setSrc1(src);
         this.target = target;
         this.hasOneSrc = true;
     }
@@ -45,8 +45,8 @@ public class ObjBranch extends ObjInstr
     public ObjBranch(ObjCondType cond, ObjOperand src1, ObjOperand src2, ObjBlock target)
     {
         this.cond = cond;
-        this.src1 = src1;
-        this.src2 = src2;
+        setSrc1(src1);
+        setSrc2(src2);
         this.target = target;
         this.hasTwoSrc = true;
     }
@@ -66,20 +66,58 @@ public class ObjBranch extends ObjInstr
         this.target = target;
     }
 
+    public void setSrc1(ObjOperand src1)
+    {
+        addUseReg(this.src1, src1);
+        this.src1 = src1;
+    }
+
+    public void setSrc2(ObjOperand src2)
+    {
+        addUseReg(this.src2, src2);
+        this.src2 = src2;
+    }
+
+    @Override
+    public void replaceReg(ObjOperand oldReg, ObjOperand newReg)
+    {
+        if (src1.equals(oldReg))
+        {
+            setSrc1(newReg);
+        }
+        if (src2.equals(oldReg))
+        {
+            setSrc2(newReg);
+        }
+    }
+
+    @Override
+    public void replaceUseReg(ObjOperand oldReg, ObjOperand newReg)
+    {
+        if (src1.equals(oldReg))
+        {
+            setSrc1(newReg);
+        }
+        if (src2.equals(oldReg))
+        {
+            setSrc2(newReg);
+        }
+    }
+
     @Override
     public String toString()
     {
         if (hasNoSrc)
         {
-            return "j\t" + target.getName() + "\n";
+            return "j " + target.getName() + "\n";
         }
         if (hasOneSrc)
         {
-            return "b" + cond + "z\t" + target.getName() + "\n";
+            return "b" + cond + "z " + target.getName() + "\n";
         }
         if (hasTwoSrc)
         {
-            return "b" + cond + "\t" + src1 + ",\t" + src2 + "\t," + target.getName() + "\n";
+            return "b" + cond + " " + src1 + ",\t" + src2 + ",\t" + target.getName() + "\n";
         }
         return "wrong branch\n";
     }

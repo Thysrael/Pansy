@@ -10,7 +10,7 @@ public class Phi extends Instruction
 
     public Phi(int nameNum, DataType dataType, BasicBlock parent, int predecessorNum)
     {
-        super("%" + nameNum, dataType, parent, new Value[predecessorNum * 2]);
+        super("%v" + nameNum, dataType, parent, new Value[predecessorNum * 2]);
         this.predecessorNum = predecessorNum;
     }
 

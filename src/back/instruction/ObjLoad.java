@@ -1,6 +1,5 @@
 package back.instruction;
 
-import back.operand.ObjLabel;
 import back.operand.ObjOperand;
 
 public class ObjLoad extends ObjInstr
@@ -82,6 +81,6 @@ public class ObjLoad extends ObjInstr
     @Override
     public String toString()
     {
-        return "lw\t" + dst + ",\t" + offset + "(" + addr + ")\n";
+        return "lw " + dst + ",\t" + offset + "(" + addr + ")\n";
     }
 }

@@ -18,7 +18,7 @@ public class Load extends MemInstruction
      */
     public Load(int nameNum, BasicBlock parent, Value addr)
     {
-        super("%" + nameNum, (DataType) ((PointerType) addr.getValueType()).getPointeeType(), parent, addr);
+        super("%v" + nameNum, (DataType) ((PointerType) addr.getValueType()).getPointeeType(), parent, addr);
         this.dataType = (DataType) ((PointerType) addr.getValueType()).getPointeeType();
     }
 

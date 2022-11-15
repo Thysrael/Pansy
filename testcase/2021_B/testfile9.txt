@@ -20,7 +20,7 @@ void fun_4(int a, int b, int c){
 }
 
 void fun_5(int a[], int b[][2]){
-	int t1 = 2, t2 = 1, t3;
+	int t1 = 2, t2 = 1, t3=0;
 	fun_4(t1, t2, t3 - t2);
 	if(t1 + t2 == 0){
 		fun_4(t1, t2, t3);

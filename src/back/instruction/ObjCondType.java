@@ -120,6 +120,41 @@ public enum ObjCondType
         }
     }
 
+    public boolean compare(int op1, int op2)
+    {
+        switch (this)
+        {
+            case EQ :
+            {
+                return op1 == op2;
+            }
+            case NE :
+            {
+                return op1 != op2;
+            }
+            case GE :
+            {
+                return op1 >= op2;
+            }
+            case GT:
+            {
+                return op1 > op2;
+            }
+            case LE:
+            {
+                return op1 <= op2;
+            }
+            case LT:
+            {
+                return op1 < op2;
+            }
+            default:
+            {
+                return false;
+            }
+        }
+    }
+
     @Override
     public String toString()
     {

@@ -4,6 +4,7 @@ int main(){
     a = 1;
     b0 = 2;
     _c = 3;
+    // ans is 5
     printf("ans is %d\n", b0 + _c);
-    return b0 + _c;
+    return 0;
 }

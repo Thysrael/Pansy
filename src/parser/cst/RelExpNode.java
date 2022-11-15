@@ -47,21 +47,32 @@ public class RelExpNode extends CSTNode
         {
             i32InRelUp = false;
             addExps.get(i).buildIr();
+            Value adder = valueUp;
+            // 如果类型不对，需要先换类型
+            if (result.getValueType().isI1())
+            {
+                result = irBuilder.buildZext(curBlock, result);
+            }
+            if (adder.getValueType().isI1())
+            {
+                adder = irBuilder.buildZext(curBlock, adder);
+            }
+
             if (relOps.get(i - 1).isSameType(SyntaxType.LEQ))
             {
-                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.LE, result, valueUp);
+                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.LE, result, adder);
             }
             else if (relOps.get(i - 1).isSameType(SyntaxType.GEQ))
             {
-                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.GE, result, valueUp);
+                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.GE, result, adder);
             }
             else if (relOps.get(i - 1).isSameType(SyntaxType.GRE))
             {
-                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.GT, result, valueUp);
+                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.GT, result, adder);
             }
             else if (relOps.get(i - 1).isSameType(SyntaxType.LSS))
             {
-                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.LT, result, valueUp);
+                result = irBuilder.buildIcmp(curBlock, Icmp.Condition.LT, result, adder);
             }
         }
 
