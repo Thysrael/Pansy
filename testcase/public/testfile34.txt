@@ -1,0 +1,7 @@
+//42_empty_stmt.sy
+int main() {
+  int a = 10;
+  ;
+	printf("%d", a * 2 + 1);
+  return a * 2 + 1;
+}

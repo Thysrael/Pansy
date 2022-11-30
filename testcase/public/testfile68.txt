@@ -1,0 +1,5 @@
+//00_main.sy
+int main(){
+	printf("%d", 3);
+    return 3;
+}

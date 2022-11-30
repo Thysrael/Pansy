@@ -75,9 +75,29 @@ public class ObjModule
         moduleSb.append(".end_macro\n\n");
         // data segment
         moduleSb.append(".data\n");
+        // .word
         for (ObjGlobalVariable globalVariable : globalVariables)
         {
-            moduleSb.append(globalVariable).append("\n");
+            if (globalVariable.isAlign())
+            {
+                moduleSb.append(globalVariable).append("\n");
+            }
+        }
+        // .space
+        for (ObjGlobalVariable globalVariable : globalVariables)
+        {
+            if (!globalVariable.isAlign() && !globalVariable.isInit())
+            {
+                moduleSb.append(globalVariable).append("\n");
+            }
+        }
+        // .ascizz
+        for (ObjGlobalVariable globalVariable : globalVariables)
+        {
+            if (!globalVariable.isAlign() && globalVariable.isInit())
+            {
+                moduleSb.append(globalVariable).append("\n");
+            }
         }
         // text segment
         // 首先先跳到 main 函数执行

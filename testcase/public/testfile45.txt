@@ -1,0 +1,8 @@
+//06_const_var_defn2.sy
+//test const gloal var define
+const int a = 10, b = 5;
+
+int main(){
+	printf("%d", b);
+    return b;
+}

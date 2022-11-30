@@ -64,7 +64,10 @@ public class AddExpNode extends CSTNode
             }
 
             valueIntUp = sum;
-            valueUp = new ConstInt(valueIntUp);
+            if (!cannotCalValueUp)
+            {
+                valueUp = new ConstInt(valueIntUp);
+            }
         }
         // 是不可直接计算的，要用表达式
         else

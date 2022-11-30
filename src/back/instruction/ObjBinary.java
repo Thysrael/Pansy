@@ -156,6 +156,10 @@ public class ObjBinary extends ObjInstr
             {
                 return "addiu " + dst + ",\t" + src1 + ",\t" + src2 + "\n";
             }
+            else if (type.equals("subu"))
+            {
+                return "subiu " + dst + ",\t" + src1 + ",\t" + src2 + "\n";
+            }
             else if (type.equals("sltu"))
             {
                 return "sltiu " + dst + ",\t" + src1 + ",\t" + src2 + "\n";

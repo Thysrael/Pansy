@@ -1,0 +1,7 @@
+//12_addc.sy
+//test addc
+const int a = 10;
+int main(){
+	printf("%d", a + 5);
+    return a + 5;
+}

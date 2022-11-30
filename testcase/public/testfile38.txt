@@ -1,0 +1,10 @@
+//01_var_defn2.sy
+//test domain of global var define and local define
+int a = 3;
+int b = 5;
+
+int main(){
+    int a = 5;
+	printf("%d", a + b);
+    return a + b;
+}

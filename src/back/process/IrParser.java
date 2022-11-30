@@ -780,12 +780,12 @@ public class IrParser
                 }
                 case GE :
                 {
-                    ltTemplate(dst, instr.getOp2(), instr.getOp1(), irBlock, irFunction);
+                    leTemplate(dst, instr.getOp2(), instr.getOp1(), irBlock, irFunction);
                     break;
                 }
                 case GT:
                 {
-                    leTemplate(dst, instr.getOp2(), instr.getOp1(), irBlock, irFunction);
+                    ltTemplate(dst, instr.getOp2(), instr.getOp1(), irBlock, irFunction);
                     break;
                 }
             }
@@ -998,9 +998,7 @@ public class IrParser
                 boolean needSwap = condition.getOp1() instanceof ConstInt && !(condition.getOp2() instanceof ConstInt);
                 if (needSwap)
                 {
-                    cond = getOppCond(cond);
-                    objTrueBlock = bMap.get((BasicBlock) instr.getOps().get(2));
-                    objFalseBlock = bMap.get((BasicBlock) instr.getOps().get(1));
+                    cond = getEqualOppCond(cond);
                     src1 = parseOperand(condition.getOp2(), false, irFunction, irBlock);
                     src2 = parseOperand(condition.getOp1(), true, irFunction, irBlock);
                 }
@@ -1102,9 +1100,10 @@ public class IrParser
         }
         // 这里是处理返回值
         DataType returnType = ((instr.getFunction())).getReturnType();
+        // 无论有没有返回值，都需要调用者保存 v0
+        objCall.addDefReg(null, V0);
         if (!(returnType instanceof VoidType))
         {
-            objCall.addDefReg(null, V0);
             ObjMove objMove = new ObjMove(parseOperand(instr, false, irFunction, irBlock), V0);
             objBlock.addInstr(objMove);
         }

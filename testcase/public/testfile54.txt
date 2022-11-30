@@ -1,0 +1,7 @@
+//07_const_var_defn3.sy
+//test const local var define
+int main(){
+    const int a = 10, b = 5;
+	printf("%d", b);
+    return b;
+}

@@ -1,0 +1,7 @@
+//18_divc.sy
+//test divc
+const int a = 10;
+int main(){
+	printf("%d", a / 5);
+    return a / 5;
+}

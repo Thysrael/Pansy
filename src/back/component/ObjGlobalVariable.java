@@ -36,9 +36,23 @@ public class ObjGlobalVariable
         this.name = name.substring(1);
         this.isInit = true;
         this.isStr = true;
-        this.size = content.length() * 4;
+        this.size = content.length() + 1;
         this.elements = null;
         this.content = content;
+    }
+
+    /**
+     * 只要是用 .word 初始化的，那么就是对齐的，否则是不对齐的
+     * @return 对其为 true
+     */
+    public boolean isAlign()
+    {
+        return isInit && !isStr;
+    }
+
+    public boolean isInit()
+    {
+        return isInit;
     }
 
     /**

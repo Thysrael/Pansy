@@ -10,7 +10,6 @@ import ir.values.constants.ConstInt;
 import ir.values.constants.Constant;
 import ir.values.instructions.Alloca;
 import ir.values.instructions.GetElementPtr;
-import lexer.token.Delimiter;
 import check.SymbolTable;
 
 import java.util.ArrayList;
@@ -74,6 +73,11 @@ public class ConstDefNode extends CSTNode
         symbolTable.addConst(this);
     }
 
+    /**
+     * 没有必要为单常量分配栈空间，但是有必要为常量数组分配空间，
+     * 这是因为常量数组是支持变量访存的，而变量是在编译器没法求职的，对于一个 constArray[var]
+     * 是没法确定其值的，所以只能将常量当做变量看待。
+     */
     private void genConstArray()
     {
         // 解析维数 exp，然后存到 dim 中
@@ -118,21 +122,18 @@ public class ConstDefNode extends CSTNode
             {
                 basePtr = irBuilder.buildGEP(curBlock, basePtr, ConstInt.ZERO, ConstInt.ZERO);
             }
-            // 获得初始数组，此时没有展开
-            ConstArray initArray = (ConstArray) valueUp;
-            ArrayList<ConstInt> flattenArray = initArray.getDataElements();
             // 利用 store 往内存中存值
-            for (int i = 0; i < flattenArray.size(); i++)
+            for (int i = 0; i < valueArrayUp.size(); i++)
             {
                 if (i == 0)
                 {
-                    irBuilder.buildStore(curBlock, flattenArray.get(i), basePtr);
+                    irBuilder.buildStore(curBlock, valueArrayUp.get(i), basePtr);
                 }
                 else
                 {
                     // 这里利用的是一维的 GEP，此时的返回值依然是 int*
                     GetElementPtr curPtr = irBuilder.buildGEP(curBlock, basePtr, new ConstInt(i));
-                    irBuilder.buildStore(curBlock, flattenArray.get(i), curPtr);
+                    irBuilder.buildStore(curBlock, valueArrayUp.get(i), curPtr);
                 }
             }
         }

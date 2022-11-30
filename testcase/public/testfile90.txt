@@ -1,0 +1,46 @@
+//51_short_circuit3.sy
+int a, b, d;
+
+int set_a(int val) { a = val; return a; }
+int set_b(int val) { b = val; return b; }
+int set_d(int val) { d = val; return d; }
+
+int main()
+{
+    a = 2; b = 3;
+    if (set_a(0) && set_b(1)) {}
+    printf("%d", a); printf("%d", 32);
+    printf("%d", b); printf("%d", 32);
+
+    a = 2; b = 3;
+    if (set_a(0) && set_b(1)) ;
+    printf("%d", a); printf("%d", 32);
+    printf("%d", b); printf("%d", 10);
+
+    const int c = 1;
+    d = 2;
+    if (c >= 1 && set_d(3)) ;
+    printf("%d", d); printf("%d", 32);
+    if (c <= 1 || set_d(4)) {}
+    printf("%d", d); printf("%d", 10);
+
+    if (16 >= (3 - (2 + 1))) { printf("%d", 65); }
+    if ((25 - 7) != (36 - 6 * 3)) printf("%d", 66);
+    if (1 < 8 != 7 % 2) { printf("%d", 67); }
+    if (3 > 4 == 0) { printf("%d", 68); }
+    if (1 == 102 <= 63) printf("%d", 69);
+    if (5 - 6 == -!0) printf("%d", 70);
+    printf("%d", 10);
+
+    int i0 = 0, i1 = 1, i2 = 2, i3 = 3, i4 = 4;
+    while (i0 && i1) printf("%d", 32);
+    if (i0 || i1) printf("%d", 67);
+    if (i0 >= i1 || i1 <= i0) printf("%d", 72);
+    if (i2 >= i1 && i4 != i3) { printf("%d", 73); }
+    if (i0 == !i1 && i3 < i3 || i4 >= i4) { printf("%d", 74); }
+    if (i0 == !i1 || i3 < i3 && i4 >= i4) printf("%d", 75);
+    printf("%d", 10);
+
+	printf("%d", 0);
+    return 0;
+}

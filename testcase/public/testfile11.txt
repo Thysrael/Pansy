@@ -1,0 +1,20 @@
+//67_reverse_output.sy
+void reverse(int n) {
+	int next;
+	if (n <= 1) {
+		next=getint();
+		printf("%d", next);
+	}
+	else {
+		next=getint();
+		reverse(n-1);
+		printf("%d", next);
+	}
+}
+
+int main() {
+	int i=200;
+	reverse(i);
+	printf("%d", 0);
+	return 0;
+}

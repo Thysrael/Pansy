@@ -1,0 +1,9 @@
+//13_sub2.sy
+//test sub
+const int a = 10;
+int main(){
+    int b;
+    b = 2;
+	printf("%d", b - a);
+    return b - a;
+}

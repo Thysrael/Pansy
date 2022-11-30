@@ -1,0 +1,59 @@
+//54_hidden_var.sy
+
+int b = 5;
+int c[4] = {6, 7, 8, 9};
+
+int main()
+{
+    int a;
+    a = 1;
+    {
+        int a;
+        a = 2;
+        {
+            a = 3;
+            printf("%d", a);
+        }
+        printf("%d", a);
+    }
+    printf("%d", a); printf("%d", 10);
+
+    while (a < 5) {
+        int a = 0;
+        a = a + 1;
+        if (a)
+            break;
+    }
+    printf("%d", a); printf("%d", 10);
+
+    {
+        {
+            {
+                {}
+            }
+            c[2] = 1;
+            {
+                int c[2][8] = {{0, 9, 0, 0, 0, 0, 0, 0}, {8, 3, 0, 0, 0, 0, 0, 0}};
+            }
+        }
+    }
+
+    {
+        int b = 2;
+        if (c[2]) {
+            int c[7][5] = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {2, 1, 8, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
+            printf("%d", c[b][0]);
+            printf("%d", c[b][1]);
+            printf("%d", c[b][2]);
+        }
+    }
+    printf("%d", 10);
+
+    printf("%d", b); printf("%d", 10);
+    printf("%d", c[0]); printf("%d", c[1]); printf("%d", c[2]); printf("%d", c[3]); printf("%d", 10);
+	printf("%d", 0);
+    return 0;
+}
+
+
+

@@ -1,0 +1,10 @@
+//02_var_defn3.sy
+//test local var define
+int main(){
+    int a, b0, _c;
+    a = 1;
+    b0 = 2;
+    _c = 3;
+	printf("%d", b0 + _c);
+    return b0 + _c;
+}

@@ -1,0 +1,8 @@
+//46_hex_defn.sy
+// test hexadecimal define
+int main(){
+    int a;
+    a = 15;
+	printf("%d", a);
+    return a;
+}

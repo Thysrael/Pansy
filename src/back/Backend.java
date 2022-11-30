@@ -14,7 +14,14 @@ public class Backend
     {
         IrParser irParser = new IrParser();
         this.objModule = irParser.parseModule();
-        rawMips = objModule.toString();
+        if (Config.rawMipsOutputToCmd)
+        {
+            rawMips = objModule.toString();
+        }
+        else
+        {
+            rawMips = null;
+        }
         RegAllocator regAllocator = new RegAllocator(objModule);
         regAllocator.process();
     }

@@ -1,0 +1,9 @@
+//11_add2.sy
+//test add
+int main(){
+    int a, b;
+    a = 10;
+    b = -1;
+	printf("%d", a + b);
+    return a + b;
+}

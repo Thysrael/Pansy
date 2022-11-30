@@ -60,7 +60,10 @@ public class MulExpNode extends CSTNode
                 }
             }
             valueIntUp = product;
-            valueUp = new ConstInt(valueIntUp);
+            if (!cannotCalValueUp)
+            {
+                valueUp = new ConstInt(valueIntUp);
+            }
         }
         else
         {

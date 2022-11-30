@@ -1,0 +1,9 @@
+//37_op_priority3.sy
+//test the priority of  unary operator and binary operator
+int main(){
+    int a, b;
+    a = 10;
+    b = 30;
+	printf("%d", a - -5 + b + -5);
+    return a - -5 + b + -5;
+}

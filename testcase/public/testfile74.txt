@@ -1,0 +1,9 @@
+//17_div.sy
+//test div
+int main(){
+    int a, b;
+    a = 10;
+    b = 5;
+	printf("%d", a / b);
+    return a / b;
+}

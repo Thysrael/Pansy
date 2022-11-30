@@ -240,7 +240,8 @@ public class ObjFunction
     }
 
     /**
-     * 本质是一个
+     * 本质是一个 DFS
+     * 当存在两个后继块的时候，优先放置 false 块
      * @param curBlock 当前块
      * @param phiWaitLists 记录 phi 的表
      */
@@ -265,7 +266,7 @@ public class ObjFunction
             MyPair<ObjBlock, ObjBlock> trueLookup = new MyPair<>(curBlock, succBlock);
             curBlock.insertPhiMovesTail(phiWaitLists.getOrDefault(trueLookup, new ArrayList<>()));
 
-            // 合并的条件是后继块还未被序列化，此时只需要将最后一条跳转指令移除掉就好了
+            // 合并的条件是后继块还未被序列化，此时只需要将当前块最后一条跳转指令移除掉就好了
             if (!hasSerial.contains(succBlock))
             {
                 curBlock.removeTailInstr();
@@ -330,7 +331,7 @@ public class ObjFunction
         // 移动栈指针
         if (totalStackSize != 0)
         {
-            funcSb.append("\tsub $sp,\t$sp,\t").append(totalStackSize).append("\n");
+            funcSb.append("\tadd $sp,\t$sp,\t").append(-totalStackSize).append("\n");
         }
 
         // 遍历所有基本块

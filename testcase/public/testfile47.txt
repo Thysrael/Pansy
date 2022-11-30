@@ -1,0 +1,30 @@
+//81_skip_spaces.sy
+// ???  // ????
+  				// ?????
+/*
+
+int main() {
+  int arr[100], i = 0, sum = 0;
+  int t;
+  t = getint();
+  while (t) {
+  	arr[i] = getint();
+    i = i + 1;
+    t = getint();
+  }*/
+int main() {
+   int t;
+  int arr[100], i = 0, sum = 0;
+  t = getint();
+  while (t) {
+  	arr[i] = getint();
+    i = i + 1;
+    t = getint();
+  }
+	while (i) {
+    i = i - 1;
+    sum = sum + arr[i];
+  }
+	printf("%d", sum % 79);
+  return sum % 79;
+}

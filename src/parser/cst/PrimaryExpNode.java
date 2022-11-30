@@ -44,13 +44,21 @@ public class PrimaryExpNode extends CSTNode
         if (canCalValueDown)
         {
             children.forEach(CSTNode::buildIr);
+            // 如果左值是一个 int 常量，那么就不用加载了
+            // 现在这种情况，说明是个指针，指针一般说明是局部变量，那么此时需要加载了
+            if (!(valueUp.getValueType() instanceof IntType))
+            {
+                valueUp = irBuilder.buildLoad(curBlock, valueUp);
+            }
         }
         else
         {
+            // 说明是表达式
             if (exp != null)
             {
                 exp.buildIr();
             }
+            // 说明是左值
             else if (lVal != null)
             {
                 // 这个变量控制不要加载
@@ -70,6 +78,7 @@ public class PrimaryExpNode extends CSTNode
                     }
                 }
             }
+            // 说明是数字
             else if (number != null)
             {
                 number.buildIr();

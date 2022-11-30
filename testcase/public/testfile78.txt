@@ -1,0 +1,8 @@
+//20_rem.sy
+//test rem
+int main(){
+    int a;
+    a = 10;
+	printf("%d", a % 3);
+    return a % 3;
+}

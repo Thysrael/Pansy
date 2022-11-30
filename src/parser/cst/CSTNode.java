@@ -70,6 +70,10 @@ public abstract class CSTNode
      */
     protected static boolean i32InRelUp;
     /**
+     * 综合属性：当常量不可被计算的时候，被置 true
+     */
+    protected static boolean cannotCalValueUp;
+    /**
      * 继承属性：说明进行全局初始化
      */
     protected static boolean globalInitDown = false;

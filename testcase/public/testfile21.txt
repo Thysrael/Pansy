@@ -1,0 +1,32 @@
+//72_hanoi.sy
+
+void move(int x, int y)
+{
+    printf("%d", x); printf("%d", 32); printf("%d", y); printf("%d", 44); printf("%d", 32);
+}
+
+void hanoi(int n, int one, int two, int three)
+{
+    if (n == 1)
+        move(one, three);
+    else {
+        hanoi(n - 1, one, three, two);
+        move(one, three);
+        hanoi(n - 1, two, one, three);
+    }
+}
+
+int main()
+{
+    int n;
+    n = getint();
+    while (n > 0) {
+        int t;
+        t = getint();
+        hanoi(t, 1, 2, 3);
+        printf("%d", 10);
+        n = n - 1;
+    }
+	printf("%d", 0);
+    return 0;
+}
