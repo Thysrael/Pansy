@@ -18,5 +18,5 @@ public class Config
     public static final boolean irBuildOutputToFile = true;
     public static final boolean mipsOutputToCmd = true;
     public static final boolean mipsOutputToFile = true;
-    public static final boolean rawMipsOutputToCmd = true;
+    public static final boolean rawMipsOutputToCmd = false;
 }
