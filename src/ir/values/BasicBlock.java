@@ -4,6 +4,7 @@ import ir.types.LabelType;
 import ir.values.instructions.Instruction;
 import util.MyList;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -19,6 +20,26 @@ public class BasicBlock extends Value
      */
     private final HashSet<BasicBlock> predecessors = new HashSet<>();
     private final HashSet<BasicBlock> successors = new HashSet<>();
+    /**
+     * 这个表示该基本块的支配者块
+     */
+    private final ArrayList<BasicBlock> domers = new ArrayList<>();
+    /**
+     * 表示该基本块直接支配的基本块
+     */
+    private final ArrayList<BasicBlock> idomees = new ArrayList<>();
+    /**
+     * 表示直接支配该基本块的基本块
+     */
+    private BasicBlock Idomer;
+    /**
+     * 在支配树中的深度
+     */
+    private int domLevel;
+    /**
+     * 支配边际，即刚好不被当前基本块支配的基本块
+     */
+    protected HashSet<BasicBlock> dominanceFrontier = new HashSet<>();
 
     /**
      * @param nameNum 基本块的名字，一定为数字编号
@@ -35,7 +56,7 @@ public class BasicBlock extends Value
      */
     public BasicBlock()
     {
-        super("LOOP_TMP", new LabelType(), Function.LOOP_TRASH);
+        super("%LOOP_TMP", new LabelType(), Function.LOOP_TRASH);
     }
 
     /**
@@ -147,6 +168,61 @@ public class BasicBlock extends Value
         {
             return instructions.getTail().getVal();
         }
+    }
+
+    public ArrayList<BasicBlock> getDomers()
+    {
+        return domers;
+    }
+
+    /**
+     * 返回当前块是否是 other 的支配者
+     * @param other 另一个块
+     * @return 是则为 true
+     */
+    public boolean isDominate(BasicBlock other)
+    {
+        return other.domers.contains(this);
+    }
+
+    public ArrayList<BasicBlock> getIdomees()
+    {
+        return idomees;
+    }
+
+    public void setIdomer(BasicBlock idomer)
+    {
+        Idomer = idomer;
+    }
+
+    public void setDomLevel(int domLevel)
+    {
+        this.domLevel = domLevel;
+    }
+
+    public HashSet<BasicBlock> getDominanceFrontier()
+    {
+        return dominanceFrontier;
+    }
+
+    public HashSet<BasicBlock> getSuccessors()
+    {
+        return successors;
+    }
+
+    public BasicBlock getIdomer()
+    {
+        return Idomer;
+    }
+
+    public ArrayList<Instruction> getInstructionsArray()
+    {
+        ArrayList<Instruction> instructionArrayList = new ArrayList<>();
+        for (MyList.MyNode<Instruction> instructionMyNode : instructions)
+        {
+            instructionArrayList.add(instructionMyNode.getVal());
+        }
+        return instructionArrayList;
     }
 
     /**

@@ -67,7 +67,7 @@ public abstract class User extends Value
 
     /**
      * 任何时候，User-used 关系都应该是双向的
-     * 这里会去掉原来 index 对应的 Value，并且接触 oldValue 的 use
+     * 这里会去掉原来 index 对应的 Value，并且解除 oldValue 的 use
      * @param index 索引
      * @param newValue 新 Value
      */

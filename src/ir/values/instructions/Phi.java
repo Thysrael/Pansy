@@ -10,7 +10,7 @@ public class Phi extends Instruction
 
     public Phi(int nameNum, DataType dataType, BasicBlock parent, int predecessorNum)
     {
-        super("%v" + nameNum, dataType, parent, new Value[predecessorNum * 2]);
+        super("%p" + nameNum, dataType, parent, new Value[predecessorNum * 2]);
         this.predecessorNum = predecessorNum;
     }
 
@@ -135,6 +135,6 @@ public class Phi extends Instruction
                     .append(getUsedValue(i + predecessorNum).getName()).append(" ], ");
         }
         s.delete(s.length() - 2, s.length());
-        return s.toString();// + " (id=" + getId() + ")";
+        return s.toString();
     }
 }

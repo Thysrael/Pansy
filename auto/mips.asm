@@ -15,402 +15,359 @@
 .end_macro
 
 .data
-p:
-.space	1024
+b1:
+.word	1
+.word	2
+.word	3
+.word	4
+.word	5
+
+c1:
+.word	1
+.word	2
+.word	3
+.word	4
+
+test:
+.word	0
+
+STR0:
+.asciiz	"20373275\n"
+
+STR1:
+.asciiz	"\n"
+
+STR2:
+.asciiz	"m:"
 
 .text
 main:
-	sub $sp,	$sp,	120
-Basic_b94_22:
-	# alloca from the offset: 0, size is: 52
-	addiu $a0,	$sp,	0
-	# alloca from the offset: 52, size is: 60
-	addiu $a1,	$sp,	52
-	# GEP base: %v95
+	add $sp,	$sp,	-52
+Basic_b24_7:
+	# alloca from the offset: 0, size is: 16
+	addiu $t1,	$sp,	0
+	# alloca from the offset: 16, size is: 20
+	addiu $t0,	$sp,	16
+	la $v0,	STR0
+	# GEP base: @STR0
 	# the first index
-	addiu $a2,	$a1,	0
-	# the second index
-	addiu $a2,	$a2,	0
-	li $v0,	8
-	sw $v0,	0($a2)
-	# GEP base: %v96
-	addiu $v0,	$a2,	4
-	li $v1,	7
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	8
-	li $v1,	4
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	12
-	li $v1,	1
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	16
-	li $v1,	2
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	20
-	li $v1,	7
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	24
-	sw $zero,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	28
-	li $v1,	1
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	32
-	li $v1,	9
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	36
-	li $v1,	3
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	40
-	li $v1,	4
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	44
-	li $v1,	8
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	48
-	li $v1,	3
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	52
-	li $v1,	7
-	sw $v1,	0($v0)
-	# GEP base: %v96
-	addiu $v0,	$a2,	56
-	sw $zero,	0($v0)
-	# GEP base: %v111
-	# the first index
-	addiu $a2,	$a0,	0
-	# the second index
-	addiu $a2,	$a2,	0
-	li $v0,	3
-	sw $v0,	0($a2)
-	# GEP base: %v112
-	addiu $v0,	$a2,	4
-	li $v1,	9
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v0,	$a2,	8
-	li $v1,	7
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v0,	$a2,	12
-	li $v1,	1
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v0,	$a2,	16
-	li $v1,	4
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v1,	$a2,	20
-	li $v0,	2
-	sw $v0,	0($v1)
-	# GEP base: %v112
-	addiu $v0,	$a2,	24
-	li $v1,	4
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v1,	$a2,	28
-	li $v0,	3
-	sw $v0,	0($v1)
-	# GEP base: %v112
-	addiu $v0,	$a2,	32
-	li $v1,	6
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v0,	$a2,	36
-	li $v1,	8
-	sw $v1,	0($v0)
-	# GEP base: %v112
-	addiu $v0,	$a2,	40
-	sw $zero,	0($v0)
-	# GEP base: %v112
-	addiu $v1,	$a2,	44
-	li $v0,	1
-	sw $v0,	0($v1)
-	# GEP base: %v112
-	addiu $v0,	$a2,	48
-	li $v1,	5
-	sw $v1,	0($v0)
-	# GEP base: %v95
-	# the first index
-	addiu $v1,	$a1,	0
-	# the second index
-	addiu $v1,	$v1,	0
-	# GEP base: %v111
-	# the first index
-	addiu $v0,	$a0,	0
+	addiu $v0,	$v0,	0
 	# the second index
 	addiu $v0,	$v0,	0
+	move $a0,	$v0
+	putstr
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	li $v1,	1
+	sw $v1,	0($v0)
+	# GEP base: %v34
+	addiu $v1,	$v0,	4
+	li $a0,	2
+	sw $a0,	0($v1)
+	# GEP base: %v34
+	addiu $v1,	$v0,	8
+	li $a0,	3
+	sw $a0,	0($v1)
+	# GEP base: %v34
+	addiu $v1,	$v0,	12
+	li $a0,	4
+	sw $a0,	0($v1)
+	# GEP base: %v34
+	addiu $v0,	$v0,	16
+	li $v1,	5
+	sw $v1,	0($v0)
+	# GEP base: %v39
+	# the first index
+	addiu $v0,	$t1,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	# GEP base: %v40
+	# the first index
+	addiu $v0,	$v0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	li $v1,	1
+	sw $v1,	0($v0)
+	# GEP base: %v41
+	addiu $v1,	$v0,	4
+	li $a0,	2
+	sw $a0,	0($v1)
+	# GEP base: %v41
+	addiu $v1,	$v0,	8
+	li $a0,	3
+	sw $a0,	0($v1)
+	# GEP base: %v41
+	addiu $v0,	$v0,	12
+	li $v1,	4
+	sw $v1,	0($v0)
+	jal f1
+	# GEP base: %v33
+	# the first index
+	addiu $a0,	$t0,	0
+	# the second index
+	addiu $a0,	$a0,	0
+	move $a0,	$a0
+	jal f5
+	move $v0,	$v0
+	# GEP base: %v39
+	# the first index
+	addiu $a0,	$t1,	0
+	# the second index
+	addiu $a0,	$a0,	0
+	move $a0,	$a0
+	jal f6
+	move $v0,	$v0
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	4
+	lw $v1,	0($v0)
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	8
+	lw $a1,	0($v0)
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	12
+	lw $a2,	0($v0)
 	move $a0,	$v1
-	li $a1,	15
-	move $a2,	$v0
-	li $a3,	13
-	jal longest_common_subseq
+	move $a1,	$a1
+	move $a2,	$a2
+	jal f7
+	move $v0,	$v0
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	lw $v0,	0($v0)
+	# GEP base: %v33
+	# the first index
+	addiu $v1,	$t0,	0
+	# the second index
+	addiu $v1,	$v1,	4
+	lw $v1,	0($v1)
+	move $a0,	$v0
+	move $a1,	$v1
+	jal f3
 	move $a0,	$v0
 	move $a0,	$a0
 	putint
+	la $v0,	STR1
+	# GEP base: @STR1
+	# the first index
+	addiu $a0,	$v0,	0
+	# the second index
+	addiu $a0,	$a0,	0
+	move $a0,	$a0
+	putstr
+	# GEP base: %v39
+	# the first index
+	addiu $v0,	$t1,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	# GEP base: %v66
+	# the first index
+	addiu $v0,	$v0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	lw $v0,	0($v0)
+	bne $v0,	1,	Basic_b64_10
+Basic_b65_11:
+Basic_b62_8:
+	getint
+	move $v1,	$v0
+	la $v0,	STR2
+	# GEP base: @STR2
+	# the first index
+	addiu $v0,	$v0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	move $a0,	$v0
+	putstr
+	move $a0,	$v1
+	putint
+	la $v0,	STR1
+	# GEP base: @STR1
+	# the first index
+	addiu $v0,	$v0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	move $a0,	$v0
+	putstr
+Basic_b63_9:
+	beq $zero,	0,	Basic_b76_13
+Basic_b77_14:
+	jal f4
+	move $v0,	$v0
+	beq $v0,	0,	Basic_b76_13
+Basic_b79_15:
+Basic_b75_12:
+Basic_b76_13:
+	la $v0,	test
+	lw $v0,	0($v0)
+	move $a0,	$v0
+	putint
+	la $v0,	STR1
+	# GEP base: @STR1
+	# the first index
+	addiu $v0,	$v0,	0
+	# the second index
+	addiu $v0,	$v0,	0
+	move $a0,	$v0
+	putstr
+	li $v0,	1
+	beq $v0,	0,	Basic_b86_18
+Basic_b87_19:
+Basic_b84_16:
+Basic_b85_17:
+	la $v0,	test
+	lw $v0,	0($v0)
+	move $a0,	$v0
+	putint
+	la $v0,	STR1
+	# GEP base: @STR1
+	# the first index
+	addiu $a0,	$v0,	0
+	# the second index
+	addiu $a0,	$a0,	0
+	move $a0,	$a0
+	putstr
+	li $v0,	-20
+	li $v0,	31
+	addiu $v0,	$v0,	1
+	li $v0,	-1
+	# %v99 mul 1
+	sll $v0,	$v0,	0
+	li $v0,	1
+	move $zero,	$zero
+	# 1 div 1
+	li $a0,	1
+	bge $a0,	0,	Basic_b108_23
+Basic_b109_24:
+Basic_b106_21:
+Basic_b107_22:
+	ble $a0,	0,	Basic_b121_28
+Basic_b122_29:
+Basic_b119_26:
+Basic_b120_27:
+	beq $a0,	0,	Basic_b133_32
+Basic_b134_33:
+Basic_b132_31:
+Basic_b133_32:
+	li $v0,	1
+	beq $v0,	0,	Basic_b139_35
+Basic_b140_36:
+Basic_b138_34:
+Basic_b139_35:
+Basic_b144_37:
+	bne $a0,	0,	Basic_b146_39
+Basic_b147_40:
+Basic_b145_38:
+	bne $zero,	1,	Basic_b152_42
+Basic_b153_43:
+Basic_b151_41:
+	j Basic_b144_37
+Basic_b152_42:
+Basic_b146_39:
 	li $v0,	0
-	add $sp, 	$sp,	120
+	add $sp, 	$sp,	52
 	li	$v0,	10
 	syscall
 
-MAX:
-	sw $v1,	-4($sp)
-	sub $sp,	$sp,	12
+Basic_b121_28:
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	8
+	lw $v1,	0($v0)
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	12
+	lw $v0,	0($v0)
+	bgt $v1,	$v0,	Basic_b120_27
+Basic_b126_30:
+	j Basic_b119_26
+Basic_b108_23:
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	4
+	lw $v1,	0($v0)
+	# GEP base: %v33
+	# the first index
+	addiu $v0,	$t0,	0
+	# the second index
+	addiu $v0,	$v0,	8
+	lw $v0,	0($v0)
+	blt $v1,	$v0,	Basic_b107_22
+Basic_b113_25:
+	j Basic_b106_21
+Basic_b86_18:
+	jal f4
+	move $v0,	$v0
+	beq $v0,	0,	Basic_b85_17
+Basic_b89_20:
+	j Basic_b84_16
+Basic_b64_10:
+	j Basic_b63_9
+f1:
 Basic_b0_0:
-	move $v0,	$a1
-	move $v1,	$a0
-	# alloca from the offset: 0, size is: 4
-	addiu $a1,	$sp,	0
-	# alloca from the offset: 4, size is: 4
-	addiu $a0,	$sp,	4
-	sw $v1,	0($a0)
-	sw $v0,	0($a1)
-	lw $v1,	0($a0)
-	lw $v0,	0($a1)
-	bne $v1,	$v0,	Basic_b5_3
-Basic_b6_4:
-Basic_b3_1:
-	lw $v0,	0($a0)
+		jr $ra
+
+f2:
+Basic_b1_1:
+	move $a0,	$a0
+	addiu $v0,	$a0,	1
+	li $v0,	0
+		jr $ra
+
+f3:
+Basic_b5_2:
+	move $a1,	$a1
+	move $a0,	$a0
+	addu $v0,	$a0,	$a1
 	move $v0,	$v0
-	add $sp, 	$sp,	12
-	lw $v1,	-4($sp)
-	jr $ra
-Basic_b5_3:
-	lw $v0,	0($a0)
-	lw $v1,	0($a1)
-	ble $v0,	$v1,	Basic_b13_7
-Basic_b14_8:
-Basic_b11_5:
-	lw $v0,	0($a0)
-	move $v0,	$v0
-	add $sp, 	$sp,	12
-	lw $v1,	-4($sp)
-	jr $ra
-Basic_b13_7:
-	lw $v0,	0($a1)
-	move $v0,	$v0
-	add $sp, 	$sp,	12
+		jr $ra
+
+f4:
+	sw $v1,	-4($sp)
+	add $sp,	$sp,	-4
+Basic_b13_3:
+	la $v0,	test
+	lw $v0,	0($v0)
+	addiu $v0,	$v0,	1
+	la $v1,	test
+	sw $v0,	0($v1)
+	li $v0,	1
+	add $sp, 	$sp,	4
 	lw $v1,	-4($sp)
 	jr $ra
 
-longest_common_subseq:
-	sw $v1,	-4($sp)
-	sw $t0,	-8($sp)
-	sw $t1,	-12($sp)
-	sw $t2,	-16($sp)
-	sw $t3,	-20($sp)
-	sw $t4,	-24($sp)
-	sw $t5,	-28($sp)
-	sw $t6,	-32($sp)
-	sw $ra,	-36($sp)
-	sub $sp,	$sp,	60
-Basic_b20_9:
-	move $a3,	$a3
-	move $v1,	$a2
-	move $a1,	$a1
-	move $v0,	$a0
-	# alloca from the offset: 0, size is: 4
-	addiu $t0,	$sp,	0
-	# alloca from the offset: 4, size is: 4
-	addiu $t1,	$sp,	4
-	# alloca from the offset: 8, size is: 4
-	addiu $t2,	$sp,	8
-	# alloca from the offset: 12, size is: 4
-	addiu $t3,	$sp,	12
-	# alloca from the offset: 16, size is: 4
-	addiu $t4,	$sp,	16
-	# alloca from the offset: 20, size is: 4
-	addiu $t5,	$sp,	20
-	sw $v0,	0($t5)
-	sw $a1,	0($t4)
-	sw $v1,	0($t3)
-	sw $a3,	0($t2)
+f5:
+Basic_b16_4:
 	li $v0,	1
-	sw $v0,	0($t1)
-Basic_b27_10:
-	lw $v0,	0($t1)
-	lw $v1,	0($t4)
-	bgt $v0,	$v1,	Basic_b29_12
-Basic_b30_13:
-Basic_b28_11:
-	li $v0,	1
-	sw $v0,	0($t0)
-Basic_b34_14:
-	lw $v0,	0($t0)
-	lw $v1,	0($t2)
-	bgt $v0,	$v1,	Basic_b36_16
-Basic_b37_17:
-Basic_b35_15:
-	lw $v0,	0($t5)
-	lw $v1,	0($t1)
-	addiu $v1,	$v1,	-1
-	# GEP base: %v45
-	# %v47 mul 4
-	sll $v1,	$v1,	2
-	addu $v1,	$v1,	$v0
-	lw $a0,	0($v1)
-	lw $v0,	0($t3)
-	lw $v1,	0($t0)
-	addiu $v1,	$v1,	-1
-	# GEP base: %v50
-	# %v52 mul 4
-	sll $v1,	$v1,	2
-	addu $v1,	$v1,	$v0
-	lw $v0,	0($v1)
-	bne $a0,	$v0,	Basic_b43_20
-Basic_b44_21:
-Basic_b41_18:
-	lw $v0,	0($t1)
-	la $v1,	p
-	# GEP base: @p
-	# the first index
-	addiu $v1,	$v1,	0
-	# the second index
-	# %v56 mul 64
-	sll $at,	$v0,	6
-	addu $v1,	$at,	$v1
-	lw $v0,	0($t0)
-	# GEP base: %v57
-	# the first index
-	addiu $v1,	$v1,	0
-	# the second index
-	# %v58 mul 4
-	sll $at,	$v0,	2
-	addu $v1,	$at,	$v1
-	lw $v0,	0($t1)
-	addiu $a0,	$v0,	-1
-	la $v0,	p
-	# GEP base: @p
-	# the first index
-	addiu $v0,	$v0,	0
-	# the second index
-	# %v61 mul 64
-	sll $at,	$a0,	6
-	addu $v0,	$at,	$v0
-	lw $a0,	0($t0)
-	addiu $a0,	$a0,	-1
-	# GEP base: %v62
-	# the first index
-	addiu $v0,	$v0,	0
-	# the second index
-	# %v64 mul 4
-	sll $at,	$a0,	2
-	addu $v0,	$at,	$v0
-	lw $v0,	0($v0)
-	addiu $v0,	$v0,	1
-	sw $v0,	0($v1)
-Basic_b42_19:
-	lw $v0,	0($t0)
-	addiu $v0,	$v0,	1
-	sw $v0,	0($t0)
-	j Basic_b34_14
-Basic_b43_20:
-	lw $v1,	0($t1)
-	la $v0,	p
-	# GEP base: @p
-	# the first index
-	addiu $v0,	$v0,	0
-	# the second index
-	# %v68 mul 64
-	sll $at,	$v1,	6
-	addu $v0,	$at,	$v0
-	lw $v1,	0($t0)
-	# GEP base: %v69
-	# the first index
-	addiu $t6,	$v0,	0
-	# the second index
-	# %v70 mul 4
-	sll $at,	$v1,	2
-	addu $t6,	$at,	$t6
-	lw $v0,	0($t1)
-	addiu $v0,	$v0,	-1
-	la $v1,	p
-	# GEP base: @p
-	# the first index
-	addiu $v1,	$v1,	0
-	# the second index
-	# %v73 mul 64
-	sll $at,	$v0,	6
-	addu $v1,	$at,	$v1
-	lw $v0,	0($t0)
-	# GEP base: %v74
-	# the first index
-	addiu $v1,	$v1,	0
-	# the second index
-	# %v75 mul 4
-	sll $at,	$v0,	2
-	addu $v1,	$at,	$v1
-	lw $a0,	0($v1)
-	lw $v1,	0($t1)
-	la $v0,	p
-	# GEP base: @p
-	# the first index
-	addiu $v0,	$v0,	0
-	# the second index
-	# %v78 mul 64
-	sll $at,	$v1,	6
-	addu $v0,	$at,	$v0
-	lw $v1,	0($t0)
-	addiu $v1,	$v1,	-1
-	# GEP base: %v79
-	# the first index
-	addiu $v0,	$v0,	0
-	# the second index
-	# %v81 mul 4
-	sll $at,	$v1,	2
-	addu $v0,	$at,	$v0
-	lw $a1,	0($v0)
-	move $a0,	$a0
-	move $a1,	$a1
-	jal MAX
-	move $v0,	$v0
-	sw $v0,	0($t6)
-	j Basic_b42_19
-Basic_b36_16:
-	lw $v0,	0($t1)
-	addiu $v0,	$v0,	1
-	sw $v0,	0($t1)
-	j Basic_b27_10
-Basic_b29_12:
-	lw $v0,	0($t4)
-	la $v1,	p
-	# GEP base: @p
-	# the first index
-	addiu $v1,	$v1,	0
-	# the second index
-	# %v89 mul 64
-	sll $at,	$v0,	6
-	addu $v1,	$at,	$v1
-	lw $v0,	0($t2)
-	# GEP base: %v90
-	# the first index
-	addiu $v1,	$v1,	0
-	# the second index
-	# %v91 mul 4
-	sll $at,	$v0,	2
-	addu $v1,	$at,	$v1
-	lw $v0,	0($v1)
-	move $v0,	$v0
-	add $sp, 	$sp,	60
-	lw $v1,	-4($sp)
-	lw $t0,	-8($sp)
-	lw $t1,	-12($sp)
-	lw $t2,	-16($sp)
-	lw $t3,	-20($sp)
-	lw $t4,	-24($sp)
-	lw $t5,	-28($sp)
-	lw $t6,	-32($sp)
-	lw $ra,	-36($sp)
-	jr $ra
+		jr $ra
+
+f6:
+Basic_b18_5:
+	li $v0,	0
+		jr $ra
+
+f7:
+Basic_b20_6:
+	li $v0,	0
+		jr $ra
 

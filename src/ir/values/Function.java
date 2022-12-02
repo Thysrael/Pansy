@@ -51,7 +51,7 @@ public class Function extends Value
     private Function()
     {
         super("@LOOP_TMP", null, null);
-        isBuiltin = false;
+        isBuiltin = true;
         returnType = null;
     }
 

@@ -49,7 +49,7 @@ public class WhileStmtNode extends CSTNode
         // while 涉及 3 个块
         // cond 块负责条件判断和跳转，如果是 true 则进入 bodyBlock，如果是 false 就进入 nextBlock，结束 while 语句
         BasicBlock condBlock = irBuilder.buildBlock(curFunc);
-        // body 块是循环的主题
+        // body 块是循环的主体
         BasicBlock bodyBlock = irBuilder.buildBlock(curFunc);
         // nextBlock 意味着循环的结束
         BasicBlock nextBlock = irBuilder.buildBlock(curFunc);

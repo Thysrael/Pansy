@@ -98,16 +98,20 @@ public abstract class Value
         users.remove(user);
     }
 
+    /**
+     * 调用者作为一个被使用者，告诉它的使用者，它要被换成 replacement 了
+     * @param replacement 替代品
+     */
     public void replaceAllUsesWith(Value replacement)
     {
-        for (User user : users)
+        ArrayList<User> usersClone = new ArrayList<>(users);
+        for (User user : usersClone)
         {
             for (int i = 0; i < user.getNumOps(); i++)
             {
                 if (user.getUsedValue(i) == this)
                 {
                     user.setUsedValue(i, replacement);
-                    replacement.addUser(user);
                 }
             }
         }

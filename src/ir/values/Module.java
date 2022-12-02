@@ -63,16 +63,6 @@ public class Module extends Value
         return functions;
     }
 
-    public ArrayList<Function> getFunctionsArray()
-    {
-        ArrayList<Function> result = new ArrayList<>();
-        for (MyList.MyNode<Function> functionMyNode : functions)
-        {
-            result.add(functionMyNode.getVal());
-        }
-        return result;
-    }
-
     public MyList<GlobalVariable> getGlobalVariables()
     {
         return globalVariables;

@@ -223,6 +223,8 @@ public class IrBuilder
     public void buildBr(BasicBlock parent, BasicBlock target)
     {
         Br br = new Br(parent, target);
+        //System.out.println(parent.getName());
+        //System.out.println(br);
         parent.insertTail(br);
     }
 

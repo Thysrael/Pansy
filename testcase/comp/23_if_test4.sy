@@ -14,5 +14,7 @@ int if_ifElse_() {
 }
 
 int main(){
-  return (if_ifElse_());
+  // 25
+  printf("%d\n", if_ifElse_());
+  return 0;
 }

@@ -4,6 +4,7 @@ int b = 5;
 
 int main(){
     int a = 5;
-    printf("ans is %d", a + b);
+    // 10
+    printf("ans is %d\n", a + b);
     return a + b;
 }

@@ -19,4 +19,5 @@ public class Config
     public static final boolean mipsOutputToCmd = true;
     public static final boolean mipsOutputToFile = true;
     public static final boolean rawMipsOutputToCmd = false;
+    public static final boolean openMem2reg = true;
 }
