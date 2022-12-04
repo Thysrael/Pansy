@@ -262,7 +262,7 @@ public class BasicBlock extends Value
     {
         if (parentLoop == null)
         {
-            return 1;
+            return 0;
         }
         return parentLoop.getLoopDepth();
     }

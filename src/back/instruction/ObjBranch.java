@@ -78,6 +78,16 @@ public class ObjBranch extends ObjInstr
         this.src2 = src2;
     }
 
+    public ObjBlock getTarget()
+    {
+        return target;
+    }
+
+    public boolean hasNoCond()
+    {
+        return cond.equals(ANY);
+    }
+
     @Override
     public void replaceReg(ObjOperand oldReg, ObjOperand newReg)
     {

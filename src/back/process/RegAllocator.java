@@ -229,11 +229,11 @@ public class RegAllocator
                 // 启发式算法的依据，用于后面挑选出溢出节点
                 for (ObjReg objReg : regDef)
                 {
-                    loopDepths.put(objReg, block.getLoopDepth());
+                    loopDepths.put(objReg, block.getLoopDepth() + 1);
                 }
                 for (ObjReg objReg : regUse)
                 {
-                    loopDepths.put(objReg, block.getLoopDepth());
+                    loopDepths.put(objReg, block.getLoopDepth() + 1);
                 }
 
                 // 这里的删除是为了给前一个指令一个交代（倒序遍历），说明这个指令不再存活了（因为在这个指令被遍历了）
@@ -575,11 +575,12 @@ public class RegAllocator
      */
     private void selectSpill()
     {
+        double magicNum = 1.414;
         // TODO 这里太慢了，要不然直接挑第一个吧
         ObjOperand m = spillWorklist.stream().max((l, r) ->
         {
-            double value1 = degree.getOrDefault(l, 0).doubleValue() / Math.pow(1.414, loopDepths.getOrDefault(l, 0));
-            double value2 = degree.getOrDefault(r, 0).doubleValue() / Math.pow(1.414, loopDepths.getOrDefault(l, 0));
+            double value1 = degree.getOrDefault(l, 0).doubleValue() / Math.pow(magicNum, loopDepths.getOrDefault(l, 0));
+            double value2 = degree.getOrDefault(r, 0).doubleValue() / Math.pow(magicNum, loopDepths.getOrDefault(l, 0));
 
             return Double.compare(value1, value2);
         }).get();

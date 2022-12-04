@@ -1,6 +1,7 @@
 package back.instruction;
 
 import back.operand.ObjOperand;
+import back.operand.ObjPhyReg;
 import back.operand.ObjReg;
 import util.MyList;
 
@@ -80,6 +81,36 @@ public abstract class ObjInstr
             removeUse(oldReg);
         }
         addUse(newReg);
+    }
+
+    /**
+     * 只有 branch 指令（条件跳转）时候有这个可能为 false
+     * @return 当无条件的时候，返回 true
+     */
+    public boolean hasNoCond()
+    {
+        return true;
+    }
+
+    /**
+     * 表示因此改变的寄存器
+     * 可能要比 define 多一些，这是因为寄存器分配只是分析变量
+     */
+    public ArrayList<ObjReg> getWriteRegs()
+    {
+        return new ArrayList<>(regDef);
+    }
+
+    public ArrayList<ObjReg> getReadRegs()
+    {
+        ArrayList<ObjReg> readRegs = regUse;
+
+        if (this instanceof ObjCall)
+        {
+            readRegs.add(ObjPhyReg.SP);
+        }
+
+        return readRegs;
     }
 
     public void replaceReg(ObjOperand oldReg, ObjOperand newReg)

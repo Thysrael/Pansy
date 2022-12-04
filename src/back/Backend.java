@@ -2,6 +2,7 @@ package back;
 
 import back.component.ObjModule;
 import back.process.IrParser;
+import back.process.Peephole;
 import back.process.RegAllocator;
 import driver.Config;
 
@@ -24,6 +25,8 @@ public class Backend
         }
         RegAllocator regAllocator = new RegAllocator(objModule);
         regAllocator.process();
+        Peephole peephole = new Peephole(objModule);
+        peephole.process();
     }
 
     public String display()
