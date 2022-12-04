@@ -114,4 +114,22 @@ public class BuildCFG implements Pass
             }
         }
     }
+
+    private void printCFG(Function curFunction)
+    {
+        for (BasicBlock basicBlock : curFunction.getBasicBlocksArray())
+        {
+            System.out.println("blockName: " + basicBlock.getName());
+            System.out.println("pred: ");
+            for (BasicBlock predecessor : basicBlock.getPredecessors())
+            {
+                System.out.println("\t" + predecessor.getName());
+            }
+            System.out.println("succ: ");
+            for (BasicBlock successor : basicBlock.getSuccessors())
+            {
+                System.out.println("\t" + successor.getName());
+            }
+        }
+    }
 }

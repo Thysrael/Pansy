@@ -288,6 +288,14 @@ public class BasicBlock extends Value
         }
     }
 
+    /**
+     * 移除基本块
+     */
+    public void eraseFromParent()
+    {
+        getParent().removeBlock(this);
+    }
+
     @Override
     public String toString()
     {

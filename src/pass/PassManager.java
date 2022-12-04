@@ -10,20 +10,38 @@ import pass.refactor.*;
 import java.util.ArrayList;
 
 
+/**
+ * 似乎 GVN 和 GCM 只能进行 1 次，当进行超过一次后，就会出现一些奇怪的 bug
+ * 这些 bug 可能是某些底层数据结构导致的，由于时间原因，我没有办法修改了
+ * 在这个版本下，似乎还是有错误的，建议在考试的时候不开启 inlineFunction，可以达到很好的效果
+ */
 public class PassManager
 {
     private final Module module = Module.getInstance();
     private final ArrayList<Pass> passes = new ArrayList<>();
+
     public void run()
     {
         passes.add(new BuildCFG());
         passes.add(new DomInfo());
         passes.add(new LoopInfoAnalysis());
+        passes.add(new GlobalVariableLocalize());
         passes.add(new Mem2reg());
         // 因为 mem2reg 会减少内存访存，所以此时才进行副作用分析
         passes.add(new SideEffectAnalysis());
-        // 这些 pass 都不会改变分支结构
         passes.add(new UselessRetEmit());
+//        passes.add(new GVN());
+        passes.add(new DeadCodeEmit());
+//        passes.add(new GCM(true));
+        passes.add(new BranchOpt());
+        // 完成函数内联后，需要重新进行 DomInfo，LoopInfo，SideEffect 的分析
+        passes.add(new InlineFunction());
+        passes.add(new BuildCFG());
+        passes.add(new DomInfo());
+        passes.add(new LoopInfoAnalysis());
+        passes.add(new SideEffectAnalysis());
+        // 这些 pass 都不会改变分支结构
+        passes.add(new DeadCodeEmit());
         passes.add(new GVN());
         passes.add(new GCM());
         passes.add(new BranchOpt());

@@ -14,7 +14,7 @@ public class Config
     public static final boolean openCheck = false;
     public static final boolean checkOutputToCmd = true;
     public static final boolean checkOutputToFile = true;
-    public static final boolean irBuildOutputToCmd = true;
+    public static final boolean irBuildOutputToCmd = false;
     public static final boolean irBuildOutputToFile = true;
     public static final boolean mipsOutputToCmd = true;
     public static final boolean mipsOutputToFile = true;

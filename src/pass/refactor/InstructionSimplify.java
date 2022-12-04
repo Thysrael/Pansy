@@ -117,11 +117,26 @@ public class InstructionSimplify
                 }
                 else if (instruction instanceof Sdiv)
                 {
-                    ansVal = num0.getValue() / num1.getValue();
+                    // 按照常理推断，这里必然是不可能的，但是因为在函数内联的时候，直接用实参替换了形参，导致出现了这种情况
+                    if (num1.getValue() != 0)
+                    {
+                        ansVal = num0.getValue() / num1.getValue();
+                    }
+                    else
+                    {
+                        return instruction;
+                    }
                 }
                 else if (instruction instanceof Srem)
                 {
-                    ansVal = num0.getValue() % num1.getValue();
+                    if (num1.getValue() != 0)
+                    {
+                        ansVal = num0.getValue() % num1.getValue();
+                    }
+                    else
+                    {
+                        return instruction;
+                    }
                 }
                 else
                 {

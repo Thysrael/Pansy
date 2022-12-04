@@ -91,7 +91,7 @@ public class GVN implements Pass
         MyList.MyNode<Instruction> curInstrNode = block.getInstructions().getHead();
         MyList.MyNode<Instruction> endInstNode = block.getInstructions().getTail().getPre();
         // 去掉不必要的 phi
-        block.reducePhi(true);
+//        block.reducePhi(true);
 
         // 这个循环是为了处理 phi
         while (curInstrNode != null)
@@ -168,9 +168,7 @@ public class GVN implements Pass
         if (canBeNumbered(instruction))
         {
             // 首先进行常数化简
-            System.out.println(instruction);
             Value simplifier = InstructionSimplify.simplify(instruction);
-            System.out.println(simplifier);
             // 如果还是指令，说明没有被常数化简，但是还可以进行查表化简
             if (simplifier instanceof Instruction)
             {

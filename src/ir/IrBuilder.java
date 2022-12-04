@@ -1,5 +1,6 @@
 package ir;
 
+import ir.types.DataType;
 import ir.types.FunctionType;
 import ir.types.ValueType;
 import ir.types.VoidType;
@@ -34,8 +35,12 @@ public class IrBuilder
     private static int nameNumCounter = 0;
 
     private static int strNumCounter = 0;
+    /**
+     * 用于给 phi 一个名字，可以从 0 开始编号，因为 phi 一定是 %p1 之类的
+     */
+    public static int phiNameNum = 0;
 
-    private static HashMap<String, GlobalVariable> globalStrPool = new HashMap<>();
+    private static final HashMap<String, GlobalVariable> globalStrPool = new HashMap<>();
 
     public void buildModule(CSTNode root)
     {
@@ -90,6 +95,14 @@ public class IrBuilder
         int name = nameNumCounter++;
         BasicBlock ans = new BasicBlock(name, function);
         function.insertTail(ans);
+        return ans;
+    }
+
+    public BasicBlock buildBlockAfter(Function function, BasicBlock after)
+    {
+        int name = nameNumCounter++;
+        BasicBlock ans = new BasicBlock(name, function);
+        function.insertAfter(ans, after);
         return ans;
     }
     public Add buildAdd(BasicBlock parentBB, Value src1, Value src2)
@@ -220,12 +233,25 @@ public class IrBuilder
         parent.insertTail(ans);
     }
 
-    public void buildBr(BasicBlock parent, BasicBlock target)
+    public Br buildBr(BasicBlock parent, BasicBlock target)
     {
         Br br = new Br(parent, target);
-        //System.out.println(parent.getName());
-        //System.out.println(br);
         parent.insertTail(br);
+        return br;
+    }
+
+    public Phi buildPhi(DataType type, BasicBlock parent)
+    {
+        Phi phi = new Phi(phiNameNum++, type, parent, parent.getPredecessors().size());
+        parent.insertHead(phi);
+        return phi;
+    }
+
+    public Phi buildPhi(DataType type, BasicBlock parent, int predNum)
+    {
+        Phi phi = new Phi(phiNameNum++, type, parent, predNum);
+        parent.insertHead(phi);
+        return phi;
     }
 
     public void buildBr(BasicBlock parent, Value condition, BasicBlock trueBlock, BasicBlock falseBlock)
@@ -233,6 +259,20 @@ public class IrBuilder
         Br br = new Br(parent, condition, trueBlock, falseBlock);
         parent.insertTail(br);
     }
+
+    public void buildBrBeforeInstr(BasicBlock parent, BasicBlock nextBlock, Instruction beforeInstr)
+    {
+        Br ans = new Br(parent, nextBlock);
+        parent.insertBefore(ans, beforeInstr);
+    }
+
+    public Store buildStoreBeforeInstr(BasicBlock parent, Value val, Value location, Instruction beforeInstr)
+    {
+        Store ans = new Store(parent, val, location);
+        parent.insertBefore(ans, beforeInstr);
+        return ans;
+    }
+
 
     public Call buildCall(BasicBlock parent, Function function, ArrayList<Value> args)
     {

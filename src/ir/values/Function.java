@@ -161,6 +161,38 @@ public class Function extends Value
         return (FunctionType) super.getValueType();
     }
 
+    public void insertAfter(BasicBlock block, BasicBlock after)
+    {
+        MyList.MyNode<BasicBlock> afterMyNode = findNode(after);
+        if (afterMyNode == null)
+        {
+            throw new AssertionError("can't find after block!");
+        }
+        new MyList.MyNode<>(block).insertAfter(afterMyNode);
+    }
+
+    public void insertBefore(BasicBlock block, BasicBlock before)
+    {
+        MyList.MyNode<BasicBlock> beforeMyNode = findNode(before);
+        if (beforeMyNode == null)
+        {
+            throw new AssertionError("can't find after block!");
+        }
+        new MyList.MyNode<>(block).insertBefore(beforeMyNode);
+    }
+
+    private MyList.MyNode<BasicBlock> findNode(BasicBlock block)
+    {
+        for (MyList.MyNode<BasicBlock> blockMyNode : blocks)
+        {
+            if (blockMyNode.getVal().equals(block))
+            {
+                return blockMyNode;
+            }
+        }
+        return null;
+    }
+
     /**
      * 这显然是低效的，其实应该考虑将 node 记录在案的
      * 否则删除就成了 O(n) 了
@@ -172,6 +204,18 @@ public class Function extends Value
             if (functionMyNode.getVal().equals(this))
             {
                 functionMyNode.removeSelf();
+                return;
+            }
+        }
+    }
+
+    public void removeBlock(BasicBlock bb)
+    {
+        for (MyList.MyNode<BasicBlock> blockMyNode : blocks)
+        {
+            if (blockMyNode.getVal().equals(bb))
+            {
+                blockMyNode.removeSelf();
                 return;
             }
         }

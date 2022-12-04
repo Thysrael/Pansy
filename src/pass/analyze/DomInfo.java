@@ -22,11 +22,7 @@ public class DomInfo implements Pass
         for (MyList.MyNode<Function> funcNode : module.getFunctions())
         {
             Function func = funcNode.getVal();
-            if (!func.isBuiltin())
-            {
-                computeDominanceInfo(func);
-                computeDominanceFrontier(func);
-            }
+            resetDomInfo(func);
         }
     }
 

@@ -6,7 +6,11 @@ import ir.values.Value;
 
 import java.util.ArrayList;
 
-
+/**
+ * FIXME
+ * 最失败的设计，如果让 Br 在新建的时候就维护 CFG 图，就会出现过于耦联的结果
+ * 比如说 break 的时候会导致一个正常的块有一个 TMP_BLOCK 的前驱。
+ */
 public class Br extends TerInstruction
 {
     private final boolean hasCondition;

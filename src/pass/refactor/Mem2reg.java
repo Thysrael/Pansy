@@ -1,6 +1,7 @@
 package pass.refactor;
 
 import driver.Config;
+import ir.IrBuilder;
 import ir.types.DataType;
 import ir.values.*;
 import ir.values.Module;
@@ -35,10 +36,6 @@ public class Mem2reg implements Pass
      */
     private final HashSet<BasicBlock> definingBlocks = new HashSet<>();
     private Function function;
-    /**
-     * 用于给 phi 一个名字，可以从 0 开始编号，因为 phi 一定是 %p1 之类的
-     */
-    private int phiNameNum = 0;
     /**
      * 这里面记录当前函数可以被提升的 allocas
      */
@@ -447,8 +444,9 @@ public class Mem2reg implements Pass
     {
         for (BasicBlock phiBlock : phiBlocks)
         {
-            Phi phi = new Phi(phiNameNum++, (DataType) alloca.getAllocatedType(), phiBlock, phiBlock.getPredecessors().size());
-            phiBlock.insertHead(phi);
+//            Phi phi = new Phi(phiNameNum++, (DataType) alloca.getAllocatedType(), phiBlock, phiBlock.getPredecessors().size());
+//            phiBlock.insertHead(phi);
+            Phi phi = IrBuilder.getInstance().buildPhi((DataType) alloca.getAllocatedType(), phiBlock);
             phi2Alloca.put(phi, alloca);
         }
     }

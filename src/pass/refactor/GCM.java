@@ -136,6 +136,7 @@ public class GCM implements Pass
         // between user and usedValue, so we need to discuss
         // both instruction's users and its usedValue
         // 遍历所有使用这个指令的指令
+
         for (User user : instruction.getUsers())
         {
             if (user instanceof Instruction)
