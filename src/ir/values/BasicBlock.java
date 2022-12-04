@@ -2,6 +2,8 @@ package ir.values;
 
 import ir.types.LabelType;
 import ir.values.instructions.Instruction;
+import ir.values.instructions.Phi;
+import pass.analyze.Loop;
 import util.MyList;
 
 import java.util.ArrayList;
@@ -39,8 +41,12 @@ public class BasicBlock extends Value
     /**
      * 支配边际，即刚好不被当前基本块支配的基本块
      */
-    protected HashSet<BasicBlock> dominanceFrontier = new HashSet<>();
-
+    private final HashSet<BasicBlock> dominanceFrontier = new HashSet<>();
+    /**
+     * 当前块所在的循环
+     * 如果为 null，那么说明当前块不在循环中
+     */
+    private Loop parentLoop;
     /**
      * @param nameNum 基本块的名字，一定为数字编号
      * @param parent  基本块所在函数
@@ -200,6 +206,11 @@ public class BasicBlock extends Value
         this.domLevel = domLevel;
     }
 
+    public int getDomLevel()
+    {
+        return domLevel;
+    }
+
     public HashSet<BasicBlock> getDominanceFrontier()
     {
         return dominanceFrontier;
@@ -242,10 +253,39 @@ public class BasicBlock extends Value
         return startNameNum;
     }
 
-    // TODO
+    /**
+     * 获得循环深度
+     * 如果不在循环中，则深度为 1
+     * @return 循环深度
+     */
     public int getLoopDepth()
     {
-        return 1;
+        if (parentLoop == null)
+        {
+            return 1;
+        }
+        return parentLoop.getLoopDepth();
+    }
+
+    public void setParentLoop(Loop parentLoop)
+    {
+        this.parentLoop = parentLoop;
+    }
+
+    public Loop getParentLoop()
+    {
+        return parentLoop;
+    }
+
+    public void reducePhi(boolean reducePhi)
+    {
+        for (Instruction instruction : getInstructionsArray())
+        {
+            if (instruction instanceof Phi)
+            {
+                ((Phi) instruction).removeIfRedundant(reducePhi);
+            }
+        }
     }
 
     @Override

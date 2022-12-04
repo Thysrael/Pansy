@@ -97,6 +97,16 @@ public class Module extends Value
         throw new AssertionError("function " + name + " not found!");
     }
 
+    public ArrayList<Function> getFunctionsArray()
+    {
+        ArrayList<Function> result = new ArrayList<>();
+        for (MyList.MyNode<Function> functionMyNode : functions)
+        {
+            result.add(functionMyNode.getVal());
+        }
+        return result;
+    }
+
     @Override
     public String toString()
     {

@@ -6,9 +6,13 @@ import ir.values.Module;
 import pass.Pass;
 import util.MyList;
 
-import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.*;
 
+/**
+ * 这个 pass 十分的丑陋，
+ * 是因为计算支配树的需求时时刻刻都存在，有的时候只对特定的函数
+ * 所以无法每次都是对所有函数都遍历
+ */
 public class DomInfo implements Pass
 {
     @Override
@@ -26,11 +30,20 @@ public class DomInfo implements Pass
         }
     }
 
+    public static void resetDomInfo(Function func)
+    {
+        if (!func.isBuiltin())
+        {
+            computeDominanceInfo(func);
+            computeDominanceFrontier(func);
+        }
+    }
+
     /**
      * 计算支配信息
      * @param function 待分析的函数
      */
-    private void computeDominanceInfo(Function function)
+    public static void computeDominanceInfo(Function function)
     {
         // entry 入口块
         BasicBlock entry = function.getBasicBlocks().getHead().getVal();
@@ -166,7 +179,7 @@ public class DomInfo implements Pass
      *
      * @param function 当前函数
      */
-    private void computeDominanceFrontier(Function function)
+    public static void computeDominanceFrontier(Function function)
     {
         // 清空原来的支配边界
         for (MyList.MyNode<BasicBlock> blockNode : function.getBasicBlocks())
@@ -190,11 +203,6 @@ public class DomInfo implements Pass
                 }
             }
         }
-
-        for (MyList.MyNode<BasicBlock> node : function.getBasicBlocks())
-        {
-            BasicBlock block = node.getVal();
-        }
     }
 
     /**
@@ -210,5 +218,43 @@ public class DomInfo implements Pass
         {
             computeDominanceLevel(succ, domLevel + 1);
         }
+    }
+
+    /**
+     * 这个方法会获得支配树的后序遍历序列
+     * @param func 待分析函数
+     */
+    public static ArrayList<BasicBlock> computeDominanceTreePostOder(Function func)
+    {
+        // 后序序列
+        ArrayList<BasicBlock> postOder = new ArrayList<>();
+        // 如果后继全部加进去了，那么就是 true，只有这样，才可以开始访问当前节点
+        HashSet<BasicBlock> hasAddedSuccessor = new HashSet<>();
+        Stack<BasicBlock> stack = new Stack<>();
+        // 这是因为头块一定也是支配树的根节点
+        stack.add(func.getHeadBlock());
+        // 栈式 dfs
+        while (!stack.isEmpty())
+        {
+            BasicBlock parent = stack.peek();
+            // 子节点被遍历完成
+            if (hasAddedSuccessor.contains(parent))
+            {
+                // 那么就加入结果
+                postOder.add(parent);
+                stack.pop();
+                continue;
+            }
+            // 遍历 idomee
+            for (BasicBlock idomee : parent.getIdomees())
+            {
+                stack.push(idomee);
+            }
+
+            // 子节点已经全部入栈，表示已经遍历完成了
+            hasAddedSuccessor.add(parent);
+        }
+
+        return postOder;
     }
 }

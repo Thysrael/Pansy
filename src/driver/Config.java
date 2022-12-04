@@ -20,4 +20,13 @@ public class Config
     public static final boolean mipsOutputToFile = true;
     public static final boolean rawMipsOutputToCmd = false;
     public static final boolean openMem2reg = true;
+    public static final boolean openURE = true;
+    /**
+     * 因为 GVN 会进行激进的代码移动，所以需要 GCM 进行调整
+     * 所以开启 GVN 的时候一定要开启 GCM
+     */
+    public static final boolean openGVN = true;
+    public static final boolean openGCM = true;
+    public static final boolean openInlineFunction = true;
+    public static final boolean openBranchOpt = true;
 }

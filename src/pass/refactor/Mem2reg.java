@@ -7,7 +7,6 @@ import ir.values.Module;
 import ir.values.constants.ConstInt;
 import ir.values.instructions.*;
 import pass.Pass;
-import pass.analyze.DomInfo;
 import util.MyList;
 import util.MyPair;
 
@@ -115,8 +114,6 @@ public class Mem2reg implements Pass
                 for (User user : loadClone)
                 {
                     Load load = (Load) user;
-                    System.out.println(alloca);
-                    System.out.println(load);
                     load.replaceAllUsesWith(ConstInt.ZERO);
                     load.dropAllOperands();
                     load.eraseFromParent();

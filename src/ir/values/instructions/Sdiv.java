@@ -12,6 +12,12 @@ public class Sdiv extends BinInstruction
     }
 
     @Override
+    public boolean isCommutative()
+    {
+        return false;
+    }
+
+    @Override
     public String toString()
     {
         return getName() + " = sdiv " + getValueType() + " " + getUsedValue(0).getName() + ", " + getUsedValue(1).getName();

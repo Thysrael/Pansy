@@ -61,6 +61,12 @@ public class Icmp extends BinInstruction
     }
 
     @Override
+    public boolean isCommutative()
+    {
+        return condition.equals(Condition.NE) || condition.equals(Condition.EQ);
+    }
+
+    @Override
     public String toString()
     {
         return getName() + " = icmp " + condition.toString() + " " +

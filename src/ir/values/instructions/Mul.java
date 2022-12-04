@@ -12,6 +12,12 @@ public class Mul extends BinInstruction
     }
 
     @Override
+    public boolean isCommutative()
+    {
+        return true;
+    }
+
+    @Override
     public String toString()
     {
         return getName() + " = mul " + getValueType() + " " + getUsedValue(0).getName() + ", " + getUsedValue(1).getName();

@@ -14,5 +14,6 @@ int doubleWhile() {
 }
 
 int main() {
+  // 3
   printf("%d\n", doubleWhile());
 }

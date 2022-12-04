@@ -2,10 +2,12 @@ package ir.values;
 
 import ir.types.DataType;
 import ir.types.FunctionType;
+import pass.analyze.LoopInfo;
 import util.MyList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Function extends Value
 {
@@ -31,6 +33,16 @@ public class Function extends Value
      * Value包括argument，basic block，有返回值的instruction
      */
     private final HashMap<String, Value> valueSymTab = new HashMap<>();
+    /**
+     * 当一个函数向内存中写值的时候，就是有副作用的
+     */
+    private boolean hasSideEffect = false;
+    /**
+     * 调用图相关
+     * 应该是该函数调用的
+     */
+    private final HashSet<Function> callees = new HashSet<>();
+    private LoopInfo loopInfo;
 
     public Function(String name, FunctionType functionType, boolean isBuiltin)
     {
@@ -53,6 +65,44 @@ public class Function extends Value
         super("@LOOP_TMP", null, null);
         isBuiltin = true;
         returnType = null;
+    }
+
+    public void setHasSideEffect(boolean hasSideEffect)
+    {
+        this.hasSideEffect = hasSideEffect;
+    }
+
+    public boolean hasSideEffect()
+    {
+        return hasSideEffect;
+    }
+
+    public HashSet<Function> getCallees()
+    {
+        return callees;
+    }
+
+    public void clearCallees()
+    {
+        callees.clear();
+    }
+
+    public void addCallee(Function callee)
+    {
+        callees.add(callee);
+    }
+
+    /**
+     * @return 用ArrayList形式返回基本块
+     */
+    public ArrayList<BasicBlock> getBasicBlocksArray()
+    {
+        ArrayList<BasicBlock> result = new ArrayList<>();
+        for (MyList.MyNode<BasicBlock> blockMyNode : blocks)
+        {
+            result.add(blockMyNode.getVal());
+        }
+        return result;
     }
 
     public boolean isBuiltin()
@@ -109,6 +159,49 @@ public class Function extends Value
     public FunctionType getValueType()
     {
         return (FunctionType) super.getValueType();
+    }
+
+    /**
+     * 这显然是低效的，其实应该考虑将 node 记录在案的
+     * 否则删除就成了 O(n) 了
+     */
+    public void eraseFromParent()
+    {
+        for (MyList.MyNode<Function> functionMyNode : Module.getInstance().getFunctions())
+        {
+            if (functionMyNode.getVal().equals(this))
+            {
+                functionMyNode.removeSelf();
+                return;
+            }
+        }
+    }
+
+    public LoopInfo getLoopInfo()
+    {
+        return loopInfo;
+    }
+
+    public void analyzeLoop()
+    {
+        if (isBuiltin)
+        {
+            return;
+        }
+        for (MyList.MyNode<BasicBlock> blockMyNode : blocks)
+        {
+            blockMyNode.getVal().setParentLoop(null);
+        }
+        // 进行一遍图分析
+        loopInfo = new LoopInfo(this);
+    }
+
+    public void reducePhi(boolean reducePhi)
+    {
+        for (BasicBlock block : getBasicBlocksArray())
+        {
+            block.reducePhi(reducePhi);
+        }
     }
 
     /**

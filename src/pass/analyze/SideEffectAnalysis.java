@@ -1,7 +1,11 @@
 package pass.analyze;
 
+import ir.values.BasicBlock;
 import ir.values.Function;
 import ir.values.Module;
+import ir.values.instructions.Call;
+import ir.values.instructions.Instruction;
+import ir.values.instructions.Store;
 import pass.Pass;
 
 import java.util.HashMap;

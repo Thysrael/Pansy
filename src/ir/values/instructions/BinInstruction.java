@@ -29,4 +29,46 @@ public abstract class BinInstruction extends Instruction
     {
         return getUsedValue(1);
     }
+
+    public abstract boolean isCommutative();
+
+    /**
+     * 两个指令是否是相同的运算符
+     * @param instr1 指令 1
+     * @param instr2 指令 2
+     * @return 是则为 true
+     */
+    public static boolean hasSameOp(BinInstruction instr1, BinInstruction instr2)
+    {
+        if (instr1 instanceof Add && instr2 instanceof Add)
+        {
+            return true;
+        }
+        else if (instr1 instanceof Sub && instr2 instanceof Sub)
+        {
+            return true;
+        }
+        else if (instr1 instanceof Mul && instr2 instanceof Mul)
+        {
+            return true;
+        }
+        else if (instr1 instanceof Sdiv && instr2 instanceof Sdiv)
+        {
+            return true;
+        }
+        else if (instr1 instanceof Srem && instr2 instanceof Srem)
+        {
+            return true;
+        }
+        else if (instr1 instanceof Icmp && instr2 instanceof Icmp)
+        {
+            Icmp cmp1 = (Icmp) instr1;
+            Icmp cmp2 = (Icmp) instr2;
+            return cmp1.getCondition().equals(cmp2.getCondition());
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

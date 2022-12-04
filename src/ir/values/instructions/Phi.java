@@ -42,7 +42,7 @@ public class Phi extends Instruction
     }
 
     /**
-     * 按照索引获得可能的操作数，比如上面那个例子，如果 index = 0， 则应该返回 1 (对应 %btrue 块，是第一个)
+     * 按照索引获得可能的操作数，比如上面那个例子，如果 index = 0， 则应该返回 1 (对应 %b true 块，是第一个)
      *
      * @param index 索引
      * @return 操作数
@@ -57,6 +57,10 @@ public class Phi extends Instruction
         removeIfRedundant(true);
     }
 
+    /**
+     * 移除冗余的 phi，比如说所有的 input 都相等的情况
+     * @param reducePhi 是否进行
+     */
     public void removeIfRedundant(boolean reducePhi)
     {
         if (getUsers().isEmpty())
