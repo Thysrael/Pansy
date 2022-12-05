@@ -29,5 +29,6 @@ public class Config
     public static final boolean openGCM = true;
     public static final boolean openInlineFunction = true;
     public static final boolean openBranchOpt = true;
-    public static final boolean isO1 = true;
+    public static final boolean isO1 = false;
+    public static final boolean openDataPeepHole = false;
 }

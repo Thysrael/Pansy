@@ -5,6 +5,7 @@ import back.component.ObjFunction;
 import back.component.ObjModule;
 import back.instruction.*;
 import back.operand.*;
+import driver.Config;
 import util.MyList;
 import util.MyPair;
 
@@ -28,7 +29,10 @@ public class Peephole
         while (!finished)
         {
             finished = peephole();
-            finished &= dataFlowPeephole();
+            if (Config.openDataPeepHole)
+            {
+                finished &= dataFlowPeephole();
+            }
         }
     }
 
