@@ -1,11 +1,14 @@
 package pass.refactor;
 
+import driver.Config;
+import ir.IrBuilder;
 import ir.values.Value;
 import ir.values.constants.ConstInt;
 import ir.values.instructions.*;
 
 public class InstructionSimplify
 {
+    private final static IrBuilder irBuilder = IrBuilder.getInstance();
     /**
      * 主函数，用于对于指令进行分类
      * @param instruction 当前指令
@@ -15,19 +18,19 @@ public class InstructionSimplify
     {
         if (instruction instanceof Add)
         {
-            return simplifyAdd(instruction);
+            return simplifyAdd(instruction, !Config.isO1);
         }
         else if (instruction instanceof Sub)
         {
-            return simplifySub(instruction);
+            return simplifySub(instruction, !Config.isO1);
         }
         else if (instruction instanceof Mul)
         {
-            return simplifyMul(instruction);
+            return simplifyMul(instruction, !Config.isO1);
         }
         else if (instruction instanceof Sdiv)
         {
-            return simplifySdiv(instruction);
+            return simplifySdiv(instruction, !Config.isO1);
         }
         else if (instruction instanceof Srem)
         {
@@ -155,7 +158,7 @@ public class InstructionSimplify
      * @param instruction 加法指令
      * @return 一个值
      */
-    public static Value simplifyAdd(Instruction instruction)
+    public static Value simplifyAdd(Instruction instruction, boolean notProduce)
     {
         Value lhs = instruction.getUsedValue(0);
         Value rhs = instruction.getUsedValue(1);
@@ -206,6 +209,134 @@ public class InstructionSimplify
             }
         }
 
+        if (notProduce)
+        {
+            return instruction;
+        }
+
+        if (lhs instanceof Add)
+        {
+            // (x + y) + z = x + (y + z) or (x + z) + y
+            Add addInst = (Add) lhs;
+            // x
+            Value addLhs = addInst.getUsedValue(0);
+            // y
+            Value addRhs = addInst.getUsedValue(1);
+            // tmp = y + z; (x + y) + z
+            Add tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                    addRhs, rhs, instruction);
+            // simplify tmp
+            Value simplifyAdd = simplifyAdd(tmp, true);
+            if (simplifyAdd != tmp)
+            {
+                // x + (y + z)
+                return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
+                        addLhs, simplifyAdd, instruction), true);
+            }
+
+            tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                    addLhs, rhs, instruction);
+            simplifyAdd = simplifyAdd(tmp, true);
+            if (simplifyAdd != tmp)
+            {
+                return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
+                        simplifyAdd, addRhs, instruction), true);
+            }
+        }
+
+        if (lhs instanceof Sub)
+        {
+            Sub subInst = (Sub) lhs;
+            Value subLhs = subInst.getUsedValue(0);
+            Value subRhs = subInst.getUsedValue(1);
+            // (y - x) + x = y
+            if (subRhs == rhs)
+            {
+                return subLhs;
+            }
+            else
+            {
+                // (x - y) + z = x - (y - z) or (x + z) - y
+                // Deal with add first
+                Value tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                        subRhs, rhs, instruction);
+                Value simplifyAdd = simplifyAdd((Add) tmp, true);
+                if (simplifyAdd != tmp)
+                {
+                    return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                            simplifyAdd, subRhs, instruction), true);
+                }
+                // Then deal with sub
+                tmp = irBuilder.buildSubBefore(instruction.getParent(),
+                        subRhs, rhs, instruction);
+                Value simplifySub = simplifySub((Sub) tmp, true);
+                if (simplifySub != tmp)
+                {
+                    return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                            subLhs, simplifySub, instruction), true);
+                }
+            }
+        }
+
+        if (rhs instanceof Add)
+        {
+            // x + (y + z) = (x + y) + z or (x + z) + y
+            Add addInst = (Add) rhs;
+            Value addLhs = addInst.getUsedValue(0);
+            Value addRhs = addInst.getUsedValue(1);
+            Add tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                    lhs, addLhs, instruction);
+            Value simplifyAdd = simplifyAdd(tmp, true);
+            if (simplifyAdd != tmp)
+            {
+                return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
+                        simplifyAdd, addRhs, instruction), true);
+            }
+
+            tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                    lhs, addRhs, instruction);
+            simplifyAdd = simplifyAdd(tmp, true);
+            if (simplifyAdd != tmp)
+            {
+                return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
+                        simplifyAdd, addLhs, instruction), true);
+            }
+        }
+
+        if (rhs instanceof Sub)
+        {
+            Sub subInst = (Sub) rhs;
+            Value subLhs = subInst.getUsedValue(0);
+            Value subRhs = subInst.getUsedValue(1);
+            if (lhs == subRhs)
+            {
+                // x + (y - x) = y
+                return subLhs;
+            }
+            else
+            {
+                // x + (y - z) = (x + y) - z or (x - z) + y
+                // Deal with add first
+                Value tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                        lhs, subLhs, instruction);
+                Value simplifyAdd = simplifyAdd((Add) tmp, true);
+                if (simplifyAdd != tmp)
+                {
+                    return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                            simplifyAdd, subRhs, instruction), true);
+                }
+                // Then deal with sub
+                tmp = irBuilder.buildSubBefore(instruction.getParent(),
+                        lhs, subRhs, instruction);
+                Value simplifySub = simplifySub((Sub) tmp, true);
+                if (simplifySub != tmp)
+                {
+                    return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                            simplifySub, subLhs, instruction), true);
+                }
+            }
+        }
+
         return instruction;
     }
 
@@ -230,7 +361,7 @@ public class InstructionSimplify
         return false;
     }
 
-    public static Value simplifySub(Instruction instruction)
+    public static Value simplifySub(Instruction instruction, boolean notProduce)
     {
         Value lhs = instruction.getUsedValue(0);
         Value rhs = instruction.getUsedValue(1);
@@ -253,10 +384,105 @@ public class InstructionSimplify
             return ConstInt.ZERO;
         }
 
+        if (notProduce)
+        {
+            return instruction;
+        }
+
+        // (x + y) - z = x + (y - z) or y + (x - z) if everything simplifies
+        if (lhs instanceof Add)
+        {
+            Add addInst = (Add) lhs;
+            for (int i = 0; i < 2; i++)
+            {
+                Value curOperand = addInst.getUsedValue(i);
+                Sub tmp = irBuilder.buildSubBefore(instruction.getParent(),
+                        curOperand, rhs, instruction);
+                Value simplifiedSub = simplifySub(tmp, true);
+                if (simplifiedSub != tmp)
+                {
+                    return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
+                                    addInst.getUsedValue(1 - i), simplifiedSub, instruction),
+                            true);
+                }
+            }
+        }
+
+        // (x - y) - z = x - (y + z) or (x - z) - y
+        if (lhs instanceof Sub)
+        {
+            Sub subInst = (Sub) lhs;
+            Value subLhs = subInst.getUsedValue(0);
+            Value subRhs = subInst.getUsedValue(1);
+            // Deal with addInst first
+            Value tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                    subRhs, rhs, instruction);
+            Value simplifyAdd = simplifyAdd((Add) tmp, true);
+            if (simplifyAdd != tmp)
+            {
+                return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                        subLhs, simplifyAdd, instruction), true);
+            }
+            // Then deal with sub
+            tmp = irBuilder.buildSubBefore(instruction.getParent(),
+                    subLhs, rhs, instruction);
+            Value simplifySub = simplifySub((Sub) tmp, true);
+            if (simplifySub != tmp)
+            {
+                return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                        simplifySub, subRhs, instruction), true);
+            }
+        }
+
+        // x - (y + z) = (x - y) - z or (x - z) - y if everything simplifies
+        if (rhs instanceof Add)
+        {
+            Add addInst = (Add) rhs;
+            for (int i = 0; i < 2; i++)
+            {
+                Value curOperand = addInst.getUsedValue(i);
+                Sub tmp = irBuilder.buildSubBefore(instruction.getParent(),
+                        lhs, curOperand, instruction);
+                Value simplifiedSub = simplifySub(tmp, true);
+                if (simplifiedSub != tmp)
+                {
+                    return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                                    simplifiedSub, addInst.getUsedValue(1 - i), instruction),
+                            true);
+                }
+            }
+        }
+
+        // z - (x - y) = (z - x) + y or (z + y) - x if everything simplifies
+        if (rhs instanceof Sub)
+        {
+            Sub subInst = (Sub) rhs;
+            Value subLhs = subInst.getUsedValue(0);
+            Value subRhs = subInst.getUsedValue(1);
+            // Deal with addInst first
+            Value tmp = irBuilder.buildAddBefore(instruction.getParent(),
+                    lhs, subRhs, instruction);
+            Value simplifyAdd = simplifyAdd((Add) tmp, true);
+            if (simplifyAdd != tmp)
+            {
+                return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
+                        simplifyAdd, subLhs, instruction), true);
+            }
+            // Then deal with sub
+            tmp = irBuilder.buildSubBefore(instruction.getParent(),
+                    lhs, subLhs, instruction);
+            Value simplifySub = simplifySub((Sub) tmp, true);
+            if (simplifySub != tmp)
+            {
+                return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
+                        simplifySub, subRhs, instruction), true);
+            }
+        }
+
         return instruction;
     }
 
-    public static Value simplifyMul(Instruction instruction)
+    public static Value simplifyMul(Instruction instruction, boolean notProduce)
     {
         Value lhs = instruction.getUsedValue(0);
         Value rhs = instruction.getUsedValue(1);
@@ -288,10 +514,48 @@ public class InstructionSimplify
             return lhs;
         }
 
+        if (notProduce)
+        {
+            return instruction;
+        }
+
+        // (x * y) * z = x * (y * z)
+        if (lhs instanceof Mul)
+        {
+            Mul mulInst = (Mul) lhs;
+            Value mulLhs = mulInst.getUsedValue(0);
+            Value mulRhs = mulInst.getUsedValue(1);
+            Mul tmp = irBuilder.buildMulBefore(instruction.getParent(),
+                    mulRhs, rhs, instruction);
+            Value simplifyMul = simplifyMul(tmp, true);
+            if (simplifyMul != tmp)
+            {
+                return simplifyMul(irBuilder.buildMulBefore(instruction.getParent(),
+                        mulLhs, simplifyMul, instruction), true);
+            }
+        }
+
+        // x * (y * z) = (x * y) * z
+        if (rhs instanceof Mul)
+        {
+            Mul mulInst = (Mul) rhs;
+            Value mulLhs = mulInst.getUsedValue(0);
+            Value mulRhs = mulInst.getUsedValue(1);
+            Mul tmp = irBuilder.buildMulBefore(instruction.getParent(),
+                    lhs, mulLhs, instruction);
+            Value simplifyMul = simplifyMul(tmp, true);
+            if (simplifyMul != tmp)
+            {
+                return simplifyMul(irBuilder.buildMulBefore(instruction.getParent(),
+                        simplifyMul, mulRhs, instruction), true);
+            }
+        }
+
+
         return instruction;
     }
 
-    public static Value simplifySdiv(Instruction instruction)
+    public static Value simplifySdiv(Instruction instruction, boolean notProduce)
     {
         Value lhs = instruction.getUsedValue(0);
         Value rhs = instruction.getUsedValue(1);
@@ -318,6 +582,29 @@ public class InstructionSimplify
         if (rhs instanceof ConstInt && ((ConstInt) rhs).getValue() == 1)
         {
             return lhs;
+        }
+
+        if (notProduce)
+        {
+            return instruction;
+        }
+
+        // if x * y does not overflow, then:
+        // (x * y) / y = x
+        if (lhs instanceof Mul)
+        {
+            Mul mulInst = (Mul) lhs;
+            Value mulLhs = mulInst.getUsedValue(0);
+            Value mulRhs = mulInst.getUsedValue(1);
+            if (mulRhs instanceof ConstInt && rhs instanceof ConstInt &&
+                    ((ConstInt) mulRhs).getValue() == ((ConstInt) rhs).getValue())
+            {
+                return mulLhs;
+            }
+            else if (mulRhs.equals(rhs))
+            {
+                return mulLhs;
+            }
         }
 
         return instruction;

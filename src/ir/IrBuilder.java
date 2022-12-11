@@ -121,11 +121,35 @@ public class IrBuilder
         return ans;
     }
 
+    public Add buildAddBefore(BasicBlock parentBB, Value lhs, Value rhs, Instruction nxtInst)
+    {
+        int nameNum = nameNumCounter++;
+        Add ans = new Add(nameNum, parentBB, lhs, rhs);
+        parentBB.insertBefore(ans, nxtInst);
+        return ans;
+    }
+
+    public Sub buildSubBefore(BasicBlock parentBB, Value lhs, Value rhs, Instruction nxtInst)
+    {
+        int nameNum = nameNumCounter++;
+        Sub ans = new Sub(nameNum, parentBB, lhs, rhs);
+        parentBB.insertBefore(ans, nxtInst);
+        return ans;
+    }
+
     public Mul buildMul(BasicBlock parentBB, Value src1, Value src2)
     {
         int nameNum = nameNumCounter++;
         Mul ans = new Mul(nameNum, parentBB, src1, src2);
         parentBB.insertTail(ans);
+        return ans;
+    }
+
+    public Mul buildMulBefore(BasicBlock parentBB, Value lhs, Value rhs, Instruction nxtInst)
+    {
+        int nameNum = nameNumCounter++;
+        Mul ans = new Mul(nameNum, parentBB, lhs, rhs);
+        parentBB.insertBefore(ans, nxtInst);
         return ans;
     }
 
@@ -266,11 +290,10 @@ public class IrBuilder
         parent.insertBefore(ans, beforeInstr);
     }
 
-    public Store buildStoreBeforeInstr(BasicBlock parent, Value val, Value location, Instruction beforeInstr)
+    public void buildStoreBeforeInstr(BasicBlock parent, Value val, Value location, Instruction beforeInstr)
     {
         Store ans = new Store(parent, val, location);
         parent.insertBefore(ans, beforeInstr);
-        return ans;
     }
 
 
