@@ -18,19 +18,19 @@ public class InstructionSimplify
     {
         if (instruction instanceof Add)
         {
-            return simplifyAdd(instruction, !Config.isO1);
+            return simplifyAdd(instruction, !Config.openProduceDeadCode);
         }
         else if (instruction instanceof Sub)
         {
-            return simplifySub(instruction, !Config.isO1);
+            return simplifySub(instruction, !Config.openProduceDeadCode);
         }
         else if (instruction instanceof Mul)
         {
-            return simplifyMul(instruction, !Config.isO1);
+            return simplifyMul(instruction, !Config.openProduceDeadCode);
         }
         else if (instruction instanceof Sdiv)
         {
-            return simplifySdiv(instruction, !Config.isO1);
+            return simplifySdiv(instruction, !Config.openProduceDeadCode);
         }
         else if (instruction instanceof Srem)
         {
@@ -258,20 +258,26 @@ public class InstructionSimplify
             {
                 // (x - y) + z = x - (y - z) or (x + z) - y
                 // Deal with add first
+                // (x + z) - y
+                // x + z
                 Value tmp = irBuilder.buildAddBefore(instruction.getParent(),
-                        subRhs, rhs, instruction);
+                        subLhs, rhs, instruction);
                 Value simplifyAdd = simplifyAdd((Add) tmp, true);
                 if (simplifyAdd != tmp)
                 {
+                    // (x + z) - y
                     return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
                             simplifyAdd, subRhs, instruction), true);
                 }
                 // Then deal with sub
+                // x - (y - z)
+                // y - z
                 tmp = irBuilder.buildSubBefore(instruction.getParent(),
                         subRhs, rhs, instruction);
                 Value simplifySub = simplifySub((Sub) tmp, true);
                 if (simplifySub != tmp)
                 {
+                    // x - (y - z)
                     return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
                             subLhs, simplifySub, instruction), true);
                 }
@@ -415,11 +421,13 @@ public class InstructionSimplify
             Value subLhs = subInst.getUsedValue(0);
             Value subRhs = subInst.getUsedValue(1);
             // Deal with addInst first
+            // x - (y + z)
             Value tmp = irBuilder.buildAddBefore(instruction.getParent(),
                     subRhs, rhs, instruction);
             Value simplifyAdd = simplifyAdd((Add) tmp, true);
             if (simplifyAdd != tmp)
             {
+                // x - (y + z)
                 return simplifySub(irBuilder.buildSubBefore(instruction.getParent(),
                         subLhs, simplifyAdd, instruction), true);
             }
@@ -472,6 +480,7 @@ public class InstructionSimplify
             tmp = irBuilder.buildSubBefore(instruction.getParent(),
                     lhs, subLhs, instruction);
             Value simplifySub = simplifySub((Sub) tmp, true);
+            // 说明优化有效果
             if (simplifySub != tmp)
             {
                 return simplifyAdd(irBuilder.buildAddBefore(instruction.getParent(),
