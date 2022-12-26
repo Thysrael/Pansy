@@ -159,7 +159,6 @@ public class LoopInfo
                 }
 
                 // 登记循环深度
-                // TODO 这里改成 2 会更好，因为没有循环的时候深度都是 1
                 int depth = 1;
                 Loop tmp = subloop.getParentLoop();
                 while (tmp != null)

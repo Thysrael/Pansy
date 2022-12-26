@@ -111,9 +111,10 @@ public class ConstDefNode extends CSTNode
             // alloca 指令诞生了！
             // alloca will be moved to first bb in cur function
             // alloca 的指针就是指向这个数组的指针
-            Alloca allocArray = irBuilder.buildAlloca(arrayType, curBlock);
+            Alloca allocArray = irBuilder.buildConstAlloca(arrayType, curBlock, (ConstArray) valueUp);
             // 登记符号表
             irSymbolTable.addValue(ident.getContent(), allocArray);
+
             // 获得一个指针，这个指针指向初始化数组的一个元素
             GetElementPtr basePtr = irBuilder.buildGEP(curBlock, allocArray, ConstInt.ZERO, ConstInt.ZERO);
             // 如果是一个二维数组，那么就继续 GEP，上面两步之后，basePtr 会变成一个指向具体的 int 的指针，即 int*

@@ -15,67 +15,40 @@
 .end_macro
 
 .data
-STR0:
-.asciiz	"  "
-
-STR1:
-.asciiz	" = "
-
-STR2:
-.asciiz	"\n"
-
 .text
 main:
-	add $sp,	$sp,	-20
+	add $sp,	$sp,	-16
 Basic_b0_0:
-	la $v0,	STR2
-	# GEP base: @STR2
+	# alloca from the offset: 0, size is: 8
+	move $a0,	$sp
+	# alloca from the offset: 8, size is: 4
+	addiu $v0,	$sp,	8
+	# GEP base: %v1
 	# the first index
-	move $t3,	$v0
 	# the second index
-	la $v0,	STR1
-	# GEP base: @STR1
+	# GEP base: %v2
 	# the first index
-	move $t2,	$v0
 	# the second index
-	la $v0,	STR0
-	# GEP base: @STR0
+	li $v1,	2
+	sw $v1,	0($v0)
+	# GEP base: %v4
 	# the first index
-	move $t0,	$v0
+	move $v0,	$a0
 	# the second index
-	li $t1,	1
-Basic_b3_1:
-	bge $t1,	1000,	Basic_b5_3
-Basic_b6_4:
-Basic_b4_2:
-	move $v1,	$t1
-Basic_b10_5:
-	bge $v1,	1000,	Basic_b12_7
-Basic_b13_8:
-Basic_b11_6:
-	move $a0,	$v1
+	li $v1,	1
+	sw $v1,	0($v0)
+	# GEP base: %v5
+	addiu $v0,	$v0,	4
+	li $v1,	2
+	sw $v1,	0($v0)
+	# GEP base: %v4
+	# the first index
+	move $v0,	$a0
+	# the second index
+	lw $a0,	0($v0)
 	putint
-	move $a0,	$t0
-	putstr
-	move $a0,	$t1
-	putint
-	move $a0,	$t2
-	putstr
-	# %p0 div %p2
-	div $v1,	$t1
-	mflo $a0
-	putint
-	move $a0,	$t3
-	putstr
-	addiu $v1,	$v1,	1
-	j Basic_b10_5
-Basic_b12_7:
-	addiu $v0,	$t1,	1
-	move $t1,	$v0
-	j Basic_b3_1
-Basic_b5_3:
 	li $v0,	0
-	add $sp, 	$sp,	20
+	add $sp, 	$sp,	16
 	li	$v0,	10
 	syscall
 

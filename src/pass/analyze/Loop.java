@@ -131,7 +131,7 @@ public class Loop
     {
         StringBuilder sb = new StringBuilder();
         sb.append(id).append("\n");
-        sb.append("entry:" + entryBlock.getName()).append("\n");
+        sb.append("entry:").append(entryBlock.getName()).append("\n");
         for (BasicBlock allBlock : allBlocks)
         {
             sb.append("\t").append(allBlock.getName()).append("\n");

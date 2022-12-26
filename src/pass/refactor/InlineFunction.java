@@ -119,7 +119,6 @@ public class InlineFunction implements Pass
 
     /**
      * Check if a function has callee to itself
-     * TODO 这里是不是不能用 ArrayList
      */
     private boolean hasRecursion(Function function)
     {

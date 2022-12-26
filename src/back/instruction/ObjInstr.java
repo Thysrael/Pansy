@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public abstract class ObjInstr
 {
-    // TODO
     protected MyList.MyNode<ObjInstr> node;
     private final ArrayList<ObjReg> regDef = new ArrayList<>();
     private final ArrayList<ObjReg> regUse = new ArrayList<>();

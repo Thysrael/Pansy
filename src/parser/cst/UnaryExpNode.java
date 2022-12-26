@@ -47,18 +47,12 @@ public class UnaryExpNode extends CSTNode
                 if (unaryOp.isMinus())
                 {
                     valueIntUp = -valueIntUp;
-                    if (!cannotCalValueUp)
-                    {
-                        valueUp = new ConstInt(valueIntUp);
-                    }
+                    valueUp = new ConstInt(valueIntUp);
                 }
                 if (unaryOp.isNot())
                 {
                     valueIntUp = valueIntUp == 0 ? 1 : 0;
-                    if (!cannotCalValueUp)
-                    {
-                        valueUp = new ConstInt(valueIntUp);
-                    }
+                    valueUp = new ConstInt(valueIntUp);
                 }
             }
             // 那么就是 primaryExp 的情况了，已经不需要管了

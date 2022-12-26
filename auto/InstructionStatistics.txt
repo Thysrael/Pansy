@@ -1,6 +1,6 @@
-DIV 	: 499500
+DIV 	: 0
 MULT 	: 0
-JUMP/BRANCH 	: 1001998
-MEM 	: 0
-OTHER 	: 9995011
-FinalCycle : 61448008.0
+JUMP/BRANCH 	: 0
+MEM 	: 4
+OTHER 	: 15
+FinalCycle : 25.0

@@ -9,6 +9,7 @@ import ir.values.Value;
 import ir.values.constants.ConstArray;
 import ir.values.constants.ConstInt;
 import ir.values.constants.Constant;
+import ir.values.instructions.Alloca;
 import lexer.token.SyntaxType;
 
 import java.util.ArrayList;
@@ -247,6 +248,20 @@ public class LValNode extends CSTNode
                     }
                     valueIntUp = ((ConstInt) initVal).getValue();
                 }
+                // 对于局部常量数组的常量式访问（比如说用于初始化其他常量，当数组的维度，我们不用 gep 访存）
+                else if (canCalValueDown && lVal instanceof Alloca)
+                {
+                    Constant initVal = ((Alloca) lVal).getInitVal();
+
+                    for (ExpNode exp : exps)
+                    {
+                        exp.buildIr();
+                        initVal = ((ConstArray) initVal).getElementByIndex(valueIntUp);
+                    }
+
+                    assert initVal instanceof ConstInt;
+                    valueIntUp = ((ConstInt) initVal).getValue();
+                }
                 else
                 {
                     Value ptr = lVal;
@@ -264,12 +279,6 @@ public class LValNode extends CSTNode
                         ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, ConstInt.ZERO);
                     }
                     valueUp = ptr;
-                    // 因为只有一种局部数组，就是局部变量数组，所以当进入这个分支后，还是 canCalDown 的，
-                    // 那么就是进行常量数组访存，并且被用于了常量用途，但是此时是一种变量访问形式，所以要通知上面
-                    if (canCalValueDown)
-                    {
-                        cannotCalValueUp = true;
-                    }
                 }
             }
         }

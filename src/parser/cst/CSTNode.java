@@ -70,11 +70,9 @@ public abstract class CSTNode
      */
     protected static boolean i32InRelUp;
     /**
-     * 综合属性：当常量不可被计算的时候，被置 true
-     */
-    protected static boolean cannotCalValueUp;
-    /**
      * 继承属性：说明进行全局初始化
+     * 现在看上去其实并不是这样的，这个变量描述的是，这个初始化的值一定是常量 globalInit 只是其中的一种特殊情况
+     * 我现在感觉，其实可以被 canCalValueDown 替代
      */
     protected static boolean globalInitDown = false;
     /**

@@ -4,9 +4,18 @@ import ir.types.PointerType;
 import ir.types.ValueType;
 import ir.values.BasicBlock;
 import ir.values.User;
+import ir.values.constants.ConstArray;
 
 public class Alloca extends MemInstruction
 {
+    /**
+     * 这是参考 GlobalVariable 的设计，主要是为了局部常量数组准备的
+     * 这里记录着局部常量数组的值，
+     * 但是我没有将其视为 user，不知道对不对
+     * TODO 这里启发我们，如果一个常量数组只被当成常量使用，也就是没有 const[var] 这种状况
+     * 可以在后续的优化中将所有的 store 删掉
+     */
+    private final ConstArray initVal;
     /**
      * 新建一个 alloca 指令，其类型是分配空间类型的指针
      * @param nameNum 对于指令而言，其名称中带有数字，指令名称中的数字，eg: 名称为 %1 的指令的 nameNum 为 1
@@ -17,11 +26,24 @@ public class Alloca extends MemInstruction
     {
         // 指针
         super("%v" + nameNum, new PointerType(allocatedType), parent);
+        initVal = null;
+    }
+
+    public Alloca(int nameNum, ValueType allocatedType, BasicBlock parent, ConstArray initVal)
+    {
+        // 指针
+        super("%v" + nameNum, new PointerType(allocatedType), parent);
+        this.initVal = initVal;
     }
 
     public ValueType getAllocatedType()
     {
         return ((PointerType) getValueType()).getPointeeType();
+    }
+
+    public ConstArray getInitVal()
+    {
+        return initVal;
     }
 
     /**

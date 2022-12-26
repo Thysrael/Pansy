@@ -6,6 +6,7 @@ import ir.types.ValueType;
 import ir.types.VoidType;
 import ir.values.*;
 import ir.values.Module;
+import ir.values.constants.ConstArray;
 import ir.values.constants.ConstStr;
 import ir.values.constants.Constant;
 import ir.values.instructions.*;
@@ -196,6 +197,23 @@ public class IrBuilder
         int nameNum = nameNumCounter++;
         BasicBlock realParent = parent.getParent().getHeadBlock();
         Alloca ans = new Alloca(nameNum, allocatedType, realParent);
+        realParent.insertHead(ans);
+        return ans;
+    }
+
+    /**
+     * 为了方便 mem2reg 优化，约定所有的 Alloca 放到每个函数的入口块处
+     * ConstAlloca 对应的是局部的常量数组的 Alloca 这种 Alloca 会多存储一个常量数组 ConstArray
+     * 用于 a[constA[0]] 这种阴间情况，此时是没法用常量访存，其实还有很多情况，我之前使用的是 cannotCalDown 比较不本质
+     * @param allocatedType alloca 空间的类型
+     * @param parent 基本块
+     * @return Alloca 指令
+     */
+    public Alloca buildConstAlloca(ValueType allocatedType, BasicBlock parent, ConstArray initVal)
+    {
+        int nameNum = nameNumCounter++;
+        BasicBlock realParent = parent.getParent().getHeadBlock();
+        Alloca ans = new Alloca(nameNum, allocatedType, realParent, initVal);
         realParent.insertHead(ans);
         return ans;
     }

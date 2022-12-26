@@ -576,7 +576,7 @@ public class RegAllocator
     private void selectSpill()
     {
         double magicNum = 1.414;
-        // TODO 这里太慢了，要不然直接挑第一个吧
+        // TODO 这里太慢了，要不然直接挑第一个吧，似乎可以维护一个堆
         ObjOperand m = spillWorklist.stream().max((l, r) ->
         {
             double value1 = degree.getOrDefault(l, 0).doubleValue() / Math.pow(magicNum, loopDepths.getOrDefault(l, 0));

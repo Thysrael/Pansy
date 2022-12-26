@@ -48,6 +48,7 @@ public class PassManager
             passes.add(new SideEffectAnalysis());
             // 这些 pass 都不会改变分支结构
             passes.add(new GVN());
+            // TODO 这里就是两遍死代码删除了，这可能是造成 RE 的原因
             passes.add(new DeadCodeEmit());
             passes.add(new GCM());
             passes.add(new BranchOpt());
@@ -56,6 +57,7 @@ public class PassManager
         {
             // 这个顺序是全部 ak 的，但是我依然有些担心
             // 可以考虑将 GVL，Inline 去掉，应该就是 100% 了
+            // 最少要加一个 buildCFG
             passes.add(new BuildCFG());
             passes.add(new DomInfo());
             passes.add(new LoopInfoAnalysis());

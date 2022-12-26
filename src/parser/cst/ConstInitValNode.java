@@ -81,9 +81,12 @@ public class ConstInitValNode extends CSTNode
                 valueUp = new ConstArray(array);
             }
             // 局部常量数组，可以看到和变量数组的初始化类似，这是因为局部常量数组本质上也是个局部变量数组，所以方法都一样
+            // 之所以采用 flatten 的形式，是因为在 gep 的时候，flatten 的逻辑更容易处理
+            // 但是考虑到局部常量数组需要存初始值常量，所以同时也以 valueUp 的形式返回
             else
             {
                 ArrayList<Value> flattenArray = new ArrayList<>();
+                ArrayList<Constant> array = new ArrayList<>();
                 // 一维数组
                 if (dims.size() == 1)
                 {
@@ -91,6 +94,7 @@ public class ConstInitValNode extends CSTNode
                     {
                         element.buildIr();
                         flattenArray.add(valueUp);
+                        array.add((ConstInt) valueUp);
                     }
                 }
                 // 二维数组
@@ -103,10 +107,12 @@ public class ConstInitValNode extends CSTNode
                         initVal.setDims(new ArrayList<>(dims.subList(1, dims.size())));
                         initVal.buildIr();
                         flattenArray.addAll(valueArrayUp);
+                        array.add((ConstArray) valueUp);
                     }
                 }
                 // 返回
                 valueArrayUp = flattenArray;
+                valueUp = new ConstArray(array);
             }
         }
     }
