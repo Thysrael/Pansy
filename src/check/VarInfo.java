@@ -131,11 +131,6 @@ public class VarInfo extends SymbolInfo
         return isConst;
     }
 
-    public boolean isVar()
-    {
-        return !isConst;
-    }
-
     @Override
     public String toString()
     {

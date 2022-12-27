@@ -45,7 +45,7 @@ public class GCM implements Pass
             for (MyList.MyNode<Function> funcNode : Module.getInstance().getFunctions())
             {
                 Function func = funcNode.getVal();
-                if (!func.isBuiltin())
+                if (!func.isBuiltin()  && func.getBasicBlocksArray().size() > 1)
                 {
                     runGCM(func);
                 }

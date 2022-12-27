@@ -35,6 +35,7 @@ public class ConstInt extends Constant
 
     /**
      * 只要 bits 和 value 相同，就认为是同样的值
+     * 这里不能直接生成，因为还有一点是比较父类的 equal，显然这是不同的
      * @param o 其他对象
      * @return 相等则为 true
      */
@@ -43,7 +44,6 @@ public class ConstInt extends Constant
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         ConstInt constInt = (ConstInt) o;
         return value == constInt.value && bits == constInt.bits;
     }

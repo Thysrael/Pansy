@@ -21,6 +21,13 @@ public class Parser
         supporter.addParseLog(procedure);
     }
 
+    /**
+     * 这里的逻辑是，当发生一个出乎意料的意味（意料之中的是三种符号缺失错误）
+     * 那么就会打印目前的解析情况（已经正常的解析的所有符号）
+     * 然后打印栈，
+     * 最后打印 PansyException
+     * @return 正常情况是一棵语法树
+     */
     public CSTNode run()
     {
         try
@@ -38,6 +45,10 @@ public class Parser
         }
     }
 
+    /**
+     * 其本质是展示解析的成果，应该是语法树的后序遍历结果
+     * @return 一个字符串
+     */
     public String display()
     {
         StringBuilder stringBuilder = new StringBuilder();
@@ -106,6 +117,11 @@ public class Parser
            {
                rootNode.addChild(parseMainFuncDef());
            }
+           else
+           {
+               System.err.println("wrong CompUnit parse");
+               System.exit(1);
+           }
         }
         addParseLog("CompUnit");
         return rootNode;
@@ -116,6 +132,7 @@ public class Parser
      *     : ConstDecl
      *     | VarDecl
      *     ;
+     * 这里的 else 并不会有任何影响，因为进入这个分支的，一定只有 constDecl，varDecl 两种
      * @return decl
      */
     private CSTNode parseDecl() throws PansyException
@@ -138,6 +155,7 @@ public class Parser
      * ConstDecl
      *     : CONST_KW BType ConstDef (COMMA ConstDef)* SEMICOLON
      *     ;
+     * 利用有没有逗号判断 constDef 的个数，是严谨的
      * @return 声明节点
      */
     private ConstDeclNode parseConstDecl() throws PansyException
@@ -177,6 +195,7 @@ public class Parser
      * ConstDef
      *     : IDENFR (L_BRACKT ConstExp R_BRACKT)* ASSIGN ConstInitVal
      *     ;
+     * 以左中括号为判断是否存在维度信息的标准，缺少右中括号并不会干扰判断
      * @return jj
      */
     private ConstDefNode parseConstDef() throws PansyException
@@ -201,6 +220,8 @@ public class Parser
      *     : ConstExp
      *     | L_BRACE (ConstInitVal (COMMA ConstInitVal)*)? R_BRACE
      *     ;
+     * 利用的是，是否是左大括号，如果是，那么就走下面的分支，进行数组初始化，
+     * 否则，就是单值常量，这没准会造成某种意义的不严谨
      * @return jj
      */
     private ConstInitValNode parseConstInitVal() throws PansyException
@@ -248,6 +269,7 @@ public class Parser
      * VarDecl
      *     : BType VarDef (COMMA VarDef)* SEMICOLON
      *     ;
+     * 利用有没有逗号判断 varDef 的个数，是严谨的
      * @return jj
      */
     private VarDeclNode parseVarDecl() throws PansyException
@@ -272,6 +294,8 @@ public class Parser
      * VarDef
      *     : IDENFR (L_BRACKT ConstExp R_BRACKT)* (ASSIGN InitVal)?
      *     ;
+     * 根据有无左括号判断是否有维度信息
+     * 根据有无等于号判断时是否有初始值，是严谨的
      * @return jj
      * @throws PansyException jj
      */
@@ -302,6 +326,8 @@ public class Parser
      *     : Exp
      *     | L_BRACE (InitVal (COMMA InitVal)*)? R_BRACE
      *     ;
+     * 利用的同样是左大括号是否存在来判断分支
+     * 在判断的时候还考虑了 '{}' 这种情况的出现，其实是没有必要的，因为 '{}' 是 0 维的，语义约束要求了维度不能为 0
      * @return jj
      * @throws PansyException jj
      */
@@ -338,6 +364,7 @@ public class Parser
      * FuncDef
      *     : FuncType IDENFR L_PAREN FuncFParams? R_PAREN Block
      *     ;
+     * 根据是否是 INTTK 判断是否有形参表
      * @return jj
      */
     private FuncDefNode parseFuncDef() throws PansyException
@@ -387,6 +414,7 @@ public class Parser
      * FuncFParams
      *     : FuncFParam (COMMA FuncFParam)*
      *     ;
+     * 根据是否有逗号确定有几个形参
      * @return jj
      */
     private FuncFParamsNode parseFuncFParams() throws PansyException
@@ -408,6 +436,7 @@ public class Parser
      * FuncFParam
      *     : BType IDENFR (L_BRACKT R_BRACKT (L_BRACKT ConstExp R_BRACKT)*)?
      *     ;
+     * 利用有无左大括号判断是否传入指针
      * @return jj
      */
     private FuncFParamNode parseFuncFParam() throws PansyException
@@ -437,6 +466,7 @@ public class Parser
      * Block
      *     : L_BRACE BlockItem* R_BRACE
      *     ;
+     * 利用是否是右大括号判断内容是否结束，按理说是没有啥问题的
      * @return jj
      */
     private BlockNode parseBlock() throws PansyException
@@ -461,6 +491,8 @@ public class Parser
      *     : Decl
      *     | Stmt
      *     ;
+     * 当是声明的时候，走声明分支，否则走语句分支，这是不严谨的
+     * 这建立于语句分支的 FIRST 中没有 int 和 const。
      * @return jj
      */
     private BlockItemNode parseBlockItem() throws PansyException
@@ -492,6 +524,12 @@ public class Parser
      *     | InStmt
      *     | OutStmt
      *     ;
+     * 对于大部分的语句，都是有很明显的 FIRST 可以将其与其他语句分开
+     * 但是对于 AssignStmt, InStmt, ExpStmt，他们的第一个元素都是 LVal，所以这里用到了回退
+     * 先尝试解析一个 LVal，然后判断其后的元素是否是 = 号（其实类似于 LAST 的思想）
+     * 如果是，那么就从 AssignStmt 和 InStmt 中选择
+     * 否则从 ExpStmt 中选择，这里也造成了一定的不严谨性，所有的其他语句都会流入 ExpStmt
+     * 没有办法通过前瞻解决
      * @return jj
      */
     private StmtNode parseStmt() throws PansyException
@@ -526,6 +564,7 @@ public class Parser
         {
             stmtNode.addChild(parseOutStmt());
         }
+        // 首先尝试对于赋值语句的解析，不行就是对于表达式语句的解析
         else
         {
             ParseSupporter oldSupporter = this.supporter;
@@ -534,7 +573,7 @@ public class Parser
             {
                 parseLVal();
                 supporter.checkToken(SyntaxType.ASSIGN);
-
+                // 如果没有发生异常，那么也要回退，这是为了解析的方便，不进行树的嫁接
                 if (supporter.lookAhead(0).isSameType(SyntaxType.GETINTTK))
                 {
                     this.supporter = oldSupporter;
@@ -546,8 +585,10 @@ public class Parser
                     stmtNode.addChild(parseAssignStmt());
                 }
             }
+            // 尝试失败，进行 ExpStmt 的解析
             catch (PansyException e)
             {
+                // 将 supporter 恢复成原来的情况
                 this.supporter = oldSupporter;
                 stmtNode.addChild(parseExpStmt());
             }
@@ -558,11 +599,12 @@ public class Parser
     }
 
     /**
- * AssignStmt
- *     : LVal ASSIGN Exp SEMICOLON
- *     ;
- * @return jj
- */
+     * AssignStmt
+     *     : LVal ASSIGN Exp SEMICOLON
+     *     ;
+     * 就很显然
+     * @return jj
+     */
     private AssignStmtNode parseAssignStmt() throws PansyException
     {
         AssignStmtNode assignStmtNode = new AssignStmtNode();
@@ -579,6 +621,7 @@ public class Parser
      * ExpStmt
      *     : Exp? SEMICOLON
      *     ;
+     * 通过有没有分号来确定是否到达结尾，缺少分号不会造成问题，因为如果是空语句缺分号，那么就是空行了
      * @return jj
      */
     private ExpStmtNode parseExpStmt() throws PansyException
@@ -597,8 +640,9 @@ public class Parser
 
     /**
      * InStmt
-     * 	    : LVal ASSIGN GETINTTK L_PAREN R_PAREN SEMICOLON
+     * 	   : LVal ASSIGN GETINTTK L_PAREN R_PAREN SEMICOLON
      *     ;
+     * 语句成分确定，所以很显然
      * @return jj
      */
     private InStmtNode parseInStmt() throws PansyException
@@ -619,6 +663,7 @@ public class Parser
      * ConditionStmt
      *     : IF_KW L_PAREN Cond R_PAREN Stmt (ELSE_KW Stmt)?
      *     ;
+     * 根据有无 else 判断是否有 else 分支
      * @return jj
      */
     private ConditionStmtNode parseConditionStmt() throws PansyException
@@ -644,6 +689,7 @@ public class Parser
      * WhileStmt
      *     : WHILE_KW L_PAREN Cond R_PAREN Stmt
      *     ;
+     * 语句成分确定，所以很显然
      * @return jj
      */
     private WhileStmtNode parseWhileStmt() throws PansyException
@@ -663,6 +709,7 @@ public class Parser
      * BreakStmt
      *     : BREAK_KW SEMICOLON
      *     ;
+     * 语句成分确定，所以很显然
      * @return jj
      */
     private BreakStmtNode parseBreakStmt() throws PansyException
@@ -679,6 +726,7 @@ public class Parser
      * ContinueStmt
      *     : CONTINUE_KW SEMICOLON
      *     ;
+     * 语句成分确定，所以很显然
      * @return jj
      */
     private ContinueStmtNode parseContinueStmt() throws PansyException
@@ -695,6 +743,7 @@ public class Parser
      * ReturnStmt
      *     : RETURN_KW (Exp)? SEMICOLON
      *     ;
+     * 依然是需要尝试解析，因为缺少分号会造成“连读”现象（虽然应该被语义约束了）
      * @return jj
      */
     private ReturnStmtNode parseReturnStmt() throws PansyException
@@ -723,6 +772,7 @@ public class Parser
      * OutStmt
      *     : PRINTFTK L_PAREN FormatString (COMMA Exp)* R_PAREN SEMICN
      *     ;
+     * 利用逗号判断参数的个数
      * @return jj
      */
     private OutStmtNode parseOutStmt() throws PansyException
@@ -781,6 +831,7 @@ public class Parser
      * LVal
      *     : IDENFR (L_BRACKT Exp R_BRACKT)*
      *     ;
+     * 利用中括号判断维数信息，没有歧义。
      * @return jj
      */
     private LValNode parseLVal() throws PansyException
@@ -904,7 +955,7 @@ public class Parser
     /**
      * AddExp
      *     : MulExp (AddOp MulExp)*
-     *     ; // eliminate left-recursive
+     *     ;
      * AddOp
      *     : PLUS
      *     | MINUS
@@ -961,6 +1012,7 @@ public class Parser
      *     | Callee
      *     | UnaryOp UnaryExp
      *     ;
+     * 利用的是 UnaryOp 和 Callee 的 FIRST 判断，如果都不是就是 UnaryExp，这应该也是不严谨的
      * @return jj
      */
     private UnaryExpNode parseUnaryExp() throws PansyException
@@ -1060,6 +1112,8 @@ public class Parser
      *     | LVal
      *     | Number
      *     ;
+     * 先判断 Exp 和 LVal 的 FIRST，否则是 LVal，这应该会造成一定程度的不严谨
+     * 其实应该很好修，因为这仨的 FIRST 都是显然的
      * @return jj
      */
     private PrimaryExpNode parsePrimaryExp() throws PansyException

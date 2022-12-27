@@ -12,6 +12,14 @@ import java.util.ArrayList;
 import static check.ErrorType.PARSE_ERROR;
 import static lexer.token.SyntaxType.*;
 
+/**
+ * 可以看成解析过程的辅助类
+ * 里面保存着 tokens 数组，token 的指针 cur，解析日志 parseLog
+ * parseErrors 是设计遗留问题，其实没有必要
+ * supporter 用于负责数组的读取任务，简化并断言读取判断
+ * 同时还有对日志的记录
+ * 在发生回退的时候，也有一定的效果
+ */
 public class ParseSupporter
 {
     private final ArrayList<Token> tokens;
@@ -27,6 +35,11 @@ public class ParseSupporter
         this.parseErrors = new ArrayList<>();
     }
 
+    /**
+     * supporter 的 clone 器
+     * 这是为了满足解析过程中的回退需求
+     * @param supporter 原来的 supporter
+     */
     public ParseSupporter(ParseSupporter supporter)
     {
         this.tokens = new ArrayList<>(supporter.tokens);
@@ -43,11 +56,6 @@ public class ParseSupporter
     public ArrayList<String> getParseLog()
     {
         return parseLog;
-    }
-
-    public ArrayList<PansyException> getParseErrors()
-    {
-        return parseErrors;
     }
 
     public Token lookAhead(int step)
@@ -218,6 +226,7 @@ public class ParseSupporter
 
     /**
      * 用于带有检验的移动 token 指针
+     * 同时如果检测正确，那么会返回一个 TokenNode
      * @param type 预期的 token 类型
      * @return 一个 TokenNode
      * @throws PansyException 类型是 PARSE_ERROR，行数是前一个 token 的所在行数

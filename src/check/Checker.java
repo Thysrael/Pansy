@@ -59,6 +59,9 @@ public class Checker
         this.symbolTable = new SymbolTable();
     }
 
+    /**
+     * 逻辑与语法分析类似，如果发生了预料之外的异常，那么就退出，并且打印检查顺序
+     */
     public void run()
     {
         try
@@ -77,9 +80,16 @@ public class Checker
         }
     }
 
+    /**
+     * 这里的逻辑比较复杂，errors 作为一个数组，可能有多个相同的错误（比如 LValNode 检查了一遍，InStmt 又检查了一遍）
+     * 而且报错的函数也并不非递减排列的，所以需要利用一个 TreeSet 进行去重和排序
+     * 之后输出的是这个 TreeSet 的内容
+     * @return 检查的字符串
+     */
     public String display()
     {
         StringBuilder s = new StringBuilder();
+        // 进行去重和排序
         Set<PansyException> set = new TreeSet<>((o1, o2) -> -o2.compareTo(o1));
         set.addAll(errors);
         for (PansyException error : set)
