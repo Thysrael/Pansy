@@ -18,15 +18,27 @@
 
 ## Build
 
-
-
-## Usage
-
-
+```shell
+make build # 编译并在 auto 中打包成 jar
+make clean # 清除临时文件
+make zip   # src 源程序打包
+make ir	   # 在 llc 中运行 llvm_ir.txt 中的源码
+make mips  # 运行 mips.txt 中的源码
+make run   # 自动测试，具体的需求需要自己配置
+```
 
 ## Architecture
 
-### Front
+架构如图
+
+![](doc/pansy_arch.png)
+
+文件结构如图
+
+![](doc\pansy_doc.jpg)
 
 ## Thanks
 
+徐哥哥，林姐姐，传哥，泽哥，win 神。
+
+香老师。

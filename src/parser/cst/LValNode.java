@@ -214,7 +214,8 @@ public class LValNode extends CSTNode
                     exps.get(0).buildIr();
                     // 根据索引获得一个指针，要维持原有指针的类型
                     ptr = irBuilder.buildGEP(curBlock, ptr, valueUp);
-                    // 这里和其他的地方一样，我也说不明白为啥了
+                    // 进行一个降维操作，这是因为此时对应的情况是 a[][6] 这种，只有一维访存，那么就是这种 a[2]
+                    // 如果对于二维数组，只进行一维访存，说明这个东西用来作为实参，那么这个实参一定是一维的，而这样需要再次降维
                     if (((PointerType) ptr.getValueType()).getPointeeType() instanceof ArrayType)
                     {
                         ptr = irBuilder.buildGEP(curBlock, ptr, ConstInt.ZERO, ConstInt.ZERO);
